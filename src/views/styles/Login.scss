@@ -1,0 +1,32 @@
+.login-left-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-right-side {
+  width: 554px;
+  flex-shrink: 0;
+  background-color: #fff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 76px 24px;
+  position: relative;
+}
+
+.kuru-img {
+  width: 186px;
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translate(-60%, -65%);
+}
+
+.line {
+  height: 1px;
+  background: #EEF0F3;
+  flex: 1;
+}

@@ -1,0 +1,15 @@
+.navbar-title {
+  color: #556987;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+
+  &:hover {
+    color: #22C55E;
+  }
+}
+
+.nav-logo-title {
+  font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+  @apply text-lg text-black font-bold;
+}

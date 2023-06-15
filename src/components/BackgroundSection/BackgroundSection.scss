@@ -1,0 +1,125 @@
+.page-center-bg {
+  height: 200px;
+  transition: all 0.3s ease-in-out;
+
+  @media screen and (max-width: 2000px) {
+    width: 100%;
+  }
+
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    .page-center-bg-button__grp {
+      opacity: 1;
+    }
+  }
+}
+
+.page-center-bg-hidden {
+  height: 0px;
+}
+
+.page-center-bg__wrapper {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.page-center-bg-mask {
+  top: auto;
+  height: 100px;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(rgba(0, 0, 0, 0)),
+    to(rgba(0, 0, 0, 0.8))
+  );
+  background: -o-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  transform: translateY(0);
+  bottom: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.page-center-bg img {
+  width: 100%;
+  height: auto;
+  -o-object-fit: cover;
+  object-fit: cover;
+  -o-object-position: center;
+  object-position: center;
+  vertical-align: bottom;
+  -webkit-transition: width 0.5s ease-in-out;
+  -o-transition: width 0.5s ease-in-out;
+  transition: width 0.5s ease-in-out;
+}
+
+.page-center-bg__wrapper > img {
+  min-height: 200px;
+}
+
+.page-center-bg-button__grp {
+  position: absolute;
+  bottom: 5%;
+  right: 10%;
+  display: flex;
+  opacity: 0;
+  z-index: 10;
+  transition: all 0.2s ease-in-out;
+}
+
+.button-item-left__wrp, .button-item-right__wrp {
+  padding: 0 8px;
+  min-width: 52px;
+  height: 28px;
+  line-height: 28px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: var(--button-background-color);
+  color: var(--button-font-color);
+  text-align: center;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: none;
+  display: inline-block;
+  overflow: hidden;
+
+  &:hover {
+    background-color: var(--button-background-color-hover);
+    color: var(--button-font-color-hover);
+  }
+
+  &:active {
+    background-color: var(--button-background-color-active);
+    color: var(--button-font-color-active);
+  }
+}
+
+.button-item-left__wrp {
+  border-radius: 3px 0 0 3px;
+  border-right: 1px solid var(--button-font-color);
+}
+
+.one-button-only {
+  border-radius: 3px;
+  padding: 0 16px;
+  border: none;
+}
+
+.button-item-right__wrp {
+  border-radius: 0 3px 3px 0;
+}

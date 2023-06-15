@@ -1,0 +1,20 @@
+.guest-main {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px 0px;
+  // pointer-events: none;
+  background: #F7F8F9;
+
+  // &::before {
+  //   background: #F7F8F9;
+  //   position: absolute;
+  //   content: "";
+  //   z-index: 2;
+  //   width: 100%;
+  //   height: 100%;
+  //   top: 0;
+  // }
+}
