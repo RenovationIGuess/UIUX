@@ -6,13 +6,13 @@ import { AiOutlineTeam } from "react-icons/ai"
 import { IoIosCreate } from "react-icons/io"
 import { Link } from "react-router-dom"
 
-const Sidebar = () => {
+const Sidebar = ({ handleToggleSidebar }) => {
   return (
     <div className="sidebar-container">
       <div className="flex items-center justify-end pt-2">
-        <FiChevronsLeft className="text-2xl hover:text-bright-green hover:cursor-pointer" />
+        <FiChevronsLeft onClick={() => handleToggleSidebar('closed')} className="text-2xl hover:text-bright-green hover:cursor-pointer" />
       </div>
-      <div className="flex flex-col items-center justify-center mb-4">
+      <div className="flex flex-col items-center justify-center mb-4" style={{ marginTop: '-4px' }}>
         <div className="sidebar-logo-wrp">
           <img className="sidebar-logo-gif" src={image.kuru} alt="kururin" />
         </div>

@@ -11,6 +11,11 @@
 
 .sidebar-container--closed {
   width: 0;
+  padding: 0;
+}
+
+.sidebar-container--closed .sidebar-logo-wrp {
+  display: none;
 }
 
 .sidebar-logo-wrp {
