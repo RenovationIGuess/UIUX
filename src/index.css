@@ -6,6 +6,8 @@
 
 :root {
   --font-base: "Poppins", sans-serif;
+  --default-scrollbar-color-new: rgba(0, 0, 0, 0.25);
+  --default-scrollbar-color-hover: #e1e7ff;
 }
 
 * {
@@ -14,6 +16,7 @@
   padding: 0;
   font-family: var(--font-base);
   scroll-behavior: smooth;
+  white-space: nowrap;
   /* color-scheme: dark; */
 }
 
@@ -55,4 +58,8 @@
 
 ::-webkit-scrollbar-thump:hover {
   background-color: #e1e7ff;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
 }

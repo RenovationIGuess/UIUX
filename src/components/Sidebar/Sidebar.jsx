@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
 import image from "../../constant/image";
 import "./Sidebar.scss";
 import { FiChevronsLeft } from "react-icons/fi";
 import { FaUsers } from "react-icons/fa";
-import { AiOutlineTeam } from "react-icons/ai"
+import { AiFillCalendar, AiFillProfile, AiOutlineTeam } from "react-icons/ai"
 import { IoIosCreate } from "react-icons/io"
+import { GiNotebook } from "react-icons/gi"
 import { Link } from "react-router-dom"
 
 const Sidebar = ({ handleToggleSidebar }) => {
@@ -21,6 +23,18 @@ const Sidebar = ({ handleToggleSidebar }) => {
 
       <div className="flex flex-col w-full whitespace-nowrap">
         <div className="sidebar-item">
+          <AiFillProfile className="text-2xl mr-3" />
+          <p className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
+            Profile
+          </p>
+        </div>
+        <div className="sidebar-item">
+          <AiFillCalendar className="text-2xl mr-3" />
+          <p className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
+            Calendar
+          </p>
+        </div>
+        <div className="sidebar-item">
           <FaUsers className="text-2xl mr-3" />
           <p className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
             Teams
@@ -30,7 +44,7 @@ const Sidebar = ({ handleToggleSidebar }) => {
           <div className="flex flex-col">
             <div className="sidebar-item">
               <AiOutlineTeam className="text-2xl mr-3" />
-              <Link to="/teams/joined-teams" className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
+              <Link to="/teams/joined" className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
                 Joined Teams
               </Link>
             </div>
@@ -49,7 +63,7 @@ const Sidebar = ({ handleToggleSidebar }) => {
           <div className="flex flex-col">
             <div className="sidebar-item">
               <IoIosCreate className="text-2xl mr-3" />
-              <Link to="/teams/created-teams" className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
+              <Link to="/teams/created" className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
                 Created Teams
               </Link>
             </div>
@@ -64,6 +78,12 @@ const Sidebar = ({ handleToggleSidebar }) => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="sidebar-item">
+          <GiNotebook className="text-2xl mr-3" />
+          <p className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
+            Noting
+          </p>
         </div>
       </div>
     </div>

@@ -14,6 +14,10 @@ export default {
         '45-gray': 'rgba(0, 0, 0, 0.45)',
         '65-gray': 'rgba(0, 0, 0, 0.65)',
         '85-gray': 'rgba(0, 0, 0, 0.85)',
+        'red-type': '#D91212',
+        'yellow-type': '#FFA500',
+        'blue-type': '#3F82EC',
+        'light-gray': '#F5F6FB',
       }
     },
   },

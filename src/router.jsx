@@ -2,29 +2,51 @@ import { createBrowserRouter } from "react-router-dom";
 import GuestLayout from "./components/Layout/GuestLayout";
 import Login from "./views/Login";
 import Signup from "./views/Signup";
-import TeamLayout from "./components/Layout/TeamLayout";
+import TeamDetailLayout from "./components/Layout/TeamDetailLayout";
+import TeamListLayout from "./components/Layout/TeamListLayout";
 import JoinedTeam from "./views/JoinedTeam";
 import CreatedTeam from "./views/CreatedTeam";
-import TeamDetail from "./views/TeamDetail";
+import TeamDashboard from "./views/TeamDashboard";
+import TeamMembers from "./views/TeamMembers";
+import TeamMemberDetail from "./views/TeamMemberDetail";
+import TeamTasks from "./views/TeamTasks";
 
 const router = createBrowserRouter([
   {
-    path: "/teams",
-    element: <TeamLayout />,
+    path: "/team",
+    element: <TeamDetailLayout />,
     children: [
       {
-        path: "joined-teams",
-        element: <JoinedTeam />,
+        path: ":teamId/dashboard",
+        element: <TeamDashboard />,
       },
       {
-        path: "created-teams",
+        path: ":teamId/members",
+        element: <TeamMembers />,
+      },
+      {
+        path: ":teamId/members/:memberId",
+        element: <TeamMemberDetail />,
+      },
+      {
+        path: ":teamId/tasks",
+        element: <TeamTasks />,
+      }
+    ]
+  },
+  {
+    path: "/teams",
+    element: <TeamListLayout />,
+    children: [
+      {
+        path: "created",
         element: <CreatedTeam />,
       },
       {
-        path: ":teamId",
-        element: <TeamDetail />,
-      }
-    ]
+        path: "joined",
+        element: <JoinedTeam />,
+      },
+    ],
   },
   {
     path: "/",
