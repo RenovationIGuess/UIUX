@@ -24,12 +24,12 @@ const GuestNavbar = () => {
         </Link>
       </div>
       <div className="flex gap-4 items-center">
-        <Link to="/" className="navbar-title">
-          Home
+        <Link to="/login" className="navbar-title">
+          Login
         </Link>
         <button className="flex items-center justify-center px-4 py-2 text-white bg-bright-green rounded-md hover:bg-less-bright-green">
-          <Link to="/">
-            Home
+          <Link to="/signup">
+            Sign Up
           </Link>
         </button>
       </div>

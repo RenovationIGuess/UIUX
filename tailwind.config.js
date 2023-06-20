@@ -11,6 +11,7 @@ export default {
         'dark-gray': '#556987',
         'less-bright-green': '#1AA94F',
         'background-gray': '#F7F8F9',
+        '25-gray': 'rgba(0, 0, 0, 0.25)',
         '45-gray': 'rgba(0, 0, 0, 0.45)',
         '65-gray': 'rgba(0, 0, 0, 0.65)',
         '85-gray': 'rgba(0, 0, 0, 0.85)',
@@ -22,5 +23,8 @@ export default {
     },
   },
   plugins: [],
+  // corePlugins: {
+  //   preflight: false // fix conflicts with antd css
+  // },
 }
 

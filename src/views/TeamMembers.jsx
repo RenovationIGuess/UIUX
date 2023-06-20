@@ -4,6 +4,11 @@ import { Link } from "react-router-dom";
 import image from "../constant/image";
 import { BiChevronsDown } from "react-icons/bi";
 import { useState } from "react";
+import { FaFilter } from "react-icons/fa";
+import {
+  AiOutlineSearch,
+  AiOutlineUserAdd,
+} from "react-icons/ai";
 
 const columns = [
   {
@@ -19,24 +24,24 @@ const columns = [
     render: (text) => <a>{text}</a>,
     filters: [
       {
-        text: 'Joe',
-        value: 'Joe',
+        text: "Joe",
+        value: "Joe",
       },
       {
-        text: 'Jim',
-        value: 'Jim',
+        text: "Jim",
+        value: "Jim",
       },
       {
-        text: 'Submenu',
-        value: 'Submenu',
+        text: "Submenu",
+        value: "Submenu",
         children: [
           {
-            text: 'Green',
-            value: 'Green',
+            text: "Green",
+            value: "Green",
           },
           {
-            text: 'Black',
-            value: 'Black',
+            text: "Black",
+            value: "Black",
           },
         ],
       },
@@ -45,7 +50,7 @@ const columns = [
     // here is that finding the name started with `value`
     onFilter: (value, record) => record.name.indexOf(value) === 0,
     sorter: (a, b) => a.name.length - b.name.length,
-    sortDirections: ['descend'],
+    sortDirections: ["descend"],
   },
   {
     title: "Role",
@@ -129,6 +134,8 @@ const data = [
 
 const TeamMembers = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  // false - joined | true - requesting
+  const [viewState, setViewState] = useState(false);
 
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
@@ -178,8 +185,45 @@ const TeamMembers = () => {
       <div className="flex-1 flex flex-col">
         <div className="w-full flex flex-col bg-white py-2 px-4 rounded-xl">
           <div className="flex items-center justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
-            <p className="uppercase font-semibold text-base">Meetings</p>
-            <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
+            <div className="flex items-center">
+              <p className="uppercase font-semibold text-base mr-4">Members</p>
+              <div className="flex items-center">
+                <span
+                  onClick={() => setViewState((prev) => !prev)}
+                  className={`cursor-pointer rounded-full py-1 px-4 ${
+                    !viewState && " bg-bright-green text-white"
+                  }`}
+                >
+                  Joined
+                </span>
+                <span
+                  onClick={() => setViewState((prev) => !prev)}
+                  className={`cursor-pointer rounded-full py-1 px-4 ${
+                    viewState && " bg-bright-green text-white"
+                  }`}
+                >
+                  Requesting
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <div className="p-1 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green">
+                <AiOutlineUserAdd className="text-2xl text-white" />
+              </div>
+              <div className="p-2 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green">
+                <FaFilter className="text-base text-white" />
+              </div>
+              <div className="flex mr-3">
+                <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
+                  <AiOutlineSearch className="text-base text-white" />
+                </div>
+                <input
+                  className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
+                  placeholder="Enter team's name / id..."
+                />
+              </div>
+              <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
+            </div>
           </div>
           <Table
             rowSelection={rowSelection}

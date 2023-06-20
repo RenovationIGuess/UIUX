@@ -47,5 +47,5 @@
 }
 
 .sidebar-item {
-  @apply flex items-center overflow-hidden text-dark-gray hover:cursor-pointer hover:text-bright-green p-2;
+  @apply flex items-center justify-between overflow-hidden text-dark-gray hover:cursor-pointer hover:text-bright-green p-2;
 }

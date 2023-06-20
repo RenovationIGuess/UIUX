@@ -1,7 +1,15 @@
+/* eslint-disable react/prop-types */
+import { useEffect } from "react";
 import image from "../../constant/image"
 import { FiChevronsRight } from "react-icons/fi";
+import { useLocation } from "react-router-dom";
 
 const DefaultNavbar = ({ handleToggleSidebar }) => {
+  const location = useLocation();
+  useEffect(() => {
+    // console.log(location.pathname)
+  }, [location]);
+
   return (
     <nav className="shrink-0 w-full flex items-center justify-between h-[56px] py-2 px-10 bg-white border-b border-solid border-[#f5f6fb]">
       <div className="flex items-center gap-3">

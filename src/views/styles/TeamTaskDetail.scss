@@ -1,0 +1,36 @@
+.comment {
+  @apply flex;
+}
+
+.icon {
+  @apply text-2xl hover:text-bright-green cursor-pointer;
+}
+
+.smaller-icon {
+  @apply text-xl;
+}
+
+.paragraph {
+  @apply break-words whitespace-pre-wrap;
+}
+
+.icon-transition {
+  transition: all 250ms ease-in-out;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.task-option {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  background: #fff;
+  box-shadow: var(--box-shadow-modal);
+  border-radius: 6px;
+  width: 168px;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}

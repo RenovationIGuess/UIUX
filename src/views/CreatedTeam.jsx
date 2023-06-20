@@ -2,7 +2,7 @@ import image from "../constant/image";
 import "./styles/JoinedTeam.scss";
 import { FaFilter, FaRegDotCircle } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-
+import { Link } from "react-router-dom"
 import { Input } from "antd";
 import "./styles/JoinedTeam.scss";
 import {
@@ -68,7 +68,7 @@ const CreatedTeam = () => {
                       </div>
                     </div>
                     <button className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
-                      View Details
+                      <Link to="/team/1/dashboard">View Details</Link>
                     </button>
                   </div>
                   <div className="w-full flex items-center mt-3 whitespace-nowrap">
@@ -151,7 +151,7 @@ const CreatedTeam = () => {
                 <span className="font-semibold">Recently View</span>
               </div>
               <div className="w-full flex flex-col">
-                <div className="flex items-center justify-between px-3 py-1 rounded-md hover:bg-bright-green hover:text-white">
+                <Link to="/team/1/dashboard" className="flex items-center justify-between px-3 py-1 rounded-md hover:bg-bright-green hover:text-white">
                   <div className="flex items-center">
                     <div className="flex flex-col">
                       <h1 className="text-sm font-medium mb-2">
@@ -170,7 +170,7 @@ const CreatedTeam = () => {
                     </div>
                   </div>
                   <AiOutlineArrowRight className="text-2xl" />
-                </div>
+                </Link>
               </div>
             </div>
             <div className="w-full bg-white rounded-xl flex flex-col px-4 pb-4 mt-4">

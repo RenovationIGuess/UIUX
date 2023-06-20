@@ -4,12 +4,14 @@ import Sidebar from "../Sidebar/Sidebar";
 import { useState } from "react";
 import BackgroundSection from "../BackgroundSection/BackgroundSection";
 import image from "../../constant/image";
-import { BiCommentDetail } from "react-icons/bi";
+import { BiCommentDetail, BiLogOutCircle } from "react-icons/bi";
 import { FiMinimize } from "react-icons/fi";
 import { TiArrowSortedDown } from "react-icons/ti";
+import { Popconfirm } from "antd";
 
 const TeamLayout = () => {
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
   const handleMinimized = () => {
     const topbarElement = document.querySelector(".topbar");
@@ -44,6 +46,12 @@ const TeamLayout = () => {
         openSidebarIcon.classList.toggle("hidden");
       }, 300);
     }
+  };
+
+  const confirmOutTeam = () => {
+  };
+
+  const cancelOutTeam = () => {
   };
 
   return (
@@ -91,7 +99,7 @@ const TeamLayout = () => {
                       <div className="account-center-basic-rows account-center-basic-rows--bottom">
                         <div className="account-center-basic-item">
                           <Link
-                            to="/teams/dashboard"
+                            to="/team/1/dashboard"
                             className="uppercase font-bold hover:text-bright-green"
                           >
                             Dashboard
@@ -99,7 +107,7 @@ const TeamLayout = () => {
                         </div>
                         <div className="account-center-basic-item">
                           <Link
-                            to="/teams/meetings"
+                            to="/team/1/meetings"
                             className="uppercase font-bold hover:text-bright-green"
                           >
                             Meetings
@@ -107,7 +115,7 @@ const TeamLayout = () => {
                         </div>
                         <div className="account-center-basic-item">
                           <Link
-                            to="/teams/projects"
+                            to="/team/1/projects"
                             className="uppercase font-bold hover:text-bright-green"
                           >
                             Projects
@@ -115,7 +123,7 @@ const TeamLayout = () => {
                         </div>
                         <div className="account-center-basic-item">
                           <Link
-                            to="/teams/members"
+                            to="/team/1/members"
                             className="uppercase font-bold hover:text-bright-green"
                           >
                             Members
@@ -123,7 +131,7 @@ const TeamLayout = () => {
                         </div>
                         <div className="account-center-basic-item">
                           <Link
-                            to="/teams/tasks"
+                            to="/team/1/tasks"
                             className="uppercase font-bold hover:text-bright-green"
                           >
                             Tasks
@@ -131,7 +139,7 @@ const TeamLayout = () => {
                         </div>
                         <div className="account-center-basic-item">
                           <Link
-                            to="/teams/your-stats"
+                            to="/team/1/your-stats"
                             className="uppercase font-bold hover:text-bright-green"
                           >
                             Your stats
@@ -144,32 +152,40 @@ const TeamLayout = () => {
                         <div
                           className="account-center-select-btn"
                           style={{ marginRight: "16px" }}
-                          title="Thu nhỏ phần avatar và background"
                           onClick={() => handleMinimized()}
                         >
                           <span className="flex items-center justify-center">
-                            {isMinimized ? "Mở rộng" : "Thu nhỏ"}
+                            {isMinimized ? "Expand" : "Minimize"}
                             {/* Icon goes here */}
                             <FiMinimize className="icon-select__arrow" />
                           </span>
                         </div>
-                        <div className="account-center-select-btn">
+                        <div className="account-center-select-btn" onClick={() => setIsOptionsOpen(!isOptionsOpen)}>
                           <span className="flex items-center justify-center">
-                            Chỉnh sửa
+                            Options
                             {/* Icon goes here */}
                             <TiArrowSortedDown className="icon-select__arrow" />
                           </span>
                         </div>
-                        <div className="float-dialog">
-                          <ul className="account-center-submenu">
-                            <li className="account-center-submenu-item">
-                              Hoàn thiện thông tin cá nhân
-                            </li>
-                            <li className="account-center-submenu-item">
-                              Decorate lại trang private
-                            </li>
+                        {isOptionsOpen && <div className="float-dialog">
+                          <ul className="flex flex-col">
+                            <Popconfirm
+                              title="Out this team"
+                              description="Are you sure to out team?"
+                              onConfirm={confirmOutTeam}
+                              onCancel={cancelOutTeam}
+                              okText="Yes"
+                              cancelText="No"
+                              placement="bottom"
+                            >
+                              <li className="py-1 px-3 flex items-center text-85-gray rounded-md hover:bg-bright-green hover:text-white cursor-pointer">
+                                <BiLogOutCircle className="text-xl mr-1" />
+                                <p className="text-sm">Out Team</p>
+                              </li>
+                            </Popconfirm>
+                            
                           </ul>
-                        </div>
+                        </div>}
                       </div>
                     </div>
                   </div>

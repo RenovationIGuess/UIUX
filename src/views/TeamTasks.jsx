@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   AiFillCalendar,
   AiOutlineAppstoreAdd,
@@ -11,11 +12,13 @@ import {
   IoIosArrowBack,
   IoIosArrowForward,
   IoIosArrowUp,
+  IoMdInformationCircleOutline,
 } from "react-icons/io";
 import {
   MdAlignHorizontalLeft,
   MdOutlineAlignVerticalTop,
 } from "react-icons/md";
+import { BsThreeDots } from "react-icons/bs"
 import { Link } from "react-router-dom";
 import { Progress, Tooltip } from "antd";
 
@@ -23,27 +26,94 @@ import { Calendar, Col, Radio, Row, Select } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import dayLocaleData from "dayjs/plugin/localeData";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { DragDropContext, Draggable } from "react-beautiful-dnd";
+import { StrictModeDroppable as Droppable } from "../helpers/StrictModeDroppable";
+import dummyData from "../constant/dummyData";
+import DndColumn from "../components/DndColumn/DndColumn";
 
 dayjs.extend(dayLocaleData);
+
+/**
+ * Moves an item from one list to another list.
+ */
+const move = (source, destination, droppableSource, droppableDestination) => {
+  const sourceClone = Array.from(source);
+  const destClone = Array.from(destination);
+  const [removed] = sourceClone.splice(droppableSource.index, 1);
+
+  destClone.splice(droppableDestination.index, 0, removed);
+
+  const result = {};
+  result[droppableSource.droppableId] = sourceClone;
+  result[droppableDestination.droppableId] = destClone;
+
+  return result;
+};
 
 const TeamTaskDetail = () => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   // true - vertical | false - horizontal
   const [viewState, setViewState] = useState(false);
+  const [tasks, setTasks] = useState(dummyData.dummyTasksData);
 
   const onPanelChange = (value, mode) => {
-    console.log(value.format("YYYY-MM-DD"), mode);
+    // console.log(value.format("YYYY-MM-DD"), mode);
   };
+
+  const onDragEnd = useCallback((result) => {
+    const { source, destination } = result;
+
+    // dropped outside the list
+    if (!destination) {
+      return;
+    }
+
+    // start index
+    const sInd = +source.droppableId;
+    // end index
+    const dInd = +destination.droppableId;
+
+    // if (sInd === dInd) {
+    //   // Drag same column
+    //   const items = reorder(state[sInd], source.index, destination.index);
+    //   const newState = [...state];
+    //   newState[sInd] = items;
+    //   setState(newState);
+    // } else {
+    //   // Drag to another column
+    //   const result = move(state[sInd], state[dInd], source, destination);
+    //   const newState = [...state];
+    //   newState[sInd] = result[sInd];
+    //   newState[dInd] = result[dInd];
+
+    //   setState(newState.filter(group => group.length));
+    // }
+  }, []);
 
   return (
     <>
-      <div className="w-full flex flex-col bg-white py-2 px-4 rounded-xl">
+      <div
+        // className={`w-full flex flex-col bg-white py-2 px-4 rounded-xl${
+        //   viewState && " min-h-full"
+        // }`}
+        className={`max-w-full w-full flex flex-col bg-white py-2 px-4 rounded-xl`}
+      >
         <div className="flex items-center justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
           <div className="flex items-center">
             <p className="uppercase font-semibold text-base mr-4">Tasks</p>
-            <MdAlignHorizontalLeft className="text-2xl mr-4 hover:text-bright-green cursor-pointer" />
-            <MdOutlineAlignVerticalTop className="text-2xl hover:text-bright-green cursor-pointer" />
+            <MdAlignHorizontalLeft
+              onClick={() => setViewState((prev) => !prev)}
+              className={`cursor-pointer text-2xl mr-4 hover:text-bright-green cursor-pointer${
+                !viewState && " text-bright-green"
+              }`}
+            />
+            <MdOutlineAlignVerticalTop
+              onClick={() => setViewState((prev) => !prev)}
+              className={`cursor-pointer text-2xl hover:text-bright-green cursor-pointer${
+                viewState && " text-bright-green"
+              }`}
+            />
           </div>
 
           <div className="flex items-center">
@@ -177,72 +247,91 @@ const TeamTaskDetail = () => {
               )}
             </div>
           </div>
-          <div className="joined-team-item">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <h1 className="text-2xl font-medium">
-                  Implement everything you have “_”
-                </h1>
-              </div>
-              <button className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
-                View Details
-              </button>
-            </div>
-            <div className="flex items-center mt-3 gap-2">
-              <Tooltip placement="top" title={"Project Name"}>
-                <span className="py-1 px-4 font-medium border border-solid border-45-gray rounded-full text-45-gray">
-                  Project UI / UX
-                </span>
-              </Tooltip>
-              <Tooltip placement="top" title={"Priority"}>
-                <span className="py-1 px-4 font-medium border border-solid border-red-type rounded-full text-red-type uppercase">
-                  high
-                </span>
-              </Tooltip>
-              <Tooltip placement="top" title={"Type"}>
-                <span className="py-1 px-4 font-medium border border-solid border-45-gray rounded-full text-45-gray uppercase">
-                  to do
-                </span>
-              </Tooltip>
-            </div>
-            <div className="flex items-center mt-4 justify-between w-full">
-              <div className="flex items-center gap-4">
-                <img
-                  className="w-9 h-9 rounded-full"
-                  src={image.poum}
-                  alt="kururin"
-                />
-                <p className="text-base font-medium">Mr.Poum is the Owner</p>
-              </div>
-              <div className="flex items-center mt-3 whitespace-nowrap">
-                <div className="flex items-center relative">
-                  <img
-                    src={image.poum}
-                    data-index="1"
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <img
-                    src={image.poum}
-                    data-index="1"
-                    className="w-8 h-8 rounded-full"
-                    style={{ transform: "translateX(-50%)" }}
-                  />
-                  <img
-                    src={image.poum}
-                    data-index="1"
-                    className="w-8 h-8 rounded-full"
-                    style={{ transform: "translateX(-100%)" }}
-                  />
+          {!viewState ? (
+            <>
+              <div className="joined-team-item">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-6">
+                    <h1 className="text-2xl font-medium">
+                      Implement everything you have “_”
+                    </h1>
+                  </div>
+                  <button className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
+                    <Link to="/team/1/tasks/1">View Details</Link>
+                  </button>
                 </div>
-                <p
-                  className="text-bsae font-medium"
-                  style={{ marginLeft: "-12px" }}
-                >
-                  100k members assigned
-                </p>
+                <div className="flex items-center mt-3 gap-2">
+                  <Tooltip placement="top" title={"Project Name"}>
+                    <span className="py-1 px-4 font-medium border border-solid border-45-gray rounded-full text-45-gray">
+                      Project UI / UX
+                    </span>
+                  </Tooltip>
+                  <Tooltip placement="top" title={"Priority"}>
+                    <span className="py-1 px-4 font-medium border border-solid border-red-type rounded-full text-red-type uppercase">
+                      high
+                    </span>
+                  </Tooltip>
+                  <Tooltip placement="top" title={"Type"}>
+                    <span className="py-1 px-4 font-medium border border-solid border-45-gray rounded-full text-45-gray uppercase">
+                      to do
+                    </span>
+                  </Tooltip>
+                </div>
+                <div className="flex items-center mt-4 justify-between w-full">
+                  <div className="flex items-center gap-4">
+                    <img
+                      className="w-9 h-9 rounded-full"
+                      src={image.poum}
+                      alt="kururin"
+                    />
+                    <p className="text-base font-medium">
+                      Mr.Poum is the Owner
+                    </p>
+                  </div>
+                  <div className="flex items-center mt-3 whitespace-nowrap">
+                    <div className="flex items-center relative">
+                      <img
+                        src={image.poum}
+                        data-index="1"
+                        className="w-8 h-8 rounded-full"
+                      />
+                      <img
+                        src={image.poum}
+                        data-index="1"
+                        className="w-8 h-8 rounded-full"
+                        style={{ transform: "translateX(-50%)" }}
+                      />
+                      <img
+                        src={image.poum}
+                        data-index="1"
+                        className="w-8 h-8 rounded-full"
+                        style={{ transform: "translateX(-100%)" }}
+                      />
+                    </div>
+                    <p
+                      className="text-bsae font-medium"
+                      style={{ marginLeft: "-12px" }}
+                    >
+                      100k members assigned
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </>
+          ) : (
+            <>
+              <DragDropContext
+                onDragEnd={onDragEnd}
+              >
+                <div className="flex gap-4">
+                  <DndColumn droppableId={"todo"} tasks={tasks.filter((item) => item.status === "todo")} title={"to do"} />
+                  <DndColumn droppableId={"in_progress"} tasks={tasks.filter((item) => item.status === "in_progress")} title={"in progress"} />
+                  <DndColumn droppableId={"in_review"} tasks={tasks.filter((item) => item.status === "in_review")} title={"in review"} />
+                  <DndColumn droppableId={"done"} tasks={tasks.filter((item) => item.status === "done")} title={"done"} />
+                </div>
+              </DragDropContext>
+            </>
+          )}
         </div>
 
         <div className="flex items-center justify-center py-4 border-t border-solid border-[#f5f6fb] mt-4">
