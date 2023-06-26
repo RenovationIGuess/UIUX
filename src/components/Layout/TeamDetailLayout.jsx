@@ -8,6 +8,8 @@ import { BiCommentDetail, BiLogOutCircle } from "react-icons/bi";
 import { FiMinimize } from "react-icons/fi";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { Popconfirm } from "antd";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TeamLayout = () => {
   const [isMinimized, setIsMinimized] = useState(false);
@@ -200,6 +202,19 @@ const TeamLayout = () => {
           </div>
         </section>
       </div>
+
+      <ToastContainer 
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

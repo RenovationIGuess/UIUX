@@ -55,9 +55,9 @@ const Login = () => {
               allowClear
             />
           </label>
-          <button className="cursor-pointer flex items-center justify-center rounded-md w-full mt-3 bg-bright-green py-3 text-white font-medium hover:bg-less-bright-green">
+          <Link to="/home" className="cursor-pointer flex items-center justify-center rounded-md w-full mt-3 bg-bright-green py-3 text-white font-medium hover:bg-less-bright-green">
             Login
-          </button>
+          </Link>
         </form>
         <div className="w-full flex items-center mt-4">
           <div className="line"></div>

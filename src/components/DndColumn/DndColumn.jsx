@@ -42,7 +42,7 @@ const DndColumn = ({ droppableId, tasks, title }) => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <p className="text-sm text-45-gray font-medium">
-                            {item.project}
+                            {item.project.name}
                           </p>
                           <Tooltip placement="top" title={"Priority: High"}>
                             <IoMdInformationCircleOutline className="text-xl text-red-type" />

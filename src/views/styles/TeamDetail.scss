@@ -1,3 +1,6 @@
+@import 'react-big-calendar/lib/sass/styles';
+@import 'react-big-calendar/lib/addons/dragAndDrop/styles';
+
 .team-detail-container {
   height: calc(100vh - 312px);
   // overflow: hidden scroll;
@@ -417,4 +420,8 @@
   @media screen and (min-width: 1700px) {
     width: calc(96% - 88px) !important;
   }
+}
+
+.link-active {
+  @apply text-bright-green;
 }

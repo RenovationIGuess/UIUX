@@ -2,7 +2,7 @@ import image from "../constant/image";
 import "./styles/JoinedTeam.scss";
 import { FaFilter, FaRegDotCircle } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import { Input } from "antd";
 import "./styles/JoinedTeam.scss";
 import {
@@ -15,11 +15,13 @@ import {
   AiOutlineTeam,
 } from "react-icons/ai";
 import { useState } from "react";
+import dummyData from "../constant/dummyData";
 
 const CreatedTeam = () => {
   // Use for join team input modal
   const [teamName, setTeamName] = useState("");
   const [teamUserName, setTeamUserName] = useState("");
+  const [joinedTeam, setJoinedTeam] = useState(dummyData.dummyTeamData);
 
   const handleCreateTeamModal = () => {
     const modalElement = document.querySelector(".modal-background");
@@ -52,68 +54,72 @@ const CreatedTeam = () => {
                 </div>
               </div>
               <div className="flex flex-col">
-                <div className="joined-team-item">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-6">
-                      <h1 className="text-2xl font-medium">Astral Express</h1>
-                      <div className="flex items-center gap-4">
-                        <img
-                          className="w-9 h-9 rounded-full"
-                          src={image.poum}
-                          alt="kururin"
-                        />
-                        <p className="text-base font-medium">
-                          Mr.Poum is the Owner
+                {joinedTeam.map((t, index) => (
+                  <>
+                    <div className="joined-team-item" key={index}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-6">
+                          <h1 className="text-2xl font-medium">
+                            {t.name}
+                          </h1>
+                          <div className="flex items-center gap-4">
+                            <img
+                              className="w-9 h-9 rounded-full"
+                              src={t.creator.image}
+                              alt="kururin"
+                            />
+                            <p className="text-base font-medium">
+                              {t.creator.name} is the Owner
+                            </p>
+                          </div>
+                        </div>
+                        <button className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
+                          <Link to={`/team/${t.id}/dashboard`}>View Details</Link>
+                        </button>
+                      </div>
+                      <div className="w-full flex items-center mt-3 whitespace-nowrap">
+                        <div className="flex relative">
+                          {t.members.map((m, mIndex) => {
+                            if (mIndex <= 2) {
+                              return (
+                                <img
+                                  key={mIndex}
+                                  src={m.image}
+                                  data-index={m.id}
+                                  className="w-8 h-8 rounded-full"
+                                  style={{ transform: `translateX(${mIndex*(-50)}%)` }}
+                                />
+                              )
+                            }
+                          })}
+                        </div>
+                        <p
+                          className="text-bsae font-medium"
+                          style={{ marginLeft: t.members.length >= 3 ? "-12px" : t.members.length === 1 ? "1rem" : "0px" }}
+                        >
+                          {t.members.length} members
                         </p>
                       </div>
+                      <div className="flex items-center mt-4 justify-between w-full">
+                        <div className="flex items-center gap-4">
+                          <FaRegDotCircle className="text-2xl" />
+                          <p>100k Tasks Assigned</p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <AiFillCheckCircle className="text-2xl text-bright-green" />
+                          <p>100k Tasks Completed</p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <AiFillCloseCircle className="text-2xl text-[#FF5D6C]" />
+                          <p>100k Tasks Closed</p>
+                        </div>
+                      </div>
                     </div>
-                    <button className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
-                      <Link to="/team/1/dashboard">View Details</Link>
-                    </button>
-                  </div>
-                  <div className="w-full flex items-center mt-3 whitespace-nowrap">
-                    <div className="flex relative">
-                      <img
-                        src={image.poum}
-                        data-index="1"
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <img
-                        src={image.poum}
-                        data-index="1"
-                        className="w-8 h-8 rounded-full"
-                        style={{ transform: "translateX(-50%)" }}
-                      />
-                      <img
-                        src={image.poum}
-                        data-index="1"
-                        className="w-8 h-8 rounded-full"
-                        style={{ transform: "translateX(-100%)" }}
-                      />
-                    </div>
-                    <p
-                      className="text-bsae font-medium"
-                      style={{ marginLeft: "-12px" }}
-                    >
-                      100k members
-                    </p>
-                  </div>
-                  <div className="flex items-center mt-4 justify-between w-full">
-                    <div className="flex items-center gap-4">
-                      <FaRegDotCircle className="text-2xl" />
-                      <p>100k Tasks Assigned</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <AiFillCheckCircle className="text-2xl text-bright-green" />
-                      <p>100k Tasks Completed</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <AiFillCloseCircle className="text-2xl text-[#FF5D6C]" />
-                      <p>100k Tasks Closed</p>
-                    </div>
-                  </div>
-                </div>
+                  </>
+                ))}
               </div>
+
+              {/* Navigator */}
               <div className="flex items-center justify-center py-4 border-t border-solid border-[#f5f6fb] mt-4">
                 <div className="p-2 rounded-[3px] border border-solid border-black mr-2 cursor-pointer hover:border-bright-green hover:text-bright-green">
                   <IoIosArrowBack className="text-base" />
@@ -140,7 +146,10 @@ const CreatedTeam = () => {
             </div>
           </div>
           <div className="w-[336px] ml-6 shrink-0">
-            <button onClick={() => handleCreateTeamModal()} className="w-full py-2 flex items-center justify-center rounded-full bg-bright-green text-white hover:bg-less-bright-green">
+            <button
+              onClick={() => handleCreateTeamModal()}
+              className="w-full py-2 flex items-center justify-center rounded-full bg-bright-green text-white hover:bg-less-bright-green"
+            >
               <div className="flex items-center">
                 <p className="text-base mr-2">Create a team</p>
                 <AiOutlineArrowRight className="text-xl" />
@@ -151,7 +160,10 @@ const CreatedTeam = () => {
                 <span className="font-semibold">Recently View</span>
               </div>
               <div className="w-full flex flex-col">
-                <Link to="/team/1/dashboard" className="flex items-center justify-between px-3 py-1 rounded-md hover:bg-bright-green hover:text-white">
+                <Link
+                  to="/team/1/dashboard"
+                  className="flex items-center justify-between px-3 py-1 rounded-md hover:bg-bright-green hover:text-white"
+                >
                   <div className="flex items-center">
                     <div className="flex flex-col">
                       <h1 className="text-sm font-medium mb-2">
@@ -212,7 +224,7 @@ const CreatedTeam = () => {
             <div className="flex flex-col mb-4">
               <div className="flex items-center gap-3 mb-3">
                 <AiOutlineTeam className="text-2xl" />
-                <Input 
+                <Input
                   className="py-2 pl-4 pr-3"
                   placeholder="Enter team's name"
                   allowClear
@@ -223,7 +235,11 @@ const CreatedTeam = () => {
               <div className="pl-9 flex flex-col">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <img className="w-9 h-9 rounded-full" src={image.poum} alt />
+                    <img
+                      className="w-9 h-9 rounded-full"
+                      src={image.poum}
+                      alt
+                    />
                     <div className="flex flex-col gap-1">
                       <p className="text-base font-medium">Mr.Poum</p>
                       <p className="text-xs text-dark-gray">Project Manager</p>
@@ -235,7 +251,7 @@ const CreatedTeam = () => {
             </div>
             <div className="flex items-center gap-3">
               <AiOutlineLink className="text-2xl" />
-              <Input 
+              <Input
                 className="py-2 pl-4 pr-3"
                 value={"https://localhost:3000"}
                 disabled

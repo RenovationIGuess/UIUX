@@ -1,0 +1,10 @@
+.specialDay {
+  background-color: #fec;
+}
+
+.eventContainer {
+  background-color: #fff;
+  @apply text-85-gray;
+  box-shadow: 0 0 10px 0 rgba(0,43,22,0.3);
+  padding: 4px 6px;
+}

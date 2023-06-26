@@ -12,6 +12,8 @@ import TeamMemberDetail from "./views/TeamMemberDetail";
 import TeamTasks from "./views/TeamTasks";
 import TeamTaskDetail from "./views/TeamTaskDetail";
 import TeamMeetings from "./views/TeamMeetings";
+import TeamProjects from "./views/TeamProjects";
+import TeamYourStats from "./views/TeamYourStats";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +44,14 @@ const router = createBrowserRouter([
         path: ":teamId/meetings",
         element: <TeamMeetings />,
       },
+      {
+        path: ":teamId/projects",
+        element: <TeamProjects />,
+      },
+      {
+        path: ":teamId/your-stats",
+        element: <TeamYourStats />,
+      }
     ]
   },
   {

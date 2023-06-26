@@ -12,13 +12,11 @@ import {
   IoIosArrowBack,
   IoIosArrowForward,
   IoIosArrowUp,
-  IoMdInformationCircleOutline,
 } from "react-icons/io";
 import {
   MdAlignHorizontalLeft,
   MdOutlineAlignVerticalTop,
 } from "react-icons/md";
-import { BsThreeDots } from "react-icons/bs"
 import { Link } from "react-router-dom";
 import { Progress, Tooltip } from "antd";
 
@@ -27,10 +25,10 @@ import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import dayLocaleData from "dayjs/plugin/localeData";
 import { useCallback, useState } from "react";
-import { DragDropContext, Draggable } from "react-beautiful-dnd";
-import { StrictModeDroppable as Droppable } from "../helpers/StrictModeDroppable";
+import { DragDropContext } from "react-beautiful-dnd";
 import dummyData from "../constant/dummyData";
 import DndColumn from "../components/DndColumn/DndColumn";
+import PaginateFooter from "../components/PaginateFooter/PaginateFooter";
 
 dayjs.extend(dayLocaleData);
 
@@ -94,26 +92,28 @@ const TeamTaskDetail = () => {
   return (
     <>
       <div
-        // className={`w-full flex flex-col bg-white py-2 px-4 rounded-xl${
-        //   viewState && " min-h-full"
-        // }`}
         className={`max-w-full w-full flex flex-col bg-white py-2 px-4 rounded-xl`}
       >
         <div className="flex items-center justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
           <div className="flex items-center">
             <p className="uppercase font-semibold text-base mr-4">Tasks</p>
-            <MdAlignHorizontalLeft
-              onClick={() => setViewState((prev) => !prev)}
-              className={`cursor-pointer text-2xl mr-4 hover:text-bright-green cursor-pointer${
-                !viewState && " text-bright-green"
-              }`}
-            />
-            <MdOutlineAlignVerticalTop
-              onClick={() => setViewState((prev) => !prev)}
-              className={`cursor-pointer text-2xl hover:text-bright-green cursor-pointer${
-                viewState && " text-bright-green"
-              }`}
-            />
+
+            <Tooltip placement="top" title="View as List">
+              <MdAlignHorizontalLeft
+                onClick={() => setViewState((prev) => !prev)}
+                className={`cursor-pointer text-2xl mr-4 hover:text-bright-green cursor-pointer${
+                  !viewState && " text-bright-green"
+                }`}
+              />
+            </Tooltip>
+            <Tooltip placement="top" title="View as status">
+              <MdOutlineAlignVerticalTop
+                onClick={() => setViewState((prev) => !prev)}
+                className={`cursor-pointer text-2xl hover:text-bright-green cursor-pointer${
+                  viewState && " text-bright-green"
+                }`}
+              />
+            </Tooltip>
           </div>
 
           <div className="flex items-center">
@@ -145,7 +145,10 @@ const TeamTaskDetail = () => {
                 className="text-2xl hover:cursor-pointer hover:text-bright-green"
               />
               {isCalendarVisible && (
-                <div className="bg-white rounded-xl py-2 px-4 w-[312px] shadow-xl absolute top-10 flex flex-col">
+                <div
+                  className="bg-white rounded-xl py-2 px-4 w-[312px] shadow-xl absolute top-10 flex flex-col"
+                  style={{ zIndex: 1000 }}
+                >
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-sm text-85-gray font-medium">
                       Pick a date
@@ -320,43 +323,37 @@ const TeamTaskDetail = () => {
             </>
           ) : (
             <>
-              <DragDropContext
-                onDragEnd={onDragEnd}
-              >
+              <DragDropContext onDragEnd={onDragEnd}>
                 <div className="flex gap-4">
-                  <DndColumn droppableId={"todo"} tasks={tasks.filter((item) => item.status === "todo")} title={"to do"} />
-                  <DndColumn droppableId={"in_progress"} tasks={tasks.filter((item) => item.status === "in_progress")} title={"in progress"} />
-                  <DndColumn droppableId={"in_review"} tasks={tasks.filter((item) => item.status === "in_review")} title={"in review"} />
-                  <DndColumn droppableId={"done"} tasks={tasks.filter((item) => item.status === "done")} title={"done"} />
+                  <DndColumn
+                    droppableId="todo"
+                    tasks={tasks.filter((item) => item.status === "todo")}
+                    title="to do"
+                  />
+                  <DndColumn
+                    droppableId="in_progress"
+                    tasks={tasks.filter(
+                      (item) => item.status === "in_progress"
+                    )}
+                    title="in progress"
+                  />
+                  <DndColumn
+                    droppableId="in_review"
+                    tasks={tasks.filter((item) => item.status === "in_review")}
+                    title="in review"
+                  />
+                  <DndColumn
+                    droppableId="done"
+                    tasks={tasks.filter((item) => item.status === "done")}
+                    title="done"
+                  />
                 </div>
               </DragDropContext>
             </>
           )}
         </div>
 
-        <div className="flex items-center justify-center py-4 border-t border-solid border-[#f5f6fb] mt-4">
-          <div className="p-2 rounded-[3px] border border-solid border-black mr-2 cursor-pointer hover:border-bright-green hover:text-bright-green">
-            <IoIosArrowBack className="text-base" />
-          </div>
-          <div className="px-3 py-1 rounded-[3px] border border-solid border-black mr-2 cursor-pointer hover:border-bright-green hover:text-bright-green">
-            <span className="text-base">1</span>
-          </div>
-          <div className="px-3 py-1 rounded-[3px] border border-solid border-black mr-2 cursor-pointer hover:border-bright-green hover:text-bright-green">
-            <span className="text-base">2</span>
-          </div>
-          <div className="px-3 py-1 rounded-[3px] border border-solid border-black mr-2 cursor-pointer hover:border-bright-green hover:text-bright-green">
-            <span className="text-base">3</span>
-          </div>
-          <div className="px-3 py-1 rounded-[3px] border border-solid border-black mr-2 cursor-pointer hover:border-bright-green hover:text-bright-green">
-            <span className="text-base">4</span>
-          </div>
-          <div className="px-3 py-1 rounded-[3px] border border-solid border-black mr-2 cursor-pointer hover:border-bright-green hover:text-bright-green">
-            <span className="text-base">5</span>
-          </div>
-          <div className="p-2 rounded-[3px] border border-solid border-black cursor-pointer hover:border-bright-green hover:text-bright-green">
-            <IoIosArrowForward className="text-base" />
-          </div>
-        </div>
+        <PaginateFooter />
       </div>
 
       <div className="w-[336px] ml-6 shrink-0">

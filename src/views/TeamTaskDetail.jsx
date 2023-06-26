@@ -2,6 +2,7 @@ import {
   AiFillFileImage,
   AiFillFileZip,
   AiFillSmile,
+  AiOutlineClose,
   AiOutlineLink,
   AiOutlinePlus,
 } from "react-icons/ai";
@@ -9,17 +10,47 @@ import image from "../constant/image";
 import { FaComment, FaEdit, FaTrash } from "react-icons/fa";
 import { BiChevronsDown } from "react-icons/bi";
 import { BsThreeDots, BsThreeDotsVertical } from "react-icons/bs";
-import { Tooltip } from "antd";
+import { Button, DatePicker, Progress, Select, Tooltip } from "antd";
 import { useState } from "react";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { Input } from "antd";
-const { TextArea } = Input;
 import "./styles/TeamTaskDetail.scss";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+
+const { TextArea } = Input;
+const { RangePicker } = DatePicker;
 
 const TeamTaskDetail = () => {
-  const [cmtState, setCmtState] = useState("Newest");
+  // const [cmtState, setCmtState] = useState("Newest");
   const [editState, setEditState] = useState(false);
+  const [percent, setPercent] = useState(0);
+
+  const completionIncrease = () => {
+    setPercent((prevPercent) => {
+      const newPercent = prevPercent + 10;
+      if (newPercent > 100) {
+        return 100;
+      }
+      return newPercent;
+    });
+  };
+
+  const completionDecline = () => {
+    setPercent((prevPercent) => {
+      const newPercent = prevPercent - 10;
+      if (newPercent < 0) {
+        return 0;
+      }
+      return newPercent;
+    });
+  };
+
+  const toggleEditTaskModal = () => {
+    const modalElement = document.querySelector(".edit-task-modal");
+    modalElement.classList.toggle("modal-hidden");
+  };
 
   return (
     <>
@@ -30,19 +61,27 @@ const TeamTaskDetail = () => {
           </p>
           <div className="flex items-center">
             <div className="relative">
-              <BsThreeDots onClick={() => setEditState(!editState)} className="relative text-2xl hover:cursor-pointer hover:text-bright-green mr-3" />
-              {editState && <div className="task-option">
-                <div className="flex items-center px-3 py-1 rounded-md hover:bg-bright-green hover:text-white text-85-gray mb-1 cursor-pointer">
-                  <FaEdit className="text-lg mr-3" />
-                  <p className="text-sm">Edit Task</p>
+              <BsThreeDots
+                onClick={() => setEditState(!editState)}
+                className="relative text-2xl hover:cursor-pointer hover:text-bright-green mr-3"
+              />
+              {editState && (
+                <div className="task-option">
+                  <div
+                    onClick={() => toggleEditTaskModal()}
+                    className="flex items-center px-3 py-1 rounded-md hover:bg-bright-green hover:text-white text-85-gray mb-1 cursor-pointer"
+                  >
+                    <FaEdit className="text-lg mr-3" />
+                    <p className="text-sm">Edit Task</p>
+                  </div>
+                  <div className="flex items-center px-3 py-1 rounded-md hover:bg-bright-green hover:text-white text-85-gray cursor-pointer">
+                    <FaTrash className="text-lg mr-3" />
+                    <p className="text-sm">Remove Task</p>
+                  </div>
                 </div>
-                <div className="flex items-center px-3 py-1 rounded-md hover:bg-bright-green hover:text-white text-85-gray cursor-pointer">
-                  <FaTrash className="text-lg mr-3" />
-                  <p className="text-sm">Remove Task</p>
-                </div>
-              </div>}
+              )}
             </div>
-            
+
             <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
           </div>
         </div>
@@ -225,6 +264,12 @@ const TeamTaskDetail = () => {
               <p className="text-45-gray font-medium text-sm">Created Date</p>
               <p className="text-85-gray text-sm">21/05/2100</p>
             </div>
+            <div className="flex flex-col pt-2 pl-4 pr-2 bg-[#F1F4F9] rounded-md">
+              <p className="text-45-gray font-medium text-sm">Completion</p>
+              <div>
+                <Progress percent={100} size="small" />
+              </div>
+            </div>
           </div>
         </div>
         <div className="w-full bg-white rounded-xl flex flex-col px-4 pb-4">
@@ -234,6 +279,16 @@ const TeamTaskDetail = () => {
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
+              <div className="cursor-pointer flex items-center justify-between py-2 px-4 bg-[#F1F4F9] rounded-md">
+                <p className="text-45-gray font-medium text-sm">Creator</p>
+                <div className="flex items-center">
+                  <p className="text-85-gray text-sm mr-2">3</p>
+                  <TiArrowSortedDown
+                    onClick={(e) => e.currentTarget.classList.toggle("rotate")}
+                    className="text-xl text-85-gray icon-transition"
+                  />
+                </div>
+              </div>
               <div className="cursor-pointer flex items-center justify-between py-2 px-4 bg-[#F1F4F9] rounded-md">
                 <p className="text-45-gray font-medium text-sm">Assignee</p>
                 <div className="flex items-center">
@@ -262,7 +317,7 @@ const TeamTaskDetail = () => {
                 </div>
               </div>
               <div className="cursor-pointer flex items-center justify-between py-2 px-4 bg-[#F1F4F9] rounded-md">
-                <p className="text-45-gray font-medium text-sm">Reporter</p>
+                <p className="text-45-gray font-medium text-sm">Supporter</p>
                 <div className="flex items-center">
                   <p className="text-85-gray text-sm mr-2">0</p>
                   <TiArrowSortedDown
@@ -275,6 +330,207 @@ const TeamTaskDetail = () => {
           </div>
         </div>
         {/* <div className="w-full bg-white rounded-xl flex flex-col px-4 pb-4 mt-4"></div> */}
+      </div>
+
+      {/* Edit task modal */}
+      <div className="edit-task-modal modal-background modal-hidden">
+        <div className="modal-container">
+          <div className="modal-header">
+            <p className="text-base font-semibold">Edit Task</p>
+            <AiOutlineClose
+              onClick={() => toggleEditTaskModal()}
+              className="text-2xl hover:text-bright-green cursor-pointer"
+            />
+          </div>
+          <div className="modal-body">
+            <div className="flex flex-col">
+              <div className="flex flex-col mb-6">
+                <p className="font-medium mb-2">Choose Project</p>
+                <Select
+                  showSearch
+                  allowClear
+                  mode="multiple"
+                  style={{ width: "100%" }}
+                  placeholder="Choose or search project"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    (option?.label ?? "").includes(input)
+                  }
+                  filterSort={(optionA, optionB) =>
+                    (optionA?.label ?? "")
+                      .toLowerCase()
+                      .localeCompare((optionB?.label ?? "").toLowerCase())
+                  }
+                  options={[
+                    {
+                      value: "1",
+                      label: "Not Identified",
+                    },
+                    {
+                      value: "2",
+                      label: "Closed",
+                    },
+                    {
+                      value: "3",
+                      label: "Communicated",
+                    },
+                    {
+                      value: "4",
+                      label: "Identified",
+                    },
+                    {
+                      value: "5",
+                      label: "Resolved",
+                    },
+                    {
+                      value: "6",
+                      label: "Cancelled",
+                    },
+                  ]}
+                />
+              </div>
+              <div className="flex flex-col mb-6">
+                <p className="font-medium mb-2">Task Name</p>
+                <Input placeholder="Enter task name" allowClear />
+              </div>
+              <div className="flex flex-col mb-6">
+                <div className="flex items-center gap-12">
+                  <div className="flex items-center">
+                    <p className="font-medium mr-4">Priority</p>
+                    <Select
+                      showSearch
+                      placeholder="Select a priority"
+                      optionFilterProp="children"
+                      // onChange={onChange}
+                      // onSearch={onSearch}
+                      filterOption={(input, option) =>
+                        (option?.label ?? "")
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
+                      options={[
+                        {
+                          value: "Low",
+                          label: "Low",
+                        },
+                        {
+                          value: "Medium",
+                          label: "Medium",
+                        },
+                        {
+                          value: "High",
+                          label: "High",
+                        },
+                      ]}
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <p className="font-medium mr-4">Status</p>
+                    <Select
+                      showSearch
+                      placeholder="Select a status"
+                      optionFilterProp="children"
+                      // onChange={onChange}
+                      // onSearch={onSearch}
+                      filterOption={(input, option) =>
+                        (option?.label ?? "")
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
+                      options={[
+                        {
+                          value: "TODO",
+                          label: "TODO",
+                        },
+                        {
+                          value: "IN PROGRESS",
+                          label: "IN PROGRESS",
+                        },
+                        {
+                          value: "IN REVIEW",
+                          label: "IN REVIEW",
+                        },
+                        {
+                          value: "DONE",
+                          label: "DONE",
+                        },
+                      ]}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col mb-6">
+                <p className="font-medium mb-2">Completion</p>
+                <Progress percent={percent} />
+                <Button.Group>
+                  <Button
+                    onClick={completionDecline}
+                    icon={<MinusOutlined />}
+                  />
+                  <Button
+                    onClick={completionIncrease}
+                    icon={<PlusOutlined />}
+                  />
+                </Button.Group>
+              </div>
+              <p className="font-medium mb-2">Human Resource</p>
+              <div className="grid grid-rows-2 grid-cols-2 gap-4 mb-6">
+                <div className="flex flex-col">
+                  <p className="text-sm font-medium mb-2">Assignee</p>
+                  <Select className="mb-2" />
+                  <div className="flex items-center">
+                    <img src={image.poum} alt="ava" className="w-8 h-8 rounded-full mr-4" />
+                    <p className="text-sm">Mr.Poum</p>
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-sm font-medium mb-2">Reviewer</p>
+                  <Select className="mb-2" />
+                  <div className="flex items-center">
+                    <img src={image.poum} alt="ava" className="w-8 h-8 rounded-full mr-4" />
+                    <p className="text-sm">Mr.Poum</p>
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-sm font-medium mb-2">Supporter</p>
+                  <Select className="mb-2" />
+                  <div className="flex items-center">
+                    <img src={image.poum} alt="ava" className="w-8 h-8 rounded-full mr-4" />
+                    <p className="text-sm">Mr.Poum</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col mb-6">
+                <p className="font-medium mb-2">Deadline</p>
+                <RangePicker showTime />
+              </div>
+              <div className="flex flex-col">
+                <p className="font-medium mb-2">Task Description</p>
+                <TextArea
+                  placeholder="Enter task description"
+                  rows={4}
+                  allowClear
+                  maxLength={6}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="modal-footer">
+            <div className="flex gap-3 items-center">
+              <button className="bg-[#9C9C9C] text-white text-sm py-2 px-4 rounded-md">
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  toast("Created Successful!");
+                }}
+                className="bg-bright-green text-white text-sm py-2 px-4 rounded-md"
+              >
+                Create
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
