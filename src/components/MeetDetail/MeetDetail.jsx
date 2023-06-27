@@ -6,7 +6,7 @@ import { BsFillHouseAddFill, BsTextParagraph } from "react-icons/bs";
 
 const MeetDetail = ({ toggleMeetDetailModal }) => {
   return (
-    <div className="modal-background modal-hidden">
+    <div className="meet-detail-modal modal-background modal-hidden">
       <div className="modal-container">
         <div className="modal-header">
           <p className="text-base font-semibold">Meet&apos;s Detail</p>

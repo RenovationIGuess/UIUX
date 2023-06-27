@@ -154,7 +154,7 @@ export default function DndCalendar({
 
   return (
     <Fragment>
-      <div className="h-[490px]">
+      <div className="h-[768px]">
         <DragAndDropCalendar
           components={components}
           // dayPropGetter={customDayPropGetter}

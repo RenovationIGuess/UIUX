@@ -5,13 +5,21 @@ import { Tooltip } from "antd";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import image from "../../constant/image";
 import { BsThreeDots } from "react-icons/bs";
-import "./DndColumn.scss"
+import "./DndColumn.scss";
 
 const DndColumn = ({ droppableId, tasks, title }) => {
   return (
     <div className="flex flex-1 flex-col items-center justify-start ">
       <div className="flex flex-col justify-center items-center gap-3 mb-4">
-        <p className="uppercase font-bold text-xl">{title}</p>
+        <p className="uppercase font-bold text-xl">
+          {title === 1
+            ? "to do"
+            : title === 2
+            ? "in progress"
+            : title === 3
+            ? "in review"
+            : "done"}
+        </p>
         <p className="font-bold text-45-gray text-xl">106</p>
       </div>
       <Droppable droppableId={droppableId}>
@@ -20,12 +28,16 @@ const DndColumn = ({ droppableId, tasks, title }) => {
             {...provided.droppableProps}
             ref={provided.innerRef}
             className={`p-4 flex flex-col gap-4 rounded-md w-full${
-              snapshot.isDraggingOver ? " bg-bright-green" : " bg-[#F6F5F8]"
+              snapshot.isDraggingOver ? " bg-bright-green clear-empty" : " bg-[#F6F5F8]"
             }`}
           >
             {tasks?.length !== 0 ? (
               tasks.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                <Draggable
+                  key={item.id}
+                  draggableId={item.id.toString()}
+                  index={index}
+                >
                   {(provided) => (
                     <div
                       ref={provided.innerRef}
@@ -71,7 +83,7 @@ const DndColumn = ({ droppableId, tasks, title }) => {
               ))
             ) : (
               <div className="w-full flex flex-col p-4">
-                <div className="w-full flex flex-col items-center justify-center">
+                <div className="empty w-full flex flex-col items-center justify-center">
                   <img
                     className="w-[200px]"
                     src={image.nothing}

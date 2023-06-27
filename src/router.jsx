@@ -14,6 +14,10 @@ import TeamTaskDetail from "./views/TeamTaskDetail";
 import TeamMeetings from "./views/TeamMeetings";
 import TeamProjects from "./views/TeamProjects";
 import TeamYourStats from "./views/TeamYourStats";
+import TeamProjectDetail from "./views/TeamProjectDetail";
+import UserProfile from "./views/UserProfile";
+import UserProfileLayout from "./components/Layout/UserProfileLayout";
+import CalendarList from "./views/CalendarList";
 
 const router = createBrowserRouter([
   {
@@ -49,8 +53,32 @@ const router = createBrowserRouter([
         element: <TeamProjects />,
       },
       {
+        path: ":teamId/projects/:projectId",
+        element: <TeamProjectDetail />,
+      },
+      {
         path: ":teamId/your-stats",
         element: <TeamYourStats />,
+      }
+    ]
+  },
+  {
+    path: "profile",
+    element: <UserProfileLayout />,
+    children: [
+      {
+        path: "",
+        element: <UserProfile />
+      }
+    ]
+  },
+  {
+    path: "calendar",
+    element: <TeamListLayout />,
+    children: [
+      {
+        path: "",
+        element: <CalendarList />,
       }
     ]
   },

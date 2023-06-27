@@ -67,11 +67,15 @@
 }
 
 .hy-shadow {
-  box-shadow: var(----box-shadow-modal);
+  box-shadow: var(--box-shadow-modal);
 }
 
 .bottom-border {
   border-bottom: 1px solid var(--gray-border-color);
+}
+
+.top-border {
+  border-top: 1px solid var(--gray-border-color);
 }
 
 .krd-button--active {
@@ -84,4 +88,20 @@
 
 .krd-corner-btn {
   @apply flex items-center justify-center py-2 px-4 text-sm bg-bright-green text-white hover:bg-less-bright-green cursor-pointer rounded-md;
+}
+
+.icon-style {
+  @apply text-2xl hover:text-bright-green cursor-pointer;
+}
+
+.big-icon-style {
+  @apply text-4xl hover:text-bright-green cursor-pointer;
+}
+
+.accept-btn {
+  @apply py-2 px-3 flex items-center justify-center rounded-full bg-bright-green text-white cursor-pointer;
+}
+
+.decline-btn {
+  @apply p-2 px-3 flex items-center justify-center rounded-full bg-red-type text-white cursor-pointer;
 }

@@ -98,7 +98,7 @@ const CreateMeetModal = ({
               <AiOutlineTeam className="text-2xl" />
               <Input
                 className="py-2 pl-4 pr-3"
-                placeholder="Enter team's name"
+                placeholder="Enter member's name"
                 allowClear
                 // value={teamUserName}
                 // onChange={(e) => setTeamUserName(e.target.value)}

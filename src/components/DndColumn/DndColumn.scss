@@ -1,3 +1,7 @@
 .column-w {
   flex: 1 0 0;
 }
+
+.clear-empty .empty {
+  display: none;
+}

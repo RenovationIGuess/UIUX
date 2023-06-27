@@ -21,7 +21,7 @@ const CreatedTeam = () => {
   // Use for join team input modal
   const [teamName, setTeamName] = useState("");
   const [teamUserName, setTeamUserName] = useState("");
-  const [joinedTeam, setJoinedTeam] = useState(dummyData.dummyTeamData);
+  const [joinedTeam, setJoinedTeam] = useState(dummyData.dummyTeamsData);
 
   const handleCreateTeamModal = () => {
     const modalElement = document.querySelector(".modal-background");

@@ -11,6 +11,7 @@
   @apply w-full p-4;
   border-radius: 12px;
   border: 1px solid #000;
+  margin-bottom: 1rem;
 
   &:hover {
     // @apply border-r border-b-3 border-l border-t border-solid border-black;
@@ -19,6 +20,10 @@
     border-right: 1px solid #000;
     border-bottom: 3px solid #000;
   }
+}
+
+.joined-team-item:last-child {
+  margin-bottom: 0;
 }
 
 .modal-background {

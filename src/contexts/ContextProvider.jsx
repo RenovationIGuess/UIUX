@@ -1,33 +1,40 @@
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useState } from "react";
+import dummyData from "../constant/dummyData";
 
 const StateContext = createContext({
-    currentUser: {},
-    userToken: null,
-    setCurrentUser: () => {},
-    setUserToken: () => {},
+  currentUser: {},
+  setCurrentUser: () => {},
+  users: [],
+  setUsers: () => {},
+  tasks: [],
+  setTasks: () => {},
+  projects: [],
+  setProjects: () => {},
+  teams: [],
+  setTeams: () => {},
 });
 
 export const ContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({});
-  const [userToken, _setUserToken] = useState(localStorage.getItem('TOKEN') || '');
-
-  const setUserToken = (token) => {
-    if (token) {
-      localStorage.setItem('TOKEN', token);
-    } else {
-      localStorage.removeItem('TOKEN');
-    }
-    _setUserToken(token);
-  }
+  const [users, setUsers] = useState(dummyData.dummyUsersData);
+  const [tasks, setTasks] = useState(dummyData.dummyTasksData);
+  const [projects, setProjects] = useState(dummyData.dummyProjectsData);
+  const [teams, setTeams] = useState(dummyData.dummyTeamsData);
 
   return (
     <StateContext.Provider
       value={{
         currentUser,
         setCurrentUser,
-        userToken,
-        setUserToken,
+        tasks,
+        setTasks,
+        projects,
+        setProjects,
+        teams,
+        setTeams,
+        users,
+        setUsers,
       }}
     >
       {children}
@@ -35,4 +42,4 @@ export const ContextProvider = ({ children }) => {
   );
 };
 
-export const userStateContext = () => useContext(StateContext);
+export const KrdStateContext = () => useContext(StateContext);

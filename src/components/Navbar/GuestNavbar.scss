@@ -13,3 +13,17 @@
   font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
   @apply text-lg text-black font-bold;
 }
+
+.noti-container {
+  position: absolute;
+  right: calc(100% - 24px);
+  top: calc(100% + 20px);
+  z-index: 999;
+}
+
+.user-modal-container {
+  position: absolute;
+  right: calc(100% - 16px);
+  top: calc(100% + 20px);
+  z-index: 999;
+}

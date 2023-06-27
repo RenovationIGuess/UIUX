@@ -1,15 +1,34 @@
+/* eslint-disable no-unused-vars */
 import image from "../constant/image";
 import { AiFillCheckCircle } from "react-icons/ai"
 import { FcGoogle } from "react-icons/fc"
 import "./styles/Login.scss";
 import { Input } from "antd";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { KrdStateContext } from "../contexts/ContextProvider";
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  const { users, setCurrentUser } = KrdStateContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleSignUp = () => {
+    const findUserIndex = users.findIndex((u) => u.email === email);
+    if (findUserIndex === -1) {
+      if (password) {
+        if (password === confirmPassword) {
+          toast("Signup Successful!");
+          setCurrentUser({});
+          navigate(`/user/home`);
+        } else toast("Password not match!");
+      } else toast("Please enter a password!");
+    } else toast("Invalid Email Address!");
+  }
 
   return (
     <div className="max-w-[1208px] flex gap-4 items-center z-10">
@@ -67,7 +86,7 @@ const Login = () => {
               allowClear
             />
           </label>
-          <button className="cursor-pointer flex items-center justify-center rounded-md w-full mt-3 bg-bright-green py-3 text-white font-medium hover:bg-less-bright-green">
+          <button onClick={() => handleSignUp()} className="cursor-pointer flex items-center justify-center rounded-md w-full mt-3 bg-bright-green py-3 text-white font-medium hover:bg-less-bright-green">
             Sign Up
           </button>
         </form>

@@ -32,6 +32,14 @@ import PaginateFooter from "../components/PaginateFooter/PaginateFooter";
 
 dayjs.extend(dayLocaleData);
 
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
 /**
  * Moves an item from one list to another list.
  */
@@ -375,7 +383,7 @@ const TeamTaskDetail = () => {
               </div>
               <Progress
                 strokeColor={"#22C55E"}
-                size={[48, 48]}
+                size={48}
                 type="circle"
                 percent={75}
               />
@@ -392,7 +400,7 @@ const TeamTaskDetail = () => {
               </div>
               <Progress
                 strokeColor={"#D91212"}
-                size={[48, 48]}
+                size={48}
                 type="circle"
                 percent={75}
               />
@@ -409,7 +417,7 @@ const TeamTaskDetail = () => {
               </div>
               <Progress
                 strokeColor={"#FFB326"}
-                size={[48, 48]}
+                size={48}
                 type="circle"
                 percent={75}
               />

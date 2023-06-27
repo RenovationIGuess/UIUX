@@ -1,37 +1,31 @@
-import { Button, Input, Progress, Select, DatePicker } from "antd";
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+import { Input, Select, DatePicker } from "antd";
 import { AiOutlineClose } from "react-icons/ai";
 import { toast } from "react-toastify";
-import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import image from "../../constant/image";
 import PropTypes from 'prop-types';
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
-const CreateTaskModal = ({ toggleCreateTaskModal }) => {
-  const [percent, setPercent] = useState(0);
-
-  const completionIncrease = () => {
-    setPercent((prevPercent) => {
-      const newPercent = prevPercent + 10;
-      if (newPercent > 100) {
-        return 100;
-      }
-      return newPercent;
-    });
-  };
-
-  const completionDecline = () => {
-    setPercent((prevPercent) => {
-      const newPercent = prevPercent - 10;
-      if (newPercent < 0) {
-        return 0;
-      }
-      return newPercent;
-    });
-  };
-
+const CreateTaskModal = ({ 
+  toggleCreateTaskModal,
+  projects,
+  projectName,
+  setProjectName,
+  taskName,
+  setTaskName,
+  priorityValue,
+  setPriorityValue,
+  statusValue,
+  setStatusValue,
+  members,
+  deadlineValue,
+  setDeadlineValue,
+  taskDescription,
+  setTaskDescription,
+}) => {
   return (
     <div className="create-task-modal modal-background modal-hidden">
       <div className="modal-container">
@@ -49,7 +43,7 @@ const CreateTaskModal = ({ toggleCreateTaskModal }) => {
               <Select
                 showSearch
                 allowClear
-                mode="multiple"
+                // mode="multiple"
                 style={{ width: "100%" }}
                 placeholder="Choose or search project"
                 optionFilterProp="children"
@@ -61,37 +55,19 @@ const CreateTaskModal = ({ toggleCreateTaskModal }) => {
                     .toLowerCase()
                     .localeCompare((optionB?.label ?? "").toLowerCase())
                 }
-                options={[
-                  {
-                    value: "1",
-                    label: "Not Identified",
-                  },
-                  {
-                    value: "2",
-                    label: "Closed",
-                  },
-                  {
-                    value: "3",
-                    label: "Communicated",
-                  },
-                  {
-                    value: "4",
-                    label: "Identified",
-                  },
-                  {
-                    value: "5",
-                    label: "Resolved",
-                  },
-                  {
-                    value: "6",
-                    label: "Cancelled",
-                  },
-                ]}
+                value={projectName}
+                onChange={(value) => setProjectName(value)}
+                options={projects.map((p) => {
+                  return {
+                    value: p.name,
+                    label: p.name,
+                  }
+                })}
               />
             </div>
             <div className="flex flex-col mb-6">
               <p className="font-medium mb-2">Task Name</p>
-              <Input placeholder="Enter task name" allowClear />
+              <Input placeholder="Enter task name" allowClear value={taskName} onChange={(e) => setTaskName(e.target.value)} />
             </div>
             <div className="flex flex-col mb-6">
               <div className="flex items-center gap-12">
@@ -108,6 +84,8 @@ const CreateTaskModal = ({ toggleCreateTaskModal }) => {
                         .toLowerCase()
                         .includes(input.toLowerCase())
                     }
+                    value={priorityValue}
+                    onChange={(value) => setPriorityValue(value)}
                     options={[
                       {
                         value: "Low",
@@ -137,6 +115,8 @@ const CreateTaskModal = ({ toggleCreateTaskModal }) => {
                         .toLowerCase()
                         .includes(input.toLowerCase())
                     }
+                    value={statusValue}
+                    onChange={(value) => setStatusValue(value)}
                     options={[
                       {
                         value: "TODO",
@@ -159,19 +139,14 @@ const CreateTaskModal = ({ toggleCreateTaskModal }) => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col mb-6">
-              <p className="font-medium mb-2">Completion</p>
-              <Progress percent={percent} />
-              <Button.Group>
-                <Button onClick={completionDecline} icon={<MinusOutlined />} />
-                <Button onClick={completionIncrease} icon={<PlusOutlined />} />
-              </Button.Group>
-            </div>
             <p className="font-medium mb-2">Human Resource</p>
             <div className="grid grid-rows-2 grid-cols-2 gap-4 mb-6">
               <div className="flex flex-col">
                 <p className="text-sm font-medium mb-2">Assignee</p>
-                <Select className="mb-2" />
+                <Select 
+                  className="mb-2" 
+                  placeholder="Choose an Assignee"
+                />
                 <div className="flex items-center">
                   <img
                     src={image.poum}
@@ -183,7 +158,7 @@ const CreateTaskModal = ({ toggleCreateTaskModal }) => {
               </div>
               <div className="flex flex-col">
                 <p className="text-sm font-medium mb-2">Reviewer</p>
-                <Select className="mb-2" />
+                <Select className="mb-2" placeholder="Choose a Reviewer" />
                 <div className="flex items-center">
                   <img
                     src={image.poum}
@@ -195,7 +170,7 @@ const CreateTaskModal = ({ toggleCreateTaskModal }) => {
               </div>
               <div className="flex flex-col">
                 <p className="text-sm font-medium mb-2">Supporter</p>
-                <Select className="mb-2" />
+                <Select className="mb-2" placeholder="Choose a Supporter" />
                 <div className="flex items-center">
                   <img
                     src={image.poum}
@@ -229,6 +204,7 @@ const CreateTaskModal = ({ toggleCreateTaskModal }) => {
             <button
               onClick={() => {
                 toast("Created Successful!");
+                toggleCreateTaskModal();
               }}
               className="bg-bright-green text-white text-sm py-2 px-4 rounded-md"
             >

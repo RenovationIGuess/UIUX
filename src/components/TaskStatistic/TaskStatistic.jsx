@@ -22,7 +22,7 @@ const TaskStatistic = () => {
           </div>
           <Progress
             strokeColor={"#22C55E"}
-            size={[48, 48]}
+            size={48}
             type="circle"
             percent={75}
           />
@@ -39,7 +39,7 @@ const TaskStatistic = () => {
           </div>
           <Progress
             strokeColor={"#D91212"}
-            size={[48, 48]}
+            size={48}
             type="circle"
             percent={75}
           />
@@ -56,7 +56,7 @@ const TaskStatistic = () => {
           </div>
           <Progress
             strokeColor={"#FFB326"}
-            size={[48, 48]}
+            size={48}
             type="circle"
             percent={75}
           />

@@ -65,15 +65,15 @@ const Sidebar = ({ handleToggleSidebar }) => {
       <div className="flex flex-col w-full whitespace-nowrap">
         <div className="sidebar-item">
           <AiFillProfile className="text-2xl mr-3" />
-          <p className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
+          <Link to="/profile" className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
             Profile
-          </p>
+          </Link>
         </div>
         <div className="sidebar-item">
           <AiFillCalendar className="text-2xl mr-3" />
-          <p className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
+          <Link to="/calendar" className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
             Calendar
-          </p>
+          </Link>
         </div>
         <motion.div
           initial={false}

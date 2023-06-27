@@ -1,13 +1,14 @@
 /* eslint-disable no-unused-vars */
 import {
   AiFillCalendar,
+  AiFillProject,
   AiOutlineAppstoreAdd,
   AiOutlineClose,
   AiOutlineSearch,
 } from "react-icons/ai";
 import image from "../constant/image";
 import { FaFilter } from "react-icons/fa";
-import { BiChevronsDown } from "react-icons/bi";
+import { BiChevronsDown, BiTask } from "react-icons/bi";
 import {
   IoIosArrowBack,
   IoIosArrowForward,
@@ -19,20 +20,24 @@ import {
 } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { Progress, Tooltip } from "antd";
-
-import { Calendar, Col, Radio, Row, Select } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import dayLocaleData from "dayjs/plugin/localeData";
-import { useCallback, useState } from "react";
-import { DragDropContext } from "react-beautiful-dnd";
-import dummyData from "../constant/dummyData";
-import DndColumn from "../components/DndColumn/DndColumn";
+import { useState } from "react";
+import { KrdStateContext } from "../contexts/ContextProvider";
+import CreateProjectModal from "../components/CreateProjectModal/CreateProjectModal";
 
 dayjs.extend(dayLocaleData);
 
 const TeamProjects = () => {
+  const { projects } = KrdStateContext();
+
   const [viewState, setViewState] = useState(false);
+
+  const toggleCreateProjectModal = () => {
+    const modalElement = document.querySelector(".create-project-modal");
+    modalElement.classList.toggle("modal-hidden");
+  };
 
   return (
     <>
@@ -61,9 +66,9 @@ const TeamProjects = () => {
           </div>
 
           <div className="flex items-center">
-            <Tooltip placement="top" title="Add a Task">
-              <div className="p-1 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green">
-                <AiOutlineAppstoreAdd className="text-2xl text-white" />
+            <Tooltip placement="top" title="Add a Project">
+              <div onClick={() => toggleCreateProjectModal()} className="p-1 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green">
+                <AiFillProject className="text-2xl text-white" />
               </div>
             </Tooltip>
             <div className="p-2 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green">
@@ -83,193 +88,92 @@ const TeamProjects = () => {
         </div>
 
         <div className="flex flex-col">
-          {/* <div className="flex items-center justify-end gap-3 mb-4">
-            <p className="font-medium">21/09/2024</p>
-            <div className="relative flex items-center justify-center">
-              <AiFillCalendar
-                onClick={() => setIsCalendarVisible((prev) => !prev)}
-                className="text-2xl hover:cursor-pointer hover:text-bright-green"
-              />
-              {isCalendarVisible && (
-                <div
-                  className="bg-white rounded-xl py-2 px-4 w-[312px] shadow-xl absolute top-10 flex flex-col"
-                  style={{ zIndex: 1000 }}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm text-85-gray font-medium">
-                      Pick a date
-                    </p>
-                    <AiOutlineClose
-                      className="hover:cursor-pointer"
-                      onClick={() => setIsCalendarVisible(false)}
-                    />
-                  </div>
-                  <Calendar
-                    fullscreen={false}
-                    headerRender={({ value, type, onChange, onTypeChange }) => {
-                      const start = 0;
-                      const end = 12;
-                      const monthOptions = [];
-                      let current = value.clone();
-                      const localeData = value.localeData();
-                      const months = [];
-                      for (let i = 0; i < 12; i++) {
-                        current = current.month(i);
-                        months.push(localeData.monthsShort(current));
-                      }
-                      for (let i = start; i < end; i++) {
-                        monthOptions.push(
-                          <Select.Option
-                            key={i}
-                            value={i}
-                            className="month-item"
-                          >
-                            {months[i]}
-                          </Select.Option>
-                        );
-                      }
-                      const year = value.year();
-                      const month = value.month();
-                      const options = [];
-                      for (let i = year - 10; i < year + 10; i += 1) {
-                        options.push(
-                          <Select.Option
-                            key={i}
-                            value={i}
-                            className="year-item"
-                          >
-                            {i}
-                          </Select.Option>
-                        );
-                      }
-                      return (
-                        <div
-                          style={{
-                            padding: 8,
-                          }}
-                        >
-                          <Row gutter={8}>
-                            <Col>
-                              <Radio.Group
-                                size="small"
-                                onChange={(e) => onTypeChange(e.target.value)}
-                                value={type}
-                              >
-                                <Radio.Button value="month">Month</Radio.Button>
-                                <Radio.Button value="year">Year</Radio.Button>
-                              </Radio.Group>
-                            </Col>
-                            <Col>
-                              <Select
-                                size="small"
-                                dropdownMatchSelectWidth={false}
-                                className="my-year-select"
-                                value={year}
-                                onChange={(newYear) => {
-                                  const now = value.clone().year(newYear);
-                                  onChange(now);
-                                }}
-                              >
-                                {options}
-                              </Select>
-                            </Col>
-                            <Col>
-                              <Select
-                                size="small"
-                                dropdownMatchSelectWidth={false}
-                                value={month}
-                                onChange={(newMonth) => {
-                                  const now = value.clone().month(newMonth);
-                                  onChange(now);
-                                }}
-                              >
-                                {monthOptions}
-                              </Select>
-                            </Col>
-                          </Row>
-                        </div>
-                      );
-                    }}
-                    onPanelChange={onPanelChange}
-                  />
+          {projects.map((project, index) => (
+            <div key={index} className="joined-team-item">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <h1 className="text-2xl font-medium">{project.name}</h1>
+                  <span
+                    className={`py-2 px-4 uppercase font-medium rounded-full border border-solid ${
+                      project.progress === "in progress"
+                        ? "border-yellow-type text-yellow-type"
+                        : "border-bright-green text-bright-green"
+                    }`}
+                  >
+                    {project.progress}
+                  </span>
                 </div>
-              )}
-            </div>
-          </div> */}
-          {!viewState ? (
-            <>
-              <div className="joined-team-item">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-6">
-                    <h1 className="text-2xl font-medium">
-                      Implement everything you have “_”
-                    </h1>
-                  </div>
-                  <button className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
-                    <Link to="/team/1/tasks/1">View Details</Link>
-                  </button>
-                </div>
-                <div className="flex items-center mt-3 gap-2">
-                  <Tooltip placement="top" title={"Project Name"}>
-                    <span className="py-1 px-4 font-medium border border-solid border-45-gray rounded-full text-45-gray">
-                      Project UI / UX
-                    </span>
-                  </Tooltip>
-                  <Tooltip placement="top" title={"Priority"}>
-                    <span className="py-1 px-4 font-medium border border-solid border-red-type rounded-full text-red-type uppercase">
-                      high
-                    </span>
-                  </Tooltip>
-                  <Tooltip placement="top" title={"Type"}>
-                    <span className="py-1 px-4 font-medium border border-solid border-45-gray rounded-full text-45-gray uppercase">
-                      to do
-                    </span>
-                  </Tooltip>
-                </div>
-                <div className="flex items-center mt-4 justify-between w-full">
-                  <div className="flex items-center gap-4">
-                    <img
-                      className="w-9 h-9 rounded-full"
-                      src={image.poum}
-                      alt="kururin"
-                    />
-                    <p className="text-base font-medium">
-                      Mr.Poum is the Owner
-                    </p>
-                  </div>
-                  <div className="flex items-center mt-3 whitespace-nowrap">
-                    <div className="flex items-center relative">
-                      <img
-                        src={image.poum}
-                        data-index="1"
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <img
-                        src={image.poum}
-                        data-index="1"
-                        className="w-8 h-8 rounded-full"
-                        style={{ transform: "translateX(-50%)" }}
-                      />
-                      <img
-                        src={image.poum}
-                        data-index="1"
-                        className="w-8 h-8 rounded-full"
-                        style={{ transform: "translateX(-100%)" }}
-                      />
+                <button className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
+                  <Link to={`/team/1/projects/${project.id}`}>View Details</Link>
+                </button>
+              </div>
+              <div className="flex items-center mt-3">
+                <BiTask className="text-3xl mr-2 text-85-gray" />
+                <p className="text-xl pr-3 mr-4 border-r border-[#f5f6fb]">{project.tasks.length} Tasks</p>
+                <Tooltip placement="top" title={`${project.tasks.filter((t) => t.status === "done").length} Tasks Done`}>
+                  <div className="flex items-center gap-2 mr-4">
+                    <p className="text-xl">{project.tasks.filter((t) => t.status === "done").length}</p>
+                    <div className="w-6 h-6 rounded-full border p-1 border-bright-green">
+                      <div className="w-full h-full rounded-full bg-bright-green"></div>
                     </div>
-                    <p
-                      className="text-bsae font-medium"
-                      style={{ marginLeft: "-12px" }}
-                    >
-                      100k members assigned
-                    </p>
                   </div>
+                </Tooltip>
+                <Tooltip placement="top" title={`${project.tasks.filter((t) => t.status === "in review" || t.status === "in progress").length} Tasks In Progress | Review`}>
+                  <div className="flex items-center gap-2 mr-4">
+                    <p className="text-xl">{project.tasks.filter((t) => t.status === "in review" || t.status === "in progress").length}</p>
+                    <div className="w-6 h-6 rounded-full border p-1 border-yellow-type">
+                      <div className="w-full h-full rounded-full bg-yellow-type"></div>
+                    </div>
+                  </div>
+                </Tooltip>
+                <Tooltip placement="top" title={`${project.tasks.filter((t) => t.status === "to do").length} Tasks To Do`}>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xl">{project.tasks.filter((t) => t.status === "to do").length}</p>
+                    <div className="w-6 h-6 rounded-full border p-1 border-45-gray">
+                      <div className="w-full h-full rounded-full bg-45-gray"></div>
+                    </div>
+                  </div>
+                </Tooltip>
+              </div>
+              <div className="flex items-center mt-4 justify-between w-full">
+                <div className="flex items-center gap-4">
+                  <img
+                    className="w-9 h-9 rounded-full"
+                    src={image.poum}
+                    alt="kururin"
+                  />
+                  <p className="text-base font-medium">Mr.Poum is the Owner</p>
+                </div>
+                <div className="flex items-center mt-3 whitespace-nowrap">
+                  <div className="flex items-center relative">
+                    <img
+                      src={project.members[0].image}
+                      data-index="1"
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <img
+                      src={project.members[1].image}
+                      data-index="1"
+                      className="w-8 h-8 rounded-full"
+                      style={{ transform: "translateX(-50%)" }}
+                    />
+                    <img
+                      src={project.members[2].image}
+                      data-index="1"
+                      className="w-8 h-8 rounded-full"
+                      style={{ transform: "translateX(-100%)" }}
+                    />
+                  </div>
+                  <p
+                    className="text-bsae font-medium"
+                    style={{ marginLeft: "-12px" }}
+                  >
+                    {project.members.length} members
+                  </p>
                 </div>
               </div>
-            </>
-          ) : (
-            <></>
-          )}
+            </div>
+          ))}
         </div>
 
         <div className="flex items-center justify-center py-4 border-t border-solid border-[#f5f6fb] mt-4">
@@ -316,7 +220,7 @@ const TeamProjects = () => {
               </div>
               <Progress
                 strokeColor={"#22C55E"}
-                size={[48, 48]}
+                size={48}
                 type="circle"
                 percent={75}
               />
@@ -333,7 +237,7 @@ const TeamProjects = () => {
               </div>
               <Progress
                 strokeColor={"#D91212"}
-                size={[48, 48]}
+                size={48}
                 type="circle"
                 percent={75}
               />
@@ -350,7 +254,7 @@ const TeamProjects = () => {
               </div>
               <Progress
                 strokeColor={"#FFB326"}
-                size={[48, 48]}
+                size={48}
                 type="circle"
                 percent={75}
               />
@@ -362,16 +266,16 @@ const TeamProjects = () => {
         </div>
         <div className="w-full bg-white rounded-xl flex flex-col px-4 pb-4 mt-4">
           <div className="py-4 border-b border-solid border-[#f5f6fb] mb-3">
-            <span className="font-semibold">Upcoming Tasks</span>
+            <span className="font-semibold">Recently Viewed Projects</span>
           </div>
-          <div className="w-full flex flex-col items-center justify-center">
-            <img className="w-[200px]" src={image.nothing} alt="nothing" />
-            <p className="text-[#CDD4DF] text-sm text-center mb-2">
-              You don&apos;t have any upcoming tasks
-            </p>
+          <div className="pt-4 border-t border-solid border-[#f5f6fb] mt-3">
+            <span className="font-semibold text-bright-green">View More...</span>
           </div>
         </div>
       </div>
+
+      {/* Add a project modal */}
+      <CreateProjectModal toggleCreateProjectModal={toggleCreateProjectModal} />
     </>
   );
 };

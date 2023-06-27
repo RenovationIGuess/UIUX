@@ -4,11 +4,27 @@ import { FcGoogle } from "react-icons/fc"
 import "./styles/Login.scss";
 import { Input } from "antd";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { KrdStateContext } from "../contexts/ContextProvider";
+import { toast } from "react-toastify";
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  const { users, setCurrentUser } = KrdStateContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleLogin = () => {
+    const findUserIndex = users.findIndex((u) => u.email === email);
+    if (findUserIndex !== -1) {
+      if (users[findUserIndex].password === password) {
+        toast("Login Successful!");
+        setCurrentUser(users[findUserIndex]);
+        navigate(`/user/${users[findUserIndex].id}/home`);
+      }
+    } else toast("Invalid Email Address!");
+  }
 
   return (
     <div className="max-w-[1208px] flex gap-4 items-center z-10">
@@ -55,9 +71,9 @@ const Login = () => {
               allowClear
             />
           </label>
-          <Link to="/home" className="cursor-pointer flex items-center justify-center rounded-md w-full mt-3 bg-bright-green py-3 text-white font-medium hover:bg-less-bright-green">
+          <button onClick={() => handleLogin()} className="cursor-pointer flex items-center justify-center rounded-md w-full mt-3 bg-bright-green py-3 text-white font-medium hover:bg-less-bright-green">
             Login
-          </Link>
+          </button>
         </form>
         <div className="w-full flex items-center mt-4">
           <div className="line"></div>
