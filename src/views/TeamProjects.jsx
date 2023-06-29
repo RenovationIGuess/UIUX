@@ -26,6 +26,7 @@ import dayLocaleData from "dayjs/plugin/localeData";
 import { useState } from "react";
 import { KrdStateContext } from "../contexts/ContextProvider";
 import CreateProjectModal from "../components/CreateProjectModal/CreateProjectModal";
+import { BsRecordCircle } from "react-icons/bs";
 
 dayjs.extend(dayLocaleData);
 
@@ -47,22 +48,6 @@ const TeamProjects = () => {
         <div className="flex items-center justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
           <div className="flex items-center">
             <p className="uppercase font-semibold text-base mr-4">Projects</p>
-            <Tooltip placement="top" title="View as List">
-              <MdAlignHorizontalLeft
-                onClick={() => setViewState((prev) => !prev)}
-                className={`cursor-pointer text-2xl mr-4 hover:text-bright-green cursor-pointer${
-                  !viewState && " text-bright-green"
-                }`}
-              />
-            </Tooltip>
-            <Tooltip placement="top" title="View as status">
-              <MdOutlineAlignVerticalTop
-                onClick={() => setViewState((prev) => !prev)}
-                className={`cursor-pointer text-2xl hover:text-bright-green cursor-pointer${
-                  viewState && " text-bright-green"
-                }`}
-              />
-            </Tooltip>
           </div>
 
           <div className="flex items-center">
@@ -205,12 +190,12 @@ const TeamProjects = () => {
         <div className="w-full bg-white rounded-xl flex flex-col px-4 pb-4">
           <div className="py-4 border-b border-solid border-[#f5f6fb] mb-3">
             {/* `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`. */}
-            <span className="font-semibold">Task&apos;s Statistics</span>
+            <span className="font-semibold">Project&apos;s Statistics</span>
           </div>
           <div className="w-full flex gap-4 flex-col">
             <div className="flex-1 flex items-center justify-between p-2 rounded-md shadow-md border-b-2 border-solid border-bright-green">
               <div className="flex flex-col">
-                <h1 className="font-medium uppercase">Completed tasks</h1>
+                <h1 className="font-medium uppercase">Completed Projects</h1>
                 <p className="text-45-gray text-sm font-bold mt-1">100.504</p>
                 <div className="flex items-center mt-1">
                   <IoIosArrowUp className="mr-4 text-2xl text-bright-green" />
@@ -227,7 +212,7 @@ const TeamProjects = () => {
             </div>
             <div className="flex-1 flex items-center justify-between p-2 rounded-md shadow-md border-b-2 border-solid border-[#D91212]">
               <div className="flex flex-col">
-                <h1 className="font-medium uppercase">Aborted tasks</h1>
+                <h1 className="font-medium uppercase">Aborted Projects</h1>
                 <p className="text-45-gray text-sm font-bold mt-1">100.504</p>
                 <div className="flex items-center mt-1">
                   <IoIosArrowUp className="mr-4 text-2xl text-[#D91212]" />
@@ -267,6 +252,44 @@ const TeamProjects = () => {
         <div className="w-full bg-white rounded-xl flex flex-col px-4 pb-4 mt-4">
           <div className="py-4 border-b border-solid border-[#f5f6fb] mb-3">
             <span className="font-semibold">Recently Viewed Projects</span>
+          </div>
+          <div className="flex flex-col gap-3">
+            {projects.slice(0, 3).map((p, index) => (
+              <>
+                <div key={index} className="flex flex-col py-1 px-3 small-black-border rounded-md">
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium">{p.name}</p>
+                    <span className="py-1 px-3 text-xs font-medium rounded-full border border-yellow-type uppercase text-yellow-type">{p.progress}</span>
+                  </div>
+                  <div className="flex items-center mt-1">
+                    <img 
+                      src={p.avatar}
+                      className="w-6 h-6 rounded-full mr-3"
+                      alt="project image"
+                    />
+                    <p className="text-sm">Poum is the creator</p>
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <BiTask className="text-xl mr-2" />
+                    <p className="text-sm mr-3 pr-3 border-r border-[#f5f6fb]">{p.tasks.length} Tasks</p>
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        <BsRecordCircle className="text-sm text-bright-green" />
+                        <p className="text-sm">1</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <BsRecordCircle className="text-sm text-yellow-type" />
+                        <p className="text-sm">1</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <BsRecordCircle className="text-sm text-45-gray" />
+                        <p className="text-sm">1</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ))}
           </div>
           <div className="pt-4 border-t border-solid border-[#f5f6fb] mt-3">
             <span className="font-semibold text-bright-green">View More...</span>

@@ -10,7 +10,7 @@ import image from "../constant/image";
 import { FaComment, FaEdit, FaTrash } from "react-icons/fa";
 import { BiChevronsDown } from "react-icons/bi";
 import { BsThreeDots, BsThreeDotsVertical } from "react-icons/bs";
-import { Button, DatePicker, Progress, Select, Tooltip } from "antd";
+import { Button, DatePicker, Modal, Progress, Select, Tooltip } from "antd";
 import { useState } from "react";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { Input } from "antd";
@@ -26,6 +26,7 @@ const TeamTaskDetail = () => {
   // const [cmtState, setCmtState] = useState("Newest");
   const [editState, setEditState] = useState(false);
   const [percent, setPercent] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const completionIncrease = () => {
     setPercent((prevPercent) => {
@@ -74,7 +75,7 @@ const TeamTaskDetail = () => {
                     <FaEdit className="text-lg mr-3" />
                     <p className="text-sm">Edit Task</p>
                   </div>
-                  <div className="flex items-center px-3 py-1 rounded-md hover:bg-bright-green hover:text-white text-85-gray cursor-pointer">
+                  <div onClick={() => setModalOpen(true)} className="flex items-center px-3 py-1 rounded-md hover:bg-bright-green hover:text-white text-85-gray cursor-pointer">
                     <FaTrash className="text-lg mr-3" />
                     <p className="text-sm">Remove Task</p>
                   </div>
@@ -289,6 +290,13 @@ const TeamTaskDetail = () => {
                   />
                 </div>
               </div>
+              <div className="pl-4 flex items-center">
+                <img
+                  src={image.jingyuan}
+                  className="mr-4 w-8 h-8 rounded-full border border-solid border-[#f5f6fb]"
+                />
+                <p>Jing Yuan</p>
+              </div>
               <div className="cursor-pointer flex items-center justify-between py-2 px-4 bg-[#F1F4F9] rounded-md">
                 <p className="text-45-gray font-medium text-sm">Assignee</p>
                 <div className="flex items-center">
@@ -316,6 +324,20 @@ const TeamTaskDetail = () => {
                   />
                 </div>
               </div>
+              <div className="pl-4 flex items-center">
+                <img
+                  src={image.kafka}
+                  className="mr-4 w-8 h-8 rounded-full border border-solid border-[#f5f6fb]"
+                />
+                <p>Kafka</p>
+              </div>
+              <div className="pl-4 flex items-center">
+                <img
+                  src={image.himeko}
+                  className="mr-4 w-8 h-8 rounded-full border border-solid border-[#f5f6fb]"
+                />
+                <p>Himeko</p>
+              </div>
               <div className="cursor-pointer flex items-center justify-between py-2 px-4 bg-[#F1F4F9] rounded-md">
                 <p className="text-45-gray font-medium text-sm">Supporter</p>
                 <div className="flex items-center">
@@ -325,6 +347,13 @@ const TeamTaskDetail = () => {
                     className="text-xl text-85-gray icon-transition"
                   />
                 </div>
+              </div>
+              <div className="pl-4 flex items-center">
+                <img
+                  src={image.herta}
+                  className="mr-4 w-8 h-8 rounded-full border border-solid border-[#f5f6fb]"
+                />
+                <p>Heruta~~</p>
               </div>
             </div>
           </div>
@@ -532,6 +561,20 @@ const TeamTaskDetail = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        title="Confirm Modal"
+        centered
+        open={modalOpen}
+        onOk={() => {
+          setModalOpen(false);
+        }}
+        onCancel={() => {
+          setModalOpen(false);
+        }}
+      >
+        <p>Are you sure to delete this task?</p>
+      </Modal>
     </>
   );
 };

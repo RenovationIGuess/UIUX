@@ -15,10 +15,11 @@ import {
 } from "react-icons/io";
 import {
   MdAlignHorizontalLeft,
+  MdOutlineAddTask,
   MdOutlineAlignVerticalTop,
 } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { Progress, Tooltip } from "antd";
+import { DatePicker, Progress, Tooltip } from "antd";
 
 import { Calendar, Col, Radio, Row, Select } from "antd";
 import dayjs from "dayjs";
@@ -29,6 +30,11 @@ import { DragDropContext } from "react-beautiful-dnd";
 import dummyData from "../constant/dummyData";
 import DndColumn from "../components/DndColumn/DndColumn";
 import PaginateFooter from "../components/PaginateFooter/PaginateFooter";
+import { KrdStateContext } from "../contexts/ContextProvider";
+import TaskItem from "../components/TaskItem/TaskItem";
+import { TbCalendarPlus } from "react-icons/tb";
+import DndCalendar from "../components/DndCalendar/DndCalendar";
+import CreateTaskModal from "../components/CreateTaskModal/CreateTaskModal";
 
 dayjs.extend(dayLocaleData);
 
@@ -58,13 +64,49 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 };
 
 const TeamTaskDetail = () => {
-  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
-  // true - vertical | false - horizontal
-  const [viewState, setViewState] = useState(false);
-  const [tasks, setTasks] = useState(dummyData.dummyTasksData);
+  const { tasks, projects, users } = KrdStateContext();
 
-  const onPanelChange = (value, mode) => {
-    // console.log(value.format("YYYY-MM-DD"), mode);
+  const [myTasks, setMyTasks] = useState(tasks);
+  const [taskViewState, setTaskViewState] = useState("statistic");
+  const [taskDetailViewState, setTaskDetailViewState] = useState(false);
+
+  // const [myTasks, setMyTasks] = useState(tasks);
+  const [taskState, setTaskState] = useState([
+    tasks.filter((item) => item.status === "to do"),
+    tasks.filter((item) => item.status === "in progress"),
+    tasks.filter((item) => item.status === "in review"),
+    tasks.filter((item) => item.status === "done"),
+  ]);
+
+  const [trashState, setTrashState] = useState(image.trashkun);
+
+  const [projectName, setProjectName] = useState('');
+  const [taskName, setTaskName] = useState('');
+  const [priorityValue, setPriorityValue] = useState('');
+  const [statusValue, setStatusValue] = useState('');
+  const [deadlineValue, setDeadlineValue] = useState([]);
+  const [taskDescription, setTaskDescription] = useState('');
+  const [assigneeValue, setAssigneeValue] = useState([]);
+  const [reviewerValue, setReviewerValue] = useState([]);
+  const [supporterValue, setSupporterValue] = useState([]);
+
+  const toggleCreateTaskModal = () => {
+    const modalElement = document.querySelector(".create-task-modal");
+    modalElement.classList.toggle("modal-hidden");
+  };
+
+  const toggleCreateMeetModal = () => {
+    const modalElement = document.querySelector(".create-meet-modal");
+    modalElement.classList.toggle("modal-hidden");
+  };
+
+  const toggleMeetDetailModal = () => {
+    const modalElement = document.querySelector(".meet-detail-modal");
+    modalElement.classList.toggle("modal-hidden");
+  };
+
+  const handleCreateMeet = () => {
+    toggleCreateMeetModal();
   };
 
   const onDragEnd = useCallback((result) => {
@@ -99,7 +141,7 @@ const TeamTaskDetail = () => {
 
   return (
     <>
-      <div
+      {/* <div
         className={`max-w-full w-full flex flex-col bg-white py-2 px-4 rounded-xl`}
       >
         <div className="flex items-center justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
@@ -362,7 +404,266 @@ const TeamTaskDetail = () => {
         </div>
 
         <PaginateFooter />
-      </div>
+      </div> */}
+
+      <div className="w-full flex flex-col mb-4 bg-white py-2 px-4 rounded-xl">
+          <div className="flex items-center justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
+            <div className="flex items-center">
+              <p className="uppercase font-semibold text-base mr-4">Tasks</p>
+              <span
+                onClick={() => setTaskViewState("statistic")}
+                className={`krd-button${
+                  taskViewState === "statistic" ? "--active" : ""
+                } mr-2`}
+              >
+                View Statistics
+              </span>
+              <span
+                onClick={() => setTaskViewState("list")}
+                className={`krd-button${
+                  taskViewState === "list" ? "--active" : ""
+                } mr-2`}
+              >
+                View List
+              </span>
+              <span
+                onClick={() => setTaskViewState("calendar")}
+                className={`krd-button${
+                  taskViewState === "calendar" ? "--active" : ""
+                }`}
+              >
+                View Calendar
+              </span>
+            </div>
+            <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
+          </div>
+          {taskViewState === "statistic" ? (
+            <>
+              <div className="flex items-center gap-4">
+                <div className="flex-1 flex items-center justify-between p-2 rounded-md shadow-lg border-b-2 border-solid border-bright-green">
+                  <div className="flex flex-col">
+                    <h1 className="font-medium uppercase">Completed tasks</h1>
+                    <p className="text-45-gray text-sm font-bold mt-1">
+                      100.504
+                    </p>
+                    <div className="flex items-center mt-1">
+                      <IoIosArrowUp className="mr-4 text-2xl text-bright-green" />
+                      <p className="font-bold mr-2">500</p>
+                      <p className="font-medium text-sm text-45-gray">%</p>
+                    </div>
+                  </div>
+                  <Progress
+                    strokeColor={"#22C55E"}
+                    size={48}
+                    type="circle"
+                    percent={75}
+                  />
+                </div>
+                <div className="flex-1 flex items-center justify-between p-2 rounded-md shadow-lg border-b-2 border-solid border-[#D91212]">
+                  <div className="flex flex-col">
+                    <h1 className="font-medium uppercase">Aborted tasks</h1>
+                    <p className="text-45-gray text-sm font-bold mt-1">
+                      100.504
+                    </p>
+                    <div className="flex items-center mt-1">
+                      <IoIosArrowUp className="mr-4 text-2xl text-[#D91212]" />
+                      <p className="font-bold mr-2">500</p>
+                      <p className="font-medium text-sm text-45-gray">%</p>
+                    </div>
+                  </div>
+                  <Progress
+                    strokeColor={"#D91212"}
+                    size={48}
+                    type="circle"
+                    percent={75}
+                  />
+                </div>
+                <div className="flex-1 flex items-center justify-between p-2 rounded-md shadow-lg border-b-2 border-solid border-[#FFB326]">
+                  <div className="flex flex-col">
+                    <h1 className="font-medium uppercase">In progress</h1>
+                    <p className="text-45-gray text-sm font-bold mt-1">
+                      100.504
+                    </p>
+                    <div className="flex items-center mt-1">
+                      <IoIosArrowUp className="mr-4 text-2xl text-[#FFB326]" />
+                      <p className="font-bold mr-2">500</p>
+                      <p className="font-medium text-sm text-45-gray">%</p>
+                    </div>
+                  </div>
+                  <Progress
+                    strokeColor={"#FFB326"}
+                    size={48}
+                    type="circle"
+                    percent={75}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-between mt-4 pt-4 pb-2 border-t border-solid border-[#f5f6fb]">
+                <p className="text-base font-medium">
+                  Total Tasks: 100.504.105.156.403
+                </p>
+              </div>
+            </>
+          ) : taskViewState === "list" ? (
+            <>
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <p className="font-medium">From</p>
+                  <DatePicker
+                    cellRender={(current) => {
+                      const style = {};
+                      if (current.date() === 1) {
+                        style.border = "1px solid #1677ff";
+                        style.borderRadius = "50%";
+                      }
+                      return (
+                        <div className="ant-picker-cell-inner" style={style}>
+                          {current.date()}
+                        </div>
+                      );
+                    }}
+                    defaultValue={dayjs()}
+                  />
+                  <p className="font-medium">To</p>
+                  <DatePicker
+                    cellRender={(current) => {
+                      const style = {};
+                      if (current.date() === 1) {
+                        style.border = "1px solid #1677ff";
+                        style.borderRadius = "50%";
+                      }
+                      return (
+                        <div className="ant-picker-cell-inner" style={style}>
+                          {current.date()}
+                        </div>
+                      );
+                    }}
+                    defaultValue={dayjs()}
+                  />
+                  <Tooltip placement="top" title="View as List">
+                    <MdAlignHorizontalLeft
+                      onClick={() => setTaskDetailViewState((prev) => !prev)}
+                      className={`cursor-pointer text-2xl hover:text-bright-green cursor-pointer${
+                        !taskDetailViewState && " text-bright-green"
+                      }`}
+                    />
+                  </Tooltip>
+                  <Tooltip placement="top" title="View as status">
+                    <MdOutlineAlignVerticalTop
+                      onClick={() => setTaskDetailViewState((prev) => !prev)}
+                      className={`cursor-pointer text-2xl hover:text-bright-green cursor-pointer${
+                        taskDetailViewState && " text-bright-green"
+                      }`}
+                    />
+                  </Tooltip>
+                </div>
+                <div className="flex items-center">
+                  <Tooltip placement="top" title="Add a Task">
+                    <div
+                      onClick={() => toggleCreateTaskModal()}
+                      className="p-1 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green"
+                    >
+                      <MdOutlineAddTask className="text-2xl text-white" />
+                    </div>
+                  </Tooltip>
+                  <div className="p-2 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green">
+                    <FaFilter className="text-base text-white" />
+                  </div>
+                  <div className="flex mr-3">
+                    <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
+                      <AiOutlineSearch className="text-base text-white" />
+                    </div>
+                    <input
+                      className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
+                      placeholder="Enter task's name / id..."
+                    />
+                  </div>
+                </div>
+              </div>
+              {!taskDetailViewState ? (
+                <>
+                  <div className="flex items-center pt-4 mb-4 border-t border-[#f5f6fb]">
+                    <h1 className="text-2xl font-bold mr-6">2023-6-29</h1>
+                    <div className="flex items-center">
+                      <p className="text-xl">4 Tasks</p>
+                    </div>
+                  </div>
+                  {tasks.map((task, index) => (
+                    <TaskItem task={task} key={index} />
+                  ))}
+                </>
+              ) : (
+                <>
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <div
+                      onMouseOver={() => setTrashState(image.trashcan)}
+                      onMouseOut={() => setTrashState(image.trashkun)}
+                      className="flex flex-col items-center justify-center py-2 mb-4 hover:bg-[#F6F5F8] rounded-md"
+                    >
+                      <div className="flex items-center gap-4">
+                        <p className="text-6xl text-[#CDD4DF] font-medium uppercase">
+                          Give me
+                        </p>
+                        <img src={trashState} className="w-[148px]" />
+                        <p className="text-6xl text-[#CDD4DF] font-medium uppercase">
+                          your task
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-4">
+                      {taskState.map((state, index) => (
+                        <DndColumn
+                          droppableId={`${index}`}
+                          tasks={state}
+                          title={index}
+                          key={index}
+                        />
+                      ))}
+                    </div>
+                  </DragDropContext>
+                </>
+              )}
+              <PaginateFooter />
+            </>
+          ) : (
+            <>
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center">
+                </div>
+                <div className="flex items-center gap-3">
+                  <Tooltip placement="top" title="Hold a meet">
+                    <div
+                      onClick={() => toggleCreateMeetModal()}
+                      className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
+                    >
+                      <TbCalendarPlus className="text-2xl text-white" />
+                    </div>
+                  </Tooltip>
+                  <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
+                    <FaFilter className="text-base text-white" />
+                  </div>
+                  <div className="flex">
+                    <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
+                      <AiOutlineSearch className="text-base text-white" />
+                    </div>
+                    <input
+                      className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
+                      placeholder="Enter team's name / id..."
+                    />
+                  </div>
+                </div>
+              </div>
+              <DndCalendar
+                myEvents={myTasks}
+                setMyEvents={setMyTasks}
+                handleCreateMeet={handleCreateMeet}
+                toggleMeetDetailModal={toggleMeetDetailModal}
+              />
+              <div className="py-2"></div>
+            </>
+          )}
+        </div>
 
       <div className="w-[336px] ml-6 shrink-0">
         <div className="w-full bg-white rounded-xl flex flex-col px-4 pb-4">
@@ -439,6 +740,31 @@ const TeamTaskDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Task's modal */}
+      <CreateTaskModal
+        toggleCreateTaskModal={toggleCreateTaskModal}
+        projects={projects}
+        projectName={projectName}
+        setProjectName={setProjectName}
+        taskName={taskName}
+        setTaskName={setTaskName}
+        priorityValue={priorityValue}
+        setPriorityValue={setPriorityValue}
+        statusValue={statusValue}
+        setStatusValue={setStatusValue}
+        members={users}
+        deadlineValue={deadlineValue}
+        setDeadlineValue={setDeadlineValue}
+        taskDescription={taskDescription}
+        setTaskDescription={setTaskDescription}
+        assigneeValue={assigneeValue}
+        setAssigneeValue={setAssigneeValue}
+        reviewerValue={reviewerValue}
+        setReviewerValue={setReviewerValue}
+        supporterValue={supporterValue}
+        setSupporterValue={setSupporterValue}
+      />
     </>
   );
 };

@@ -2,24 +2,28 @@
 import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
+import { AiOutlineCalendar } from "react-icons/ai";
+import "./CustomToolbar.scss";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { DatePicker } from "antd";
 
 let navigate = {
-  PREVIOUS: 'PREV',
-  NEXT: 'NEXT',
-  TODAY: 'TODAY',
-  DATE: 'DATE',
-}
+  PREVIOUS: "PREV",
+  NEXT: "NEXT",
+  TODAY: "TODAY",
+  DATE: "DATE",
+};
 
 function ViewNamesGroup({ views: viewNames, view, messages, onView }) {
   return viewNames.map((name) => (
-    <button
+    <div
       type="button"
       key={name}
-      className={clsx({ "bg-bright-green text-white": view === name })}
+      className={clsx({ "view-button-active": view === name }, "view-button")}
       onClick={() => onView(name)}
     >
       {messages[name]}
-    </button>
+    </div>
   ));
 }
 ViewNamesGroup.propTypes = {
@@ -41,38 +45,50 @@ export default function CustomToolbar({
   return (
     <div className="rbc-toolbar">
       <span className="rbc-btn-group">
-        <ViewNamesGroup
-          view={view}
-          views={views}
-          messages={messages}
-          onView={onView}
-        />
+        <div className="flex items-center gap-2">
+          <ViewNamesGroup
+            view={view}
+            views={views}
+            messages={messages}
+            onView={onView}
+          />
+        </div>
       </span>
 
-      <span className="rbc-toolbar-label">{label}</span>
+      <span className="rbc-toolbar-label">
+        <span className="flex justify-center items-center gap-4">
+          {label}
+          {/* <DatePicker picker="month" />
+          <DatePicker picker="quarter" />
+          <DatePicker picker="year" /> */}
+        </span>
+      </span>
 
       <span className={clsx("rbc-btn-group", "examples--custom-toolbar")}>
-        <button
-          type="button"
-          onClick={() => onNavigate(navigate.PREVIOUS)}
-          aria-label={messages.previous}
-        >
-          &#60;
-        </button>
-        <button
-          type="button"
-          onClick={() => onNavigate(navigate.TODAY)}
-          aria-label={messages.today}
-        >
-          &#8226;
-        </button>
-        <button
-          type="button"
-          onClick={() => onNavigate(navigate.NEXT)}
-          aria-label={messages.next}
-        >
-          &#62;
-        </button>
+        <div className="flex items-center gap-4">
+          <div
+            type="button"
+            onClick={() => onNavigate(navigate.PREVIOUS)}
+            aria-label={messages.previous}
+          >
+            <IoIosArrowBack className="icon-style" />
+          </div>
+          <div
+            type="button"
+            onClick={() => onNavigate(navigate.TODAY)}
+            aria-label={messages.today}
+            className="hover:text-bright-green cursor-pointer"
+          >
+            Current
+          </div>
+          <div
+            type="button"
+            onClick={() => onNavigate(navigate.NEXT)}
+            aria-label={messages.next}
+          >
+            <IoIosArrowForward className="icon-style" />
+          </div>
+        </div>
       </span>
     </div>
   );

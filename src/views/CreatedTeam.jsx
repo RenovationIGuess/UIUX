@@ -21,7 +21,8 @@ const CreatedTeam = () => {
   // Use for join team input modal
   const [teamName, setTeamName] = useState("");
   const [teamUserName, setTeamUserName] = useState("");
-  const [joinedTeam, setJoinedTeam] = useState(dummyData.dummyTeamsData);
+  const [createdTeam, setCreatedTeam] = useState(dummyData.dummyTeamsData);
+  const [searchTeamValue, setSearchTeamValue] = useState('');
 
   const handleCreateTeamModal = () => {
     const modalElement = document.querySelector(".modal-background");
@@ -49,19 +50,28 @@ const CreatedTeam = () => {
                     <input
                       className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
                       placeholder="Enter team's name / id..."
+                      value={searchTeamValue}
+                      onChange={(e) => {
+                        setSearchTeamValue(e.target.value);
+                        setCreatedTeam(
+                          dummyData.dummyTeamsData.filter((t) =>
+                            t.name.includes(e.target.value)
+                          )
+                        );
+                      }}
                     />
                   </div>
                 </div>
               </div>
               <div className="flex flex-col">
-                {joinedTeam.map((t, index) => (
+                {createdTeam.map((t, index) => (
                   <>
                     <div className="joined-team-item" key={index}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-6">
-                          <h1 className="text-2xl font-medium">
+                          <Link to="/team/1/your-stats" className="text-2xl hover:text-bright-green font-medium">
                             {t.name}
-                          </h1>
+                          </Link>
                           <div className="flex items-center gap-4">
                             <img
                               className="w-9 h-9 rounded-full"
@@ -187,12 +197,12 @@ const CreatedTeam = () => {
             </div>
             <div className="w-full bg-white rounded-xl flex flex-col px-4 pb-4 mt-4">
               <div className="py-4 border-b border-solid border-[#f5f6fb] mb-3">
-                <span className="font-semibold">Upcoming Tasks</span>
+                <span className="font-semibold">Teams that you have events today</span>
               </div>
               <div className="w-full flex flex-col items-center justify-center">
                 <img className="w-[200px]" src={image.nothing} alt="nothing" />
                 <p className="text-[#CDD4DF] text-sm text-center mb-2">
-                  You don&apos;t have any upcoming tasks
+                  No teams found
                 </p>
               </div>
             </div>

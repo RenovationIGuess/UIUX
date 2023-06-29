@@ -4,12 +4,18 @@
 import "./styles/TeamDetail.scss";
 import image from "../constant/image";
 import { BiChevronsDown, BiRightArrow } from "react-icons/bi";
-import { IoIosArrowDropleftCircle, IoIosArrowUp } from "react-icons/io";
+import {
+  IoIosArrowDropleftCircle,
+  IoIosArrowForward,
+  IoIosArrowUp,
+} from "react-icons/io";
 import { DatePicker, Progress, Timeline, Tooltip } from "antd";
 import { FaFilter } from "react-icons/fa";
-import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
+import {
+  AiFillCheckCircle,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import { useCallback, useState } from "react";
-import { TiArrowSortedDown } from "react-icons/ti";
 import { Link } from "react-router-dom";
 import PaginateFooter from "../components/PaginateFooter/PaginateFooter";
 import {
@@ -28,20 +34,16 @@ import events from "../constant/events";
 import CreateMeetModal from "../components/CreateMeetModal/CreateMeetModal";
 import MeetDetail from "../components/MeetDetail/MeetDetail";
 import { toast } from "react-toastify";
-import { BsThreeDots } from "react-icons/bs";
 import { TbCalendarPlus } from "react-icons/tb";
 
 const navigate = [
   {
-    link: "/team/1/project/meetings",
     title: "meetings",
   },
   {
-    link: "/team/1/project/meetings",
     title: "projects",
   },
   {
-    link: "/team/1/project/tasks",
     title: "tasks",
   },
 ];
@@ -59,13 +61,28 @@ const TimelineChildren = ({
   time,
   toggleMeetDetailModal,
 }) => {
+  // const navigate = useNavigate();
+
   return (
-    <div className="flex flex-col" onClick={() => toggleMeetDetailModal()}>
+    <div className="flex flex-col">
       <div className="w-full h-[1px] mb-2 bg-45-gray"></div>
       <div className="rounded-xl bg-white flex-col flex border border-solid border-black py-2 px-4">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-base font-semibold">{name}</p>
-          <BsThreeDots className="text-2xl" />
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center">
+            <p className="text-xl font-semibold pr-4 mr-3 border-r border-[#f5f6fb]">
+              {name}
+            </p>
+            <p className="text-base font-medium">
+              Team&nbsp;-&nbsp;{" "}
+              <Link to="/team/1/your-stats" className="text-bsae font-semibold hover:text-bright-green cursor-pointer">
+                Astral Express~
+              </Link>
+            </p>
+          </div>
+          {/* <BsThreeDots className="text-2xl" /> */}
+          <button className="cursor-pointer bg-red-type text-white py-1 px-3 rounded-lg">
+            Delete
+          </button>
         </div>
         <div className="flex items-center gap-4">
           <img
@@ -81,7 +98,7 @@ const TimelineChildren = ({
               </span>
             </Tooltip>
             <Tooltip title={"Status"} placement="top">
-              <span className="uppercase text-sm py-1 px-4 border border-solid border-yellow-type text-yellow-type rounded-full">
+              <span className="uppercase text-sm py-1 px-4 border border-solid border-bright-green text-bright-green rounded-full">
                 {status}
               </span>
             </Tooltip>
@@ -175,6 +192,7 @@ const UserProfile = () => {
   ]);
 
   const [myEvents, setMyEvents] = useState(events);
+  const [myTasks, setMyTasks] = useState(tasks);
 
   // Create meet form
   const [meetInfo, setMeetInfo] = useState({
@@ -197,7 +215,6 @@ const UserProfile = () => {
   const [reviewerValue, setReviewerValue] = useState([]);
   const [supporterValue, setSupporterValue] = useState([]);
 
-  // const [myTasks, setMyTasks] = useState(tasks);
   const [taskState, setTaskState] = useState([
     tasks.filter((item) => item.status === "to do"),
     tasks.filter((item) => item.status === "in progress"),
@@ -208,7 +225,7 @@ const UserProfile = () => {
   const [trashState, setTrashState] = useState(image.trashkun);
 
   // false - statistic | true - list
-  const [taskViewState, setTaskViewState] = useState(false);
+  const [taskViewState, setTaskViewState] = useState("statistic");
   const [taskDetailViewState, setTaskDetailViewState] = useState(false);
   // false - calendar | true - list
   const [calendarViewState, setCalendarViewState] = useState(false);
@@ -286,21 +303,33 @@ const UserProfile = () => {
             <div className="flex items-center">
               <p className="uppercase font-semibold text-base mr-4">Tasks</p>
               <span
-                onClick={() => setTaskViewState(!taskViewState)}
-                className={`krd-button${!taskViewState ? "--active" : ""} mr-2`}
+                onClick={() => setTaskViewState("statistic")}
+                className={`krd-button${
+                  taskViewState === "statistic" ? "--active" : ""
+                } mr-2`}
               >
                 View Statistics
               </span>
               <span
-                onClick={() => setTaskViewState(!taskViewState)}
-                className={`krd-button${taskViewState ? "--active" : ""}`}
+                onClick={() => setTaskViewState("list")}
+                className={`krd-button${
+                  taskViewState === "list" ? "--active" : ""
+                } mr-2`}
               >
                 View List
+              </span>
+              <span
+                onClick={() => setTaskViewState("calendar")}
+                className={`krd-button${
+                  taskViewState === "calendar" ? "--active" : ""
+                }`}
+              >
+                View Calendar
               </span>
             </div>
             <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
           </div>
-          {!taskViewState ? (
+          {taskViewState === "statistic" ? (
             <>
               <div className="flex items-center gap-4">
                 <div className="flex-1 flex items-center justify-between p-2 rounded-md shadow-lg border-b-2 border-solid border-bright-green">
@@ -367,11 +396,28 @@ const UserProfile = () => {
                 </p>
               </div>
             </>
-          ) : (
+          ) : taskViewState === "list" ? (
             <>
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
+                  <p className="font-medium">From</p>
+                  <DatePicker
+                    cellRender={(current) => {
+                      const style = {};
+                      if (current.date() === 1) {
+                        style.border = "1px solid #1677ff";
+                        style.borderRadius = "50%";
+                      }
+                      return (
+                        <div className="ant-picker-cell-inner" style={style}>
+                          {current.date()}
+                        </div>
+                      );
+                    }}
+                    defaultValue={dayjs()}
+                  />
+                  <p className="font-medium">To</p>
                   <DatePicker
                     cellRender={(current) => {
                       const style = {};
@@ -429,6 +475,12 @@ const UserProfile = () => {
               </div>
               {!taskDetailViewState ? (
                 <>
+                  <div className="flex items-center pt-4 mb-4 border-t border-[#f5f6fb]">
+                    <h1 className="text-2xl font-bold mr-6">2023-6-29</h1>
+                    <div className="flex items-center">
+                      <p className="text-xl">4 Tasks</p>
+                    </div>
+                  </div>
                   {tasks.map((task, index) => (
                     <TaskItem task={task} key={index} />
                   ))}
@@ -466,8 +518,45 @@ const UserProfile = () => {
               )}
               <PaginateFooter />
             </>
+          ) : (
+            <>
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center">
+                </div>
+                <div className="flex items-center gap-3">
+                  <Tooltip placement="top" title="Hold a meet">
+                    <div
+                      onClick={() => toggleCreateMeetModal()}
+                      className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
+                    >
+                      <TbCalendarPlus className="text-2xl text-white" />
+                    </div>
+                  </Tooltip>
+                  <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
+                    <FaFilter className="text-base text-white" />
+                  </div>
+                  <div className="flex">
+                    <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
+                      <AiOutlineSearch className="text-base text-white" />
+                    </div>
+                    <input
+                      className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
+                      placeholder="Enter team's name / id..."
+                    />
+                  </div>
+                </div>
+              </div>
+              <DndCalendar
+                myEvents={myTasks}
+                setMyEvents={setMyTasks}
+                handleCreateMeet={handleCreateMeet}
+                toggleMeetDetailModal={toggleMeetDetailModal}
+              />
+              <div className="py-2"></div>
+            </>
           )}
         </div>
+
         <div className="w-full flex flex-col bg-white py-2 px-4 rounded-xl">
           <div className="flex items-stretch justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
             <div className="flex items-center">
@@ -491,12 +580,38 @@ const UserProfile = () => {
           </div>
           {!calendarViewState ? (
             <>
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-4"></div>
+                <div className="flex items-center gap-3">
+                  <Tooltip placement="top" title="Hold a meet">
+                    <div
+                      onClick={() => toggleCreateMeetModal()}
+                      className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
+                    >
+                      <TbCalendarPlus className="text-2xl text-white" />
+                    </div>
+                  </Tooltip>
+                  <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
+                    <FaFilter className="text-base text-white" />
+                  </div>
+                  <div className="flex">
+                    <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
+                      <AiOutlineSearch className="text-base text-white" />
+                    </div>
+                    <input
+                      className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
+                      placeholder="Enter team's name / id..."
+                    />
+                  </div>
+                </div>
+              </div>
               <DndCalendar
                 myEvents={myEvents}
                 setMyEvents={setMyEvents}
                 handleCreateMeet={handleCreateMeet}
                 toggleMeetDetailModal={toggleMeetDetailModal}
               />
+              <div className="py-2"></div>
             </>
           ) : (
             <>
@@ -506,6 +621,23 @@ const UserProfile = () => {
                     onClick={() => setCalendarViewState(!calendarViewState)}
                     className="text-3xl text-bright-green"
                   />
+                  <p className="font-medium">From</p>
+                  <DatePicker
+                    cellRender={(current) => {
+                      const style = {};
+                      if (current.date() === 1) {
+                        style.border = "1px solid #1677ff";
+                        style.borderRadius = "50%";
+                      }
+                      return (
+                        <div className="ant-picker-cell-inner" style={style}>
+                          {current.date()}
+                        </div>
+                      );
+                    }}
+                    defaultValue={dayjs()}
+                  />
+                  <p className="font-medium">To</p>
                   <DatePicker
                     cellRender={(current) => {
                       const style = {};
@@ -525,7 +657,7 @@ const UserProfile = () => {
                 <div className="flex items-center gap-3">
                   <Tooltip placement="top" title="Hold a meet">
                     <div
-                      onClick={() => toggleCreateTaskModal()}
+                      onClick={() => toggleCreateMeetModal()}
                       className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
                     >
                       <TbCalendarPlus className="text-2xl text-white" />
@@ -546,7 +678,90 @@ const UserProfile = () => {
                   <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
                 </div>
               </div>
-              <div className="mt-4 flex justify-start">
+              <div className="flex items-center">
+                <h1 className="text-2xl font-bold mr-6">2023-6-29</h1>
+                <div className="flex items-center">
+                  <p className="pr-4 mr-3 text-xl border-r border-[#f5f6fb]">
+                    4 Meets
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <AiFillCheckCircle className="text-3xl text-bright-green" />
+                    <p className="text-lg">4 Meets End</p>
+                    <IoIosArrowForward className="text-2xl" />
+                    <p className="text-lg">0 To go ~</p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 flex justify-start">
+                <Timeline
+                  mode={"left"}
+                  items={[
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              </div>
+              <div className="flex items-center pt-6 border-t border-[#f5f6fb]">
+                <h1 className="text-2xl font-bold mr-6">2023-6-30</h1>
+                <div className="flex items-center">
+                  <p className="pr-4 mr-3 text-xl border-r border-[#f5f6fb]">
+                    4 Meets
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <AiFillCheckCircle className="text-3xl text-bright-green" />
+                    <p className="text-lg">4 Meets End</p>
+                    <IoIosArrowForward className="text-2xl" />
+                    <p className="text-lg">0 To go ~</p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 flex justify-start">
                 <Timeline
                   mode={"left"}
                   items={[
@@ -603,7 +818,6 @@ const UserProfile = () => {
               </div>
             </>
           )}
-          
         </div>
       </div>
 

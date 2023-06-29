@@ -2,7 +2,7 @@ import "./styles/TeamDetail.scss";
 import image from "../constant/image";
 import { BiChevronsDown, BiRightArrow } from "react-icons/bi";
 import { IoIosArrowUp } from "react-icons/io";
-import { Progress, Tooltip } from "antd";
+import { Progress } from "antd";
 import { AiOutlineClose } from "react-icons/ai";
 
 import { TiArrowSortedDown } from "react-icons/ti";
@@ -149,10 +149,6 @@ const TeamProjectDetail = () => {
               View Detail
             </button>
           </div>
-        </div>
-        <div className="w-full flex flex-col bg-white p-4 rounded-xl mt-4 transition">
-          
-
         </div>
       </div>
       <div className="w-[336px] ml-6 shrink-0">

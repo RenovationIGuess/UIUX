@@ -10,6 +10,12 @@
   --default-scrollbar-color-hover: #e1e7ff;
   --gray-border-color: #f5f6fb;
   --box-shadow-modal: 0px 12px 24px rgba(47, 63, 86, 0.2);
+  --default-gray-color: #f1f4f9;
+  --primary-white-color: #fff;
+  --search-input-line-color: #c1ccd9;
+  --patch-font-color: #8592a3;
+  --default-green-color: #22C55E;
+  --search-input-icon-color: #b2bdce;
 }
 
 * {
@@ -104,4 +110,17 @@
 
 .decline-btn {
   @apply p-2 px-3 flex items-center justify-center rounded-full bg-red-type text-white cursor-pointer;
+}
+
+.black-border {
+  border: 1px solid rgba(0, 0, 0, 0.85);
+}
+
+.small-black-border {
+  border: 1px solid rgba(0, 0, 0, 0.85);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.85);
+}
+
+.black-border:hover {
+  border-bottom: 3px solid rgba(0, 0, 0, 0.85);
 }

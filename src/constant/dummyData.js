@@ -1,5 +1,8 @@
+/* eslint-disable no-unused-vars */
+import { motion } from "framer-motion";
 import image from "./image";
 import dayjs from "dayjs";
+import events from "./events"
 
 const dummyTasksData = [
   {
@@ -12,7 +15,8 @@ const dummyTasksData = [
     status: "to do",
     priority: "medium",
     completion: 50,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 4, 17, 0, 0),
+    end: new Date(2023, 7, 12, 18, 30, 0),
     creator: {
       id: 1,
       name: "Mr.Poum",
@@ -50,7 +54,8 @@ const dummyTasksData = [
     status: "in review",
     priority: "high",
     completion: 30,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 28, 17, 0, 0),
+    end: new Date(2023, 7, 29, 18, 30, 0),
     description:
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     creator: {
@@ -90,7 +95,8 @@ const dummyTasksData = [
     status: "to do",
     priority: "low",
     completion: 90,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 1, 17, 0, 0),
+    end: new Date(2023, 7, 5, 18, 30, 0),
     creator: {
       id: 1,
       name: "Mr.Poum",
@@ -128,7 +134,8 @@ const dummyTasksData = [
     status: "done",
     priority: "high",
     completion: 100,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 10, 17, 0, 0),
+    end: new Date(2023, 7, 20, 18, 30, 0),
     creator: {
       id: 5,
       name: "Stellaron Hunta",
@@ -166,7 +173,8 @@ const dummyTasksData = [
     status: "done",
     priority: "medium",
     completion: 100,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 1, 17, 0, 0),
+    end: new Date(2023, 7, 10, 18, 30, 0),
     creator: {
       id: 4,
       name: "Shogun Sama :))",
@@ -204,7 +212,8 @@ const dummyTasksData = [
     status: "in progress",
     priority: "medium",
     completion: 20,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 1, 17, 0, 0),
+    end: new Date(2023, 7, 5, 18, 30, 0),
     creator: {
       id: 4,
       name: "Shogun Sama :))",
@@ -242,7 +251,8 @@ const dummyTasksData = [
     status: "in progress",
     priority: "high",
     completion: 1,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 8, 15, 1, 0, 0),
+    end: new Date(2023, 8, 22, 23, 30, 0),
     creator: {
       id: 4,
       name: "Shogun Sama :))",
@@ -280,7 +290,8 @@ const dummyTasksData = [
     status: "in progress",
     priority: "medium",
     completion: 20,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 6, 14, 0, 0),
+    end: new Date(2023, 7, 9, 18, 30, 0),
     creator: {
       id: 4,
       name: "Shogun Sama :))",
@@ -318,7 +329,8 @@ const dummyTasksData = [
     status: "in progress",
     priority: "medium",
     completion: 20,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 1, 10, 0, 0),
+    end: new Date(2023, 7, 2, 18, 30, 0),
     creator: {
       id: 4,
       name: "Shogun Sama :))",
@@ -356,7 +368,8 @@ const dummyTasksData = [
     status: "in progress",
     priority: "high",
     completion: 20,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 4, 17, 0, 0),
+    end: new Date(2023, 7, 6, 18, 30, 0),
     creator: {
       id: 4,
       name: "Shogun Sama :))",
@@ -394,7 +407,8 @@ const dummyTasksData = [
     status: "in progress",
     priority: "high",
     completion: 20,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 4, 9, 0, 0),
+    end: new Date(2023, 7, 6, 21, 30, 0),
     creator: {
       id: 4,
       name: "Shogun Sama :))",
@@ -432,7 +446,8 @@ const dummyTasksData = [
     status: "in progress",
     priority: "high",
     completion: 20,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 1, 6, 0, 0),
+    end: new Date(2023, 7, 1, 17, 30, 0),
     creator: {
       id: 4,
       name: "Shogun Sama :))",
@@ -470,7 +485,8 @@ const dummyTasksData = [
     status: "in progress",
     priority: "high",
     completion: 20,
-    deadline: [dayjs(), dayjs()],
+    start: new Date(2023, 7, 1, 17, 0, 0),
+    end: new Date(2023, 7, 10, 20, 30, 0),
     creator: {
       id: 4,
       name: "Shogun Sama :))",
@@ -499,6 +515,39 @@ const dummyTasksData = [
     ],
   },
 ];
+
+const dummyWorkspacesData = [
+  {
+    name: 'School',
+    tasks: [dummyTasksData],
+    meets: [events],
+    notes: [],
+  },
+  {
+    name: 'Intern',
+    tasks: [dummyTasksData],
+    meets: [events],
+    notes: [],
+  },
+  {
+    name: 'Dating',
+    tasks: [dummyTasksData],
+    meets: [events],
+    notes: [],
+  },
+  {
+    name: 'Astral Express~~',
+    tasks: [dummyTasksData],
+    meets: [events],
+    notes: [],
+  },
+  {
+    name: ':D?',
+    tasks: [dummyTasksData],
+    meets: [events],
+    notes: [],
+  }
+]
 
 const dummyProjectsData = [
   {
@@ -961,7 +1010,302 @@ const dummyTeamsData = [
   },
 ];
 
-const dummyMeetsData = [{}];
+const dummyMeetsData = [
+  {
+    title: "Meeting with the Rock",
+    start: dayjs(new Date() + 1),
+    end: dayjs(new Date() + 2),
+    priority: 'high',
+    status: 'done',
+    creator: {
+      name: "Mr.Poum",
+      image: image.poum,
+    },
+    members: [
+      {
+        name: 'JingYuan',
+        image: image.jingyuan,
+      },
+      {
+        name: 'Himeko',
+        image: image.himeko,
+      },
+      {
+        name: 'Kafka',
+        image: image.kafka,
+      },
+    ]
+  },
+  {
+    title: "Meeting with the Mr.Poum",
+    start: dayjs(new Date() + 3),
+    end: dayjs(new Date() + 15),
+    priority: 'medium',
+    status: 'in progress',
+    creator: {
+      name: "Mr.Poum",
+      image: image.poum,
+    },
+    members: [
+      {
+        name: 'JingYuan',
+        image: image.jingyuan,
+      },
+      {
+        name: 'Himeko',
+        image: image.himeko,
+      },
+      {
+        name: 'Kafka',
+        image: image.kafka,
+      },
+    ]
+  },
+  {
+    title: "Meeting with the Ramu",
+    start: dayjs(new Date() + 4),
+    end: dayjs(new Date() + 8),
+    priority: 'high',
+    status: 'done',
+    creator: {
+      name: "Mr.Poum",
+      image: image.poum,
+    },
+    members: [
+      {
+        name: 'JingYuan',
+        image: image.jingyuan,
+      },
+      {
+        name: 'Himeko',
+        image: image.himeko,
+      },
+      {
+        name: 'Kafka',
+        image: image.kafka,
+      },
+    ]
+  },
+  {
+    title: "Meeting with the Rock",
+    start: dayjs(new Date() + 3),
+    end: dayjs(new Date() + 5),
+    priority: 'high',
+    status: 'done',
+    creator: {
+      name: "Mr.Poum",
+      image: image.poum,
+    },
+    members: [
+      {
+        name: 'JingYuan',
+        image: image.jingyuan,
+      },
+      {
+        name: 'Himeko',
+        image: image.himeko,
+      },
+      {
+        name: 'Kafka',
+        image: image.kafka,
+      },
+    ]
+  },
+  {
+    title: "Meeting with the Shogun sama",
+    start: dayjs(new Date() + 0),
+    end: dayjs(new Date() + 2),
+    priority: 'high',
+    status: 'done',
+    creator: {
+      name: "Mr.Poum",
+      image: image.poum,
+    },
+    members: [
+      {
+        name: 'JingYuan',
+        image: image.jingyuan,
+      },
+      {
+        name: 'Himeko',
+        image: image.himeko,
+      },
+      {
+        name: 'Kafka',
+        image: image.kafka,
+      },
+    ]
+  },
+  {
+    title: "Meeting with the Aliki",
+    start: dayjs(new Date() - 30),
+    end: dayjs(new Date() + 30),
+    priority: 'high',
+    status: 'done',
+    creator: {
+      name: "Mr.Poum",
+      image: image.poum,
+    },
+    members: [
+      {
+        name: 'JingYuan',
+        image: image.jingyuan,
+      },
+      {
+        name: 'Himeko',
+        image: image.himeko,
+      },
+      {
+        name: 'Kafka',
+        image: image.kafka,
+      },
+    ]
+  },
+  {
+    title: "Meeting with the Rock",
+    start: dayjs(new Date()),
+    end: dayjs(new Date() + 10),
+    priority: 'high',
+    status: 'done',
+    creator: {
+      name: "Mr.Poum",
+      image: image.poum,
+    },
+    members: [
+      {
+        name: 'JingYuan',
+        image: image.jingyuan,
+      },
+      {
+        name: 'Himeko',
+        image: image.himeko,
+      },
+      {
+        name: 'Kafka',
+        image: image.kafka,
+      },
+    ]
+  },
+  {
+    title: "Meeting with the Rock",
+    start: dayjs(new Date() - 1),
+    end: dayjs(new Date() + 1),
+    priority: 'high',
+    status: 'done',
+    creator: {
+      id: 1,
+      name: "Mr.Poum",
+      image: image.poum,
+    },
+    members: [
+      {
+        id: 2,
+        name: 'JingYuan',
+        image: image.jingyuan,
+      },
+      {
+        id: 3,
+        name: 'Himeko',
+        image: image.himeko,
+      },
+      {
+        id: 4,
+        name: 'Kafka',
+        image: image.kafka,
+      },
+    ]
+  },
+  {
+    id: 1,
+    title: "Meeting with the Rock",
+    start: dayjs(),
+    end: dayjs(),
+    priority: 'high',
+    status: 'done',
+    creator: {
+      id: 1,
+      name: "Mr.Poum",
+      image: image.poum,
+    },
+    members: [
+      {
+        id: 2,
+        name: 'JingYuan',
+        image: image.jingyuan,
+      },
+      {
+        id: 3,
+        name: 'Himeko',
+        image: image.himeko,
+      },
+      {
+        id: 4,
+        name: 'Kafka',
+        image: image.kafka,
+      },
+    ]
+  },
+  {
+    id: 1,
+    title: "Meeting with the Rock",
+    start: dayjs(),
+    end: dayjs(),
+    priority: 'high',
+    status: 'done',
+    creator: {
+      id: 1,
+      name: "Mr.Poum",
+      image: image.poum,
+    },
+    members: [
+      {
+        id: 2,
+        name: 'JingYuan',
+        image: image.jingyuan,
+      },
+      {
+        id: 3,
+        name: 'Himeko',
+        image: image.himeko,
+      },
+      {
+        id: 4,
+        name: 'Kafka',
+        image: image.kafka,
+      },
+    ]
+  },
+  {
+    id: 1,
+    title: "Meeting with the Rock",
+    start: dayjs(),
+    end: dayjs(),
+    priority: 'high',
+    status: 'done',
+    creator: {
+      id: 1,
+      name: "Mr.Poum",
+      image: image.poum,
+    },
+    members: [
+      {
+        id: 2,
+        name: 'JingYuan',
+        image: image.jingyuan,
+      },
+      {
+        id: 3,
+        name: 'Himeko',
+        image: image.himeko,
+      },
+      {
+        id: 4,
+        name: 'Kafka',
+        image: image.kafka,
+      },
+    ]
+  },
+];
 
 const dummyUsersData = [
   {
@@ -1161,6 +1505,7 @@ const dummyUsersData = [
 export default {
   dummyTeamsData,
   dummyProjectsData,
+  dummyWorkspacesData,
   dummyTasksData,
   dummyUsersData,
   dummyMeetsData,

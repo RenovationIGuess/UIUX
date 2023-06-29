@@ -12,11 +12,23 @@ import toObject from "dayjs/plugin/toObject";
 import { dayjsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.scss";
 import styles from "./rendering.module.scss";
+import CustomHeader from "./CustomHeader";
+import "./DndCalendar.scss";
 
 const localizer = dayjsLocalizer(dayjs);
 dayjs.extend(toObject);
 
 const DragAndDropCalendar = withDragAndDrop(Calendar);
+
+const EventHoverPopup = ({ event }) => {
+  return (
+    <>
+      <div>
+
+      </div>
+    </>
+  )
+}
 
 function Event({ event }) {
   const { startTime, endTime } = useMemo(() => {
@@ -29,15 +41,12 @@ function Event({ event }) {
   return (
     <span className="flex items-center justify-between">
       <div className="flex items-center">
-        <span className="text-[10px] text-white bg-bright-green rounded-[3px] px-1 py-[2px]">
+        <span className="time-wrapper">
           {startTime}&nbsp;-&nbsp;{endTime}
         </span>
         {/* {event.desc && ':  ' + event.desc} */}
-        <span className="text-85-gray text-xs ml-2">{event.title}</span>
+        <span className="event-title">{event.title}</span>
       </div>
-      <span className="text-[10px] px-2 rounded-full text-red-type border border-solid border-red-type">
-        {event.priority}
-      </span>
     </span>
   );
 }
@@ -63,16 +72,16 @@ EventAgenda.propTypes = {
 //   )
 // }
 
-// const customDayPropGetter = (date) => {
-//   if (date.getDate() === 7 || date.getDate() === 15)
-//     return {
-//       className: styles.specialDay,
-//       style: {
-//         border: "solid 3px " + (date.getDate() === 7 ? "#faa" : "#afa"),
-//       },
-//     };
-//   else return {};
-// };
+const customDayPropGetter = (date) => {
+  if (date.getDate() === 7 || date.getDate() === 15)
+    return {
+      className: styles.specialDay,
+      style: {
+        border: "solid 1px " + (date.getDate() === 7 ? "#22C55E" : "#D91212"),
+      },
+    };
+  else return {};
+};
 
 const customEventPropGetter = (event) => {
   return {
@@ -80,13 +89,13 @@ const customEventPropGetter = (event) => {
   };
 };
 
-// const customSlotPropGetter = (date) => {
-//   if (date.getDate() === 7 || date.getDate() === 15)
-//     return {
-//       className: styles.specialDay,
-//     };
-//   else return {};
-// };
+const customSlotPropGetter = (date) => {
+  if (date.getDate() === 7 || date.getDate() === 15)
+    return {
+      className: styles.specialDay,
+    };
+  else return {};
+};
 
 export default function DndCalendar({
   myEvents,
@@ -94,13 +103,15 @@ export default function DndCalendar({
   toggleMeetDetailModal,
   handleCreateMeet,
 }) {
+  const [dayLayoutAlgorithm, setDayLayoutAlgorithm] = useState('no-overlap');
+
   const handleSelectSlot = useCallback(
     ({ start, end }) => {
       // const title = window.prompt("New Event name");
       // if (title) {
       //   setMyEvents((prev) => [...prev, { start, end, title }]);
       // }
-      handleCreateMeet();
+      handleCreateMeet(start, end);
     },
     [setMyEvents]
   );
@@ -143,9 +154,20 @@ export default function DndCalendar({
           event: EventAgenda,
         },
         event: Event,
+        toolbar: CustomToolbar,
+        day: {
+          header: CustomHeader,
+        },
+        week: {
+          header: CustomHeader,
+        },
+        month: {
+          header: CustomHeader,
+        }
       },
       defaultDate: new Date(),
-      toolbar: CustomToolbar,
+      // views: {
+      // }
     }),
     []
   );
@@ -154,11 +176,11 @@ export default function DndCalendar({
 
   return (
     <Fragment>
-      <div className="h-[768px]">
+      <div className="h-[768px] calendar-wrapper">
         <DragAndDropCalendar
           components={components}
-          // dayPropGetter={customDayPropGetter}
-          // slotPropGetter={customSlotPropGetter}
+          dayPropGetter={customDayPropGetter}
+          slotPropGetter={customSlotPropGetter}
           eventPropGetter={customEventPropGetter}
           defaultDate={defaultDate}
           defaultView={Views.MONTH}

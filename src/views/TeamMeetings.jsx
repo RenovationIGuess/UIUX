@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import "./styles/TeamDetail.scss";
 import image from "../constant/image";
 import { BiChevronsDown } from "react-icons/bi";
-import { AiOutlineArrowRight } from "react-icons/ai";
+import { AiFillCheckCircle, AiOutlineArrowRight, AiOutlineSearch } from "react-icons/ai";
 import { useState } from "react";
 import { TiArrowSortedDown } from "react-icons/ti";
 import DndCalendar from "../components/DndCalendar/DndCalendar";
@@ -15,7 +16,11 @@ import {
   MdAlignHorizontalLeft,
   MdOutlineAlignVerticalTop,
 } from "react-icons/md";
-import { Tooltip } from "antd";
+import { DatePicker, Timeline, Tooltip } from "antd";
+import { Link } from "react-router-dom";
+import { TbCalendarPlus } from "react-icons/tb";
+import { FaFilter } from "react-icons/fa";
+import { IoIosArrowDropleftCircle, IoIosArrowForward } from "react-icons/io";
 
 const range = (start, end) => {
   const result = [];
@@ -46,6 +51,67 @@ const disabledRangeTime = (_, type) => {
   };
 };
 
+const TimelineLabel = ({ content }) => {
+  return (
+    <p className="font-bold uppercase text-45-gray text-base mr-2">{content}</p>
+  );
+};
+
+const TimelineChildren = ({
+  name,
+  status,
+  priority,
+  time,
+  toggleMeetDetailModal,
+}) => {
+  // const navigate = useNavigate();
+
+  return (
+    <div className="flex flex-col">
+      <div className="w-full h-[1px] mb-2 bg-45-gray"></div>
+      <div className="rounded-xl bg-white flex-col flex border border-solid border-black py-2 px-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center">
+            <p className="text-xl font-semibold pr-4 mr-3 border-r border-[#f5f6fb]">
+              {name}
+            </p>
+            <p className="text-base font-medium">
+              Team&nbsp;-&nbsp;{" "}
+              <Link to="/team/1/your-stats" className="text-bsae font-semibold hover:text-bright-green cursor-pointer">
+                Astral Express~
+              </Link>
+            </p>
+          </div>
+          {/* <BsThreeDots className="text-2xl" /> */}
+          <button className="cursor-pointer bg-red-type text-white py-1 px-3 rounded-lg">
+            Delete
+          </button>
+        </div>
+        <div className="flex items-center gap-4">
+          <img
+            src={image.poum}
+            alt="creator-avatar"
+            className="w-8 h-8 rounded-full"
+          />
+          <p className="text-45-gray text-sm font-bold uppercase">{time}</p>
+          <div className="flex items-center gap-2">
+            <Tooltip title={"Priority"} placement="top">
+              <span className="uppercase text-sm py-1 px-4 border border-solid border-red-type text-red-type rounded-full">
+                {priority}
+              </span>
+            </Tooltip>
+            <Tooltip title={"Status"} placement="top">
+              <span className="uppercase text-sm py-1 px-4 border border-solid border-bright-green text-bright-green rounded-full">
+                {status}
+              </span>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const priorityItems = [
   {
     label: "Low",
@@ -66,6 +132,8 @@ const TeamDetail = () => {
   // const [timeViewState, setTimeViewState] = useState(false);
   // Change between list view and calendar view state
   const [viewState, setViewState] = useState(false);
+  // false - calendar | true - list
+  const [calendarViewState, setCalendarViewState] = useState(false);
 
   const [datePickerValue, setDatePickerValue] = useState([
     dayjs("00:00:00", "HH:mm:ss"),
@@ -122,47 +190,267 @@ const TeamDetail = () => {
   return (
     <>
       <div className="flex-1 flex flex-col">
-        <div className="w-full flex flex-col bg-white p-4 rounded-xl transition">
-          <>
-            <div className="flex items-center justify-between pb-4 border-b border-solid border-[#f5f6fb] mb-4">
-              <div className="flex items-center">
-                <p className="uppercase font-semibold text-base mr-4">
-                  Meetings
-                </p>
-                <Tooltip placement="top" title="Calendar View">
-                  <MdAlignHorizontalLeft
-                    onClick={() => setViewState((prev) => !prev)}
-                    className={`cursor-pointer text-2xl mr-4 hover:text-bright-green cursor-pointer${
-                      !viewState && " text-bright-green"
-                    }`}
-                  />
-                </Tooltip>
-                <Tooltip placement="top" title="List View">
-                  <MdOutlineAlignVerticalTop
-                    onClick={() => setViewState((prev) => !prev)}
-                    className={`cursor-pointer text-2xl hover:text-bright-green cursor-pointer${
-                      viewState && " text-bright-green"
-                    }`}
-                  />
-                </Tooltip>
-              </div>
-              <div className="flex items-center">
-                <span
-                  onClick={() => toggleCreateMeetModal()}
-                  className="py-1 px-4 rounded-full bg-bright-green text-white cursor-pointer hover:bg-less-bright-green mr-2"
-                >
-                  Hold a meet
-                </span>
-                <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
-              </div>
+        <div className="w-full flex flex-col bg-white py-2 px-4 rounded-xl">
+          <div className="flex items-stretch justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
+            <div className="flex items-center">
+              <p className="uppercase font-semibold text-base mr-4">Meeting</p>
+              <span
+                onClick={() => setCalendarViewState(!calendarViewState)}
+                className={`krd-button${
+                  !calendarViewState ? "--active" : ""
+                } mr-2`}
+              >
+                Calendar View
+              </span>
+              <span
+                onClick={() => setCalendarViewState(!calendarViewState)}
+                className={`krd-button${calendarViewState ? "--active" : ""}`}
+              >
+                List View
+              </span>
             </div>
-            <DndCalendar
-              myEvents={myEvents}
-              setMyEvents={setMyEvents}
-              handleCreateMeet={handleCreateMeet}
-              toggleMeetDetailModal={toggleMeetDetailModal}
-            />
-          </>
+            <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
+          </div>
+          {!calendarViewState ? (
+            <>
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-4"></div>
+                <div className="flex items-center gap-3">
+                  <Tooltip placement="top" title="Hold a meet">
+                    <div
+                      onClick={() => toggleCreateMeetModal()}
+                      className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
+                    >
+                      <TbCalendarPlus className="text-2xl text-white" />
+                    </div>
+                  </Tooltip>
+                  <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
+                    <FaFilter className="text-base text-white" />
+                  </div>
+                  <div className="flex">
+                    <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
+                      <AiOutlineSearch className="text-base text-white" />
+                    </div>
+                    <input
+                      className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
+                      placeholder="Enter team's name / id..."
+                    />
+                  </div>
+                </div>
+              </div>
+              <DndCalendar
+                myEvents={myEvents}
+                setMyEvents={setMyEvents}
+                handleCreateMeet={handleCreateMeet}
+                toggleMeetDetailModal={toggleMeetDetailModal}
+              />
+              <div className="py-2"></div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center justify-between pb-4 border-b border-solid border-[#f5f6fb] mb-4">
+                <div className="flex items-center gap-3">
+                  <IoIosArrowDropleftCircle
+                    onClick={() => setCalendarViewState(!calendarViewState)}
+                    className="text-3xl text-bright-green"
+                  />
+                  <p className="font-medium">From</p>
+                  <DatePicker
+                    cellRender={(current) => {
+                      const style = {};
+                      if (current.date() === 1) {
+                        style.border = "1px solid #1677ff";
+                        style.borderRadius = "50%";
+                      }
+                      return (
+                        <div className="ant-picker-cell-inner" style={style}>
+                          {current.date()}
+                        </div>
+                      );
+                    }}
+                    defaultValue={dayjs()}
+                  />
+                  <p className="font-medium">To</p>
+                  <DatePicker
+                    cellRender={(current) => {
+                      const style = {};
+                      if (current.date() === 1) {
+                        style.border = "1px solid #1677ff";
+                        style.borderRadius = "50%";
+                      }
+                      return (
+                        <div className="ant-picker-cell-inner" style={style}>
+                          {current.date()}
+                        </div>
+                      );
+                    }}
+                    defaultValue={dayjs()}
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <Tooltip placement="top" title="Hold a meet">
+                    <div
+                      onClick={() => toggleCreateMeetModal()}
+                      className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
+                    >
+                      <TbCalendarPlus className="text-2xl text-white" />
+                    </div>
+                  </Tooltip>
+                  <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
+                    <FaFilter className="text-base text-white" />
+                  </div>
+                  <div className="flex">
+                    <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
+                      <AiOutlineSearch className="text-base text-white" />
+                    </div>
+                    <input
+                      className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
+                      placeholder="Enter team's name / id..."
+                    />
+                  </div>
+                  <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
+                </div>
+              </div>
+              <div className="flex items-center">
+                <h1 className="text-2xl font-bold mr-6">2023-6-29</h1>
+                <div className="flex items-center">
+                  <p className="pr-4 mr-3 text-xl border-r border-[#f5f6fb]">
+                    4 Meets
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <AiFillCheckCircle className="text-3xl text-bright-green" />
+                    <p className="text-lg">4 Meets End</p>
+                    <IoIosArrowForward className="text-2xl" />
+                    <p className="text-lg">0 To go ~</p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 flex justify-start">
+                <Timeline
+                  mode={"left"}
+                  items={[
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              </div>
+              <div className="flex items-center pt-6 border-t border-[#f5f6fb]">
+                <h1 className="text-2xl font-bold mr-6">2023-6-30</h1>
+                <div className="flex items-center">
+                  <p className="pr-4 mr-3 text-xl border-r border-[#f5f6fb]">
+                    4 Meets
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <AiFillCheckCircle className="text-3xl text-bright-green" />
+                    <p className="text-lg">4 Meets End</p>
+                    <IoIosArrowForward className="text-2xl" />
+                    <p className="text-lg">0 To go ~</p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 flex justify-start">
+                <Timeline
+                  mode={"left"}
+                  items={[
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                    {
+                      label: <TimelineLabel content={"11am"} />,
+                      children: (
+                        <TimelineChildren
+                          name={"Wake up"}
+                          time={"11AM - 11:30AM"}
+                          status={"done"}
+                          priority={"high"}
+                          toggleMeetDetailModal={toggleMeetDetailModal}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
 

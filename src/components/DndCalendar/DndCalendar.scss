@@ -1,0 +1,54 @@
+// .calendar-wrapper {
+
+// }
+
+.calendar-wrapper .rbc-calendar .rbc-month-view {
+  border-radius: 12px;
+}
+
+.calendar-wrapper .rbc-calendar .rbc-time-view {
+  border-radius: 12px;
+}
+
+.calendar-wrapper .rbc-header {
+  background-color: #f5f6fb;
+}
+
+.calendar-wrapper .rbc-header:first-child {
+  border-top-left-radius: 12px;
+}
+
+.calendar-wrapper .rbc-header:last-child {
+  border-top-right-radius: 12px;
+}
+
+.calendar-wrapper .rbc-selected {
+  @apply bg-bright-green;
+}
+
+.calendar-wrapper .rbc-selected .time-wrapper {
+  @apply bg-white text-85-gray;
+}
+
+.calendar-wrapper .rbc-selected .event-title {
+  @apply text-white;
+}
+
+.calendar-wrapper .rbc-row-segment {
+  position: relative;
+}
+
+.time-wrapper { 
+  @apply text-xs text-white bg-bright-green rounded-[3px] px-2 py-1;
+}
+
+.event-title {
+  @apply text-85-gray text-sm ml-2;
+}
+
+// .calendar-wrapper .rbc-event {
+//   background-color: #fff;
+//   @apply text-85-gray;
+//   box-shadow: 0 0 10px 0 rgba(0,43,22,0.3);
+//   padding: 4px 6px;
+// }
