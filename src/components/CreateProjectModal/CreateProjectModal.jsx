@@ -64,7 +64,10 @@ const CreateProjectModal = ({ toggleCreateProjectModal }) => {
         </div>
         <div className="modal-footer">
           <div className="flex gap-3 items-center">
-            <button className="bg-[#9C9C9C] text-white text-sm py-2 px-4 rounded-md">
+            <button
+              onClick={() => toggleCreateProjectModal()}
+              className="bg-[#9C9C9C] text-white text-sm py-2 px-4 rounded-md"
+            >
               Cancel
             </button>
             <button

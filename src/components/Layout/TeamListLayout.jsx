@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import DefaultNavbar from "../Navbar/DefaultNavbar";
 import Sidebar from "../Sidebar/Sidebar";
+import { ToastContainer } from "react-toastify";
 
 const TeamLayout = () => {
   const handleToggleSidebar = (type) => {
@@ -25,6 +26,19 @@ const TeamLayout = () => {
         <DefaultNavbar handleToggleSidebar={handleToggleSidebar} />
         <Outlet />
       </div>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

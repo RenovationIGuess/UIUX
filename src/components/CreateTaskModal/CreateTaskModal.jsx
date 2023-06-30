@@ -5,34 +5,61 @@ import { AiOutlineClose } from "react-icons/ai";
 import { toast } from "react-toastify";
 import image from "../../constant/image";
 import PropTypes from "prop-types";
+import { useState } from "react";
+import dayjs from "dayjs";
+import { KrdStateContext } from "../../contexts/ContextProvider";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 const CreateTaskModal = ({
-  toggleCreateTaskModal,
-  projects,
-  projectName,
-  setProjectName,
-  taskName,
-  setTaskName,
-  priorityValue,
-  setPriorityValue,
-  statusValue,
-  setStatusValue,
-  members,
-  deadlineValue,
-  setDeadlineValue,
-  taskDescription,
-  setTaskDescription,
+  start,
+  end,
+  setMyTasks,
+  setCreateTaskOpen,
+  // setCreateTaskOpen2,
 }) => {
+  const { users, projects } = KrdStateContext();
+
+  const [taskInfo, setTaskInfo] = useState({
+    name: "",
+    priority: "Low",
+    status: "to do",
+    completion: 0,
+    start: dayjs(start),
+    end: dayjs(end),
+    assignee: [],
+    supporter: [],
+    reviewer: [],
+    project: "",
+  });
+
+  const handleCreateTask = () => {
+    toast("Created Successful!");
+    setMyTasks((prev) => [
+      ...prev,
+      {
+        ...taskInfo,
+        creator: {
+          name: "Mr.Poumy",
+          image: image.poum,
+        },
+      },
+    ]);
+    setCreateTaskOpen(false);
+    // setCreateTaskOpen2(false);
+  };
+
   return (
-    <div className="create-task-modal modal-background modal-hidden">
+    <div className="create-task-modal modal-background">
       <div className="modal-container">
         <div className="modal-header">
           <p className="text-base font-semibold">Create Task</p>
           <AiOutlineClose
-            onClick={() => toggleCreateTaskModal()}
+            onClick={() => {
+              setCreateTaskOpen(false);
+              // setCreateTaskOpen2(false);
+            }}
             className="text-2xl hover:text-bright-green cursor-pointer"
           />
         </div>
@@ -55,8 +82,10 @@ const CreateTaskModal = ({
                     .toLowerCase()
                     .localeCompare((optionB?.label ?? "").toLowerCase())
                 }
-                value={projectName}
-                onChange={(value) => setProjectName(value)}
+                value={taskInfo.project}
+                onChange={(value) =>
+                  setTaskInfo({ ...taskInfo, project: value })
+                }
                 options={projects.map((p) => {
                   return {
                     value: p.name,
@@ -70,8 +99,10 @@ const CreateTaskModal = ({
               <Input
                 placeholder="Enter task name"
                 allowClear
-                value={taskName}
-                onChange={(e) => setTaskName(e.target.value)}
+                value={taskInfo.name}
+                onChange={(e) =>
+                  setTaskInfo({ ...taskInfo, name: e.target.value })
+                }
               />
             </div>
             <div className="flex flex-col mb-6">
@@ -84,15 +115,15 @@ const CreateTaskModal = ({
                     allowClear
                     placeholder="Select a priority"
                     optionFilterProp="children"
-                    // onChange={onChange}
-                    // onSearch={onSearch}
                     filterOption={(input, option) =>
                       (option?.label ?? "")
                         .toLowerCase()
                         .includes(input.toLowerCase())
                     }
-                    value={priorityValue}
-                    onChange={(value) => setPriorityValue(value)}
+                    value={taskInfo.priority}
+                    onChange={(value) =>
+                      setTaskInfo({ ...taskInfo, priority: value })
+                    }
                     options={[
                       {
                         value: "Low",
@@ -117,30 +148,30 @@ const CreateTaskModal = ({
                     showSearch
                     placeholder="Select a status"
                     optionFilterProp="children"
-                    // onChange={onChange}
-                    // onSearch={onSearch}
                     filterOption={(input, option) =>
                       (option?.label ?? "")
                         .toLowerCase()
                         .includes(input.toLowerCase())
                     }
-                    value={statusValue}
-                    onChange={(value) => setStatusValue(value)}
+                    value={taskInfo.status}
+                    onChange={(value) =>
+                      setTaskInfo({ ...taskInfo, status: value })
+                    }
                     options={[
                       {
-                        value: "TODO",
+                        value: "to do",
                         label: "TODO",
                       },
                       {
-                        value: "IN PROGRESS",
+                        value: "in progress",
                         label: "IN PROGRESS",
                       },
                       {
-                        value: "IN REVIEW",
+                        value: "in review",
                         label: "IN REVIEW",
                       },
                       {
-                        value: "DONE",
+                        value: "done",
                         label: "DONE",
                       },
                     ]}
@@ -153,70 +184,180 @@ const CreateTaskModal = ({
               <div className="flex flex-col">
                 <p className="text-sm font-medium mb-2">Assignee</p>
                 <Select
+                  mode="multiple"
                   className="mb-2"
                   placeholder="Choose an Assignee"
-                  options={members.map((mem) => {
+                  allowClear
+                  options={users.map((mem) => {
                     return {
                       value: mem.name,
                       label: mem.name,
                     };
                   })}
+                  value={taskInfo.assignee}
+                  onChange={(value) => {
+                    setTaskInfo({
+                      ...taskInfo,
+                      assignee: value,
+                    });
+                  }}
                 />
-                <div className="flex items-center">
-                  <img
-                    src={image.poum}
-                    alt="ava"
-                    className="w-8 h-8 rounded-full mr-4"
-                  />
-                  <p className="text-sm">Mr.Poum</p>
+                <div className="flex flex-col gap-2">
+                  {taskInfo.assignee.map((a, i) => {
+                    const index = users.findIndex((u) => u.name === a);
+                    return (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center">
+                          <img
+                            src={users[index].image}
+                            alt="ava"
+                            className="w-8 h-8 rounded-full mr-4"
+                          />
+                          <p className="text-sm">{users[index].name}</p>
+                        </div>
+                        <AiOutlineClose
+                          onClick={() =>
+                            setTaskInfo({
+                              ...taskInfo,
+                              assignee: taskInfo.assignee.filter(
+                                (mem) => mem !== a
+                              ),
+                            })
+                          }
+                          className="text-xl cursor-pointer"
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               <div className="flex flex-col">
                 <p className="text-sm font-medium mb-2">Reviewer</p>
                 <Select
+                  mode="multiple"
                   className="mb-2"
-                  placeholder="Choose a Reviewer"
-                  options={members.map((mem) => {
+                  placeholder="Choose an Assignee"
+                  allowClear
+                  options={users.map((mem) => {
                     return {
                       value: mem.name,
                       label: mem.name,
                     };
                   })}
+                  value={taskInfo.reviewer}
+                  onChange={(value) => {
+                    setTaskInfo({
+                      ...taskInfo,
+                      reviewer: value,
+                    });
+                  }}
                 />
-                <div className="flex items-center">
-                  <img
-                    src={image.poum}
-                    alt="ava"
-                    className="w-8 h-8 rounded-full mr-4"
-                  />
-                  <p className="text-sm">Mr.Poum</p>
+                <div className="flex flex-col gap-2">
+                  {taskInfo.reviewer.map((a, i) => {
+                    const index = users.findIndex((u) => u.name === a);
+                    return (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center">
+                          <img
+                            src={users[index].image}
+                            alt="ava"
+                            className="w-8 h-8 rounded-full mr-4"
+                          />
+                          <p className="text-sm">{users[index].name}</p>
+                        </div>
+                        <AiOutlineClose
+                          onClick={() =>
+                            setTaskInfo({
+                              ...taskInfo,
+                              reviewer: taskInfo.reviewer.filter(
+                                (mem) => mem !== a
+                              ),
+                            })
+                          }
+                          className="text-xl cursor-pointer"
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               <div className="flex flex-col">
                 <p className="text-sm font-medium mb-2">Supporter</p>
                 <Select
+                  mode="multiple"
                   className="mb-2"
-                  placeholder="Choose a Supporter"
-                  options={members.map((mem) => {
+                  placeholder="Choose an Assignee"
+                  allowClear
+                  options={users.map((mem) => {
                     return {
                       value: mem.name,
                       label: mem.name,
                     };
                   })}
+                  value={taskInfo.supporter}
+                  onChange={(value) => {
+                    setTaskInfo({
+                      ...taskInfo,
+                      supporter: value,
+                    });
+                  }}
                 />
-                <div className="flex items-center">
-                  <img
-                    src={image.poum}
-                    alt="ava"
-                    className="w-8 h-8 rounded-full mr-4"
-                  />
-                  <p className="text-sm">Mr.Poum</p>
+                <div className="flex flex-col gap-2">
+                  {taskInfo.supporter.map((a, i) => {
+                    const index = users.findIndex((u) => u.name === a);
+                    return (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center">
+                          <img
+                            src={users[index].image}
+                            alt="ava"
+                            className="w-8 h-8 rounded-full mr-4"
+                          />
+                          <p className="text-sm">{users[index].name}</p>
+                        </div>
+                        <AiOutlineClose
+                          onClick={() =>
+                            setTaskInfo({
+                              ...taskInfo,
+                              supporter: taskInfo.supporter.filter(
+                                (mem) => mem !== a
+                              ),
+                            })
+                          }
+                          className="text-xl cursor-pointer"
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
             <div className="flex flex-col mb-6">
-              <p className="font-medium mb-2">Deadline</p>
-              <RangePicker showTime />
+              <p className="font-medium mb-2">Date & Time</p>
+              <RangePicker
+                showTime={{
+                  hideDisabledOptions: true,
+                  defaultValue: [start, end],
+                }}
+                onChange={(e) => {
+                  setTaskInfo({
+                    ...taskInfo,
+                    start: e[0],
+                    end: e[1],
+                  });
+                }}
+                value={[taskInfo.start, taskInfo.end]}
+                format="YYYY-MM-DD HH:mm:ss"
+              />
             </div>
             <div className="flex flex-col">
               <p className="font-medium mb-2">Task Description</p>
@@ -231,13 +372,18 @@ const CreateTaskModal = ({
         </div>
         <div className="modal-footer">
           <div className="flex gap-3 items-center">
-            <button onClick={() => toggleCreateTaskModal()} className="bg-[#9C9C9C] text-white text-sm py-2 px-4 rounded-md">
+            <button
+              onClick={() => {
+                setCreateTaskOpen(false);
+                // setCreateTaskOpen2(false);
+              }}
+              className="bg-[#9C9C9C] text-white text-sm py-2 px-4 rounded-md"
+            >
               Cancel
             </button>
             <button
               onClick={() => {
-                toast("Created Successful!");
-                toggleCreateTaskModal();
+                handleCreateTask();
               }}
               className="bg-bright-green text-white text-sm py-2 px-4 rounded-md"
             >

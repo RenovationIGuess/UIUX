@@ -19,6 +19,7 @@ import trashkun from "../assets/trashkun.png";
 import bgex2 from "../assets/bgex2.jpg";
 import bgex3 from "../assets/bgex3.jpg";
 import bgex1 from "../assets/bgexample1.jpg";
+import notfound from "../assets/404.png";
 
 export default {
   kuru,
@@ -38,4 +39,5 @@ export default {
   bgex2,
   bgex3,
   bgex1,
+  notfound,
 };

@@ -51,7 +51,10 @@ const TaskItem = ({ task }) => {
               <span>View Details</span>
             </Link>
             <button
-              onClick={() => showModal()}
+              onClick={(e) => {
+                e.stopPropagation();
+                showModal();
+              }}
               className="flex items-center justify-center py-2 px-4 rounded-md bg-red-type text-white"
             >
               <span>Delete</span>

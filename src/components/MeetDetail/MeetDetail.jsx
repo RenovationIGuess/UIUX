@@ -48,7 +48,11 @@ const colorArray = [
   "#EB2F964D",
 ];
 
-const MeetDetail = ({ toggleMeetDetailModal }) => {
+const MeetDetail = ({ 
+  setMeetDetailOpen, 
+  // setMeetDetailOpen2, 
+  event 
+}) => {
   const [editState, setEditState] = useState(false);
   const [dateColor, setDateColor] = useState("#1677ff00");
   const [meetColor, setMeetColor] = useState("#1677ff00");
@@ -67,19 +71,22 @@ const MeetDetail = ({ toggleMeetDetailModal }) => {
   return (
     <>
       {!editState ? (
-        <div className="meet-detail-modal modal-background modal-hidden">
+        <div className="meet-detail-modal modal-background">
           <div className="modal-container">
             <div className="modal-header">
               <p className="text-base font-semibold">Meet&apos;s Detail</p>
               <AiOutlineClose
-                onClick={() => toggleMeetDetailModal()}
+                onClick={() => {
+                  setMeetDetailOpen(false);
+                  // setMeetDetailOpen2(false);
+                }}
                 className="text-2xl hover:text-bright-green cursor-pointer"
               />
             </div>
             <div className="modal-body">
               <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-medium">
-                  Meeting with the Rock!!!
+                  {event.title || event.name}
                 </h1>
                 <Tooltip placement="top" title="Edit">
                   <AiFillEdit
@@ -139,27 +146,43 @@ const MeetDetail = ({ toggleMeetDetailModal }) => {
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center gap-3">
                   <p className="font-medium">Priority</p>
-                  <span className="rounded-full py-1 px-4 text-sm text-red-type border border-solid border-red-type uppercase">
-                    High
+                  <span
+                    className={`rounded-full py-1 px-4 text-sm border uppercase ${
+                      event.priority === "high"
+                        ? "border-red-type text-red-type"
+                        : event.priority === "medium"
+                        ? "border-yellow-type text-yellow-type"
+                        : "border-bright-green text-bright-green"
+                    }`}
+                  >
+                    {event.priority}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <p className="font-medium">Status</p>
-                  <span className="rounded-full py-1 px-4 text-sm text-bright-green border border-solid border-bright-green uppercase">
-                    Done
+                  <span
+                    className={`rounded-full py-1 px-4 text-sm border uppercase ${
+                      event.status === "done"
+                        ? "border-bright-green text-bright-green"
+                        : event.status === "to do"
+                        ? "border-45-gray text-45-gray"
+                        : "border-yellow-type text-yellow-type"
+                    }`}
+                  >
+                    {event.status}
                   </span>
                 </div>
               </div>
               <div className="flex items-center mb-4">
                 <img
                   className="w-9 h-9 rounded-full mr-4"
-                  src={image.poum}
+                  src={event.creator.image}
                   alt="creator-avatar"
                 />
                 <div className="flex flex-col">
                   <p>
-                    <span className="font-medium">Mr.Poum</span>&nbsp;is the
-                    creator
+                    <span className="font-medium">{event.creator.name}</span>
+                    &nbsp;is the creator
                   </p>
                   <p className="font-semibold text-sm text-45-gray">
                     Project Manager
@@ -171,7 +194,11 @@ const MeetDetail = ({ toggleMeetDetailModal }) => {
                 <div className="flex flex-col">
                   <div className="flex items-center gap-6 mb-1">
                     {/* <p className="font-medium">Tuesday, January 21</p> */}
-                    <p className="font-medium">9:00 PM - 4:00 AM</p>
+                    <p className="font-medium">
+                      {dayjs(event.start).format("YYYY-MM-DD HH:mm")}
+                      &nbsp;-&nbsp;
+                      {dayjs(event.end).format("YYYY-MM-DD HH:mm")}
+                    </p>
                   </div>
                   <span className="text-sm font-medium text-45-gray">
                     Time zone - Vietnam
@@ -186,45 +213,27 @@ const MeetDetail = ({ toggleMeetDetailModal }) => {
                 <div className="flex items-start gap-4 mb-3">
                   <AiOutlineTeam className="text-2xl" />
                   <div className="grid grid-cols-3 gap-4">
-                    <div className="flex items-center gap-3">
-                      <img
-                        className="w-9 h-9 rounded-full"
-                        src={image.poum}
-                        alt
-                      />
-                      <div className="flex flex-col gap-1">
-                        <p className="text-base font-medium">Mr.Poum</p>
-                        <p className="text-xs text-dark-gray">
-                          Project Manager
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <img
-                        className="w-9 h-9 rounded-full"
-                        src={image.poum}
-                        alt
-                      />
-                      <div className="flex flex-col gap-1">
-                        <p className="text-base font-medium">Mr.Poum</p>
-                        <p className="text-xs text-dark-gray">
-                          Project Manager
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <img
-                        className="w-9 h-9 rounded-full"
-                        src={image.poum}
-                        alt
-                      />
-                      <div className="flex flex-col gap-1">
-                        <p className="text-base font-medium">Mr.Poum</p>
-                        <p className="text-xs text-dark-gray">
-                          Project Manager
-                        </p>
-                      </div>
-                    </div>
+                    {event.members.length === 0 ? (
+                      <>
+                        <p className="">No members assigned</p>
+                      </>
+                    ) : (
+                      event.members.map((m, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <img
+                            className="w-9 h-9 rounded-full"
+                            src={m.image}
+                            alt="mem-ava"
+                          />
+                          <div className="flex flex-col gap-1">
+                            <p className="text-base font-medium">{m.name}</p>
+                            <p className="text-xs text-dark-gray">
+                              Project Manager
+                            </p>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>
@@ -248,12 +257,15 @@ const MeetDetail = ({ toggleMeetDetailModal }) => {
           </div>
         </div>
       ) : (
-        <div className="meet-detail-modal modal-background modal-hidden">
+        <div className="meet-detail-modal modal-background">
           <div className="modal-container">
             <div className="modal-header">
               <p className="text-base font-semibold">Edit Meeting</p>
               <AiOutlineClose
-                onClick={() => toggleMeetDetailModal()}
+                onClick={() => {
+                  setMeetDetailOpen(false);
+                  // setMeetDetailOpen2(false);
+                }}
                 className="text-2xl hover:text-bright-green cursor-pointer"
               />
             </div>
@@ -380,14 +392,13 @@ const MeetDetail = ({ toggleMeetDetailModal }) => {
               <div className="flex items-center gap-4 mb-3">
                 <AiFillClockCircle className="text-45-gray text-2xl" />
                 <div className="flex flex-col">
-                  <p className="text-85-gray font-medium">Pick date & time</p>
+                  <p className="text-85-gray font-medium mb-2">
+                    Pick date & time
+                  </p>
                   <RangePicker
                     showTime={{
                       hideDisabledOptions: true,
-                      defaultValue: [
-                        dayjs("00:00:00", "HH:mm:ss"),
-                        dayjs("11:59:59", "HH:mm:ss"),
-                      ],
+                      defaultValue: [dayjs(event.start), dayjs(event.end)],
                     }}
                     format="YYYY-MM-DD HH:mm:ss"
                   />

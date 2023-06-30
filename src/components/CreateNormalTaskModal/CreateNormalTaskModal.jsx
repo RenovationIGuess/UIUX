@@ -49,8 +49,6 @@ const CreateNormalTaskModal = ({
                     allowClear
                     placeholder="Select a priority"
                     optionFilterProp="children"
-                    // onChange={onChange}
-                    // onSearch={onSearch}
                     filterOption={(input, option) =>
                       (option?.label ?? "")
                         .toLowerCase()
@@ -82,8 +80,6 @@ const CreateNormalTaskModal = ({
                     showSearch
                     placeholder="Select a status"
                     optionFilterProp="children"
-                    // onChange={onChange}
-                    // onSearch={onSearch}
                     filterOption={(input, option) =>
                       (option?.label ?? "")
                         .toLowerCase()

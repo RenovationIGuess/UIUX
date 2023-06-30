@@ -71,8 +71,8 @@ const Sidebar = ({ handleToggleSidebar }) => {
         </div>
         <div className="sidebar-item">
           <AiFillCalendar className="text-2xl mr-3" />
-          <Link to="/calendar" className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
-            Calendar
+          <Link to="/workspace" className="flex-1 text-base overflow-hidden text-ellipsis font-medium">
+            Workspace
           </Link>
         </div>
         <motion.div

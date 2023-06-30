@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { Fragment, useCallback, useMemo, useState } from "react";
+import React, { Fragment, useCallback, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 import { Calendar, Views, DateLocalizer } from "react-big-calendar";
@@ -14,6 +14,11 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.scss";
 import styles from "./rendering.module.scss";
 import CustomHeader from "./CustomHeader";
 import "./DndCalendar.scss";
+import CreateMeetModal from "../CreateMeetModal/CreateMeetModal";
+import { Tooltip } from "antd";
+import MeetDetail from "../MeetDetail/MeetDetail";
+import { useNavigate } from "react-router-dom";
+import CreateTaskModal from "../CreateTaskModal/CreateTaskModal";
 
 const localizer = dayjsLocalizer(dayjs);
 dayjs.extend(toObject);
@@ -23,12 +28,10 @@ const DragAndDropCalendar = withDragAndDrop(Calendar);
 const EventHoverPopup = ({ event }) => {
   return (
     <>
-      <div>
-
-      </div>
+      <div></div>
     </>
-  )
-}
+  );
+};
 
 function Event({ event }) {
   const { startTime, endTime } = useMemo(() => {
@@ -39,15 +42,114 @@ function Event({ event }) {
   }, []);
 
   return (
-    <span className="flex items-center justify-between">
+    <div className="flex items-center justify-between">
       <div className="flex items-center">
         <span className="time-wrapper">
           {startTime}&nbsp;-&nbsp;{endTime}
         </span>
-        {/* {event.desc && ':  ' + event.desc} */}
-        <span className="event-title">{event.title}</span>
+        <span className="event-title">{event.title || event.name}</span>
       </div>
-    </span>
+    </div>
+  );
+}
+Event.propTypes = {
+  event: PropTypes.object,
+};
+
+function CustomDayEvent({ event }) {
+  const { startTime, endTime } = useMemo(() => {
+    return {
+      startTime: dayjs(event.start).format("HH:mm"),
+      endTime: dayjs(event.end).format("HH:mm"),
+    };
+  }, []);
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex items-center justify-between mb-3">
+        <div className="items-center flex">
+          <p className="time-wrapper">
+            {startTime}&nbsp;-&nbsp;{endTime}
+          </p>
+          <p className="event-title font-medium">{event.title}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <p
+            className={`py-1 px-3 font-medium text-xs uppercase border rounded-full ${
+              event.priority === "high"
+                ? "border-red-type text-red-type"
+                : event.priority === "medium"
+                ? "border-yellow-type text-yellow-type"
+                : "border-bright-green text-bright-green"
+            }`}
+          >
+            {event.priority}
+          </p>
+          <p
+            className={`py-1 px-3 font-medium text-xs uppercase border rounded-full ${
+              event.status === "done"
+                ? "border-bright-green text-bright-green"
+                : event.status === "todo"
+                ? "border-45-gray text-45-gray"
+                : "border-yellow-type text-yellow-type"
+            }`}
+          >
+            {event.status}
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <img
+            className="w-6 h-6 rounded-full mr-2"
+            src={event.creator.image}
+            alt="creator-image"
+          />
+          <p className="text-sm">{event.creator.name} is the Creator</p>
+        </div>
+        {Object.keys(event.team).length !== 0 && (
+          <Tooltip placement="top" title="Team">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium hover:text-bright-green">
+                {event.team.name}
+              </p>
+              <img
+                className="h-6 w-6 rounded-full"
+                src={event.team.image}
+                alt="team-ava"
+              />
+            </div>
+          </Tooltip>
+        )}
+        {Object.keys(event.workspace).length !== 0 && (
+          <Tooltip placement="top" title="Workspace">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium hover:text-bright-green">
+                {event.workspace.name}
+              </p>
+              <img
+                className="h-6 w-6 rounded-full"
+                src={event.workspace.image}
+                alt="team-ava"
+              />
+            </div>
+          </Tooltip>
+        )}
+      </div>
+      <div className="flex items-center">
+        {console.log(event)}
+        {event.members.splice(0, 3).map((m, i) => (
+          <img
+            key={i}
+            src={m.image}
+            className="w-6 h-6 rounded-full"
+            style={{ transform: `translateX(${i * -50}%)` }}
+            alt="sth"
+          />
+        ))}
+        <p className="text-sm">{event.members.length} members assigned</p>
+      </div>
+    </div>
   );
 }
 Event.propTypes = {
@@ -98,26 +200,42 @@ const customSlotPropGetter = (date) => {
 };
 
 export default function DndCalendar({
+  type,
   myEvents,
   setMyEvents,
-  toggleMeetDetailModal,
-  handleCreateMeet,
+  setMyTasks,
+  createMeetOpen,
+  meetDetailOpen,
+  setMeetDetailOpen,
+  setCreateMeetOpen,
+  createTaskOpen,
+  setCreateTaskOpen,
 }) {
-  const [dayLayoutAlgorithm, setDayLayoutAlgorithm] = useState('no-overlap');
+  const navigate = useNavigate();
+
+  // const [dayLayoutAlgorithm, setDayLayoutAlgorithm] = useState('no-overlap');
+  const startEndRef = useRef({ start: new Date(), end: new Date() });
+  const [selectedEvent, setSelectedEvent] = useState({});
 
   const handleSelectSlot = useCallback(
     ({ start, end }) => {
-      // const title = window.prompt("New Event name");
-      // if (title) {
-      //   setMyEvents((prev) => [...prev, { start, end, title }]);
-      // }
-      handleCreateMeet(start, end);
+      startEndRef.current = {
+        start: start,
+        end: end,
+      };
+      type === "meet" ? setCreateMeetOpen(true) : setCreateTaskOpen(true);
+      // toggleCreateMeetModal();
     },
     [setMyEvents]
   );
 
   const handleSelectEvent = useCallback((event) => {
-    toggleMeetDetailModal();
+    if (type === "meet") {
+      setSelectedEvent(event);
+      setMeetDetailOpen(true);
+    } else {
+      navigate('/team/1/tasks/1');
+    }
   }, []);
 
   const moveEvent = useCallback(
@@ -157,13 +275,14 @@ export default function DndCalendar({
         toolbar: CustomToolbar,
         day: {
           header: CustomHeader,
+          event: CustomDayEvent,
         },
         week: {
           header: CustomHeader,
         },
         month: {
           header: CustomHeader,
-        }
+        },
       },
       defaultDate: new Date(),
       // views: {
@@ -171,8 +290,6 @@ export default function DndCalendar({
     }),
     []
   );
-
-  // const defaultDate = useMemo(() => new Date(), []);
 
   return (
     <Fragment>
@@ -195,6 +312,31 @@ export default function DndCalendar({
           resizable
         />
       </div>
+
+      {createMeetOpen && (
+        <CreateMeetModal
+          setMyEvents={setMyEvents}
+          setCreateMeetOpen={setCreateMeetOpen}
+          start={startEndRef.current.start}
+          end={startEndRef.current.end}
+        />
+      )}
+
+      {meetDetailOpen && (
+        <MeetDetail
+          setMeetDetailOpen={setMeetDetailOpen}
+          event={selectedEvent}
+        />
+      )}
+
+      {createTaskOpen && (
+        <CreateTaskModal
+          setMyTasks={setMyTasks}
+          setCreateTaskOpen={setCreateTaskOpen}
+          start={startEndRef.current.start}
+          end={startEndRef.current.end}
+        />
+      )}
     </Fragment>
   );
 }

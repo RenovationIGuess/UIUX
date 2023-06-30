@@ -1,6 +1,7 @@
 import { Progress } from "antd";
 import { BiChevronsDown } from "react-icons/bi";
 import { IoIosArrowUp } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 const TaskStatistic = () => {
   return (
@@ -66,9 +67,9 @@ const TaskStatistic = () => {
         <p className="text-base font-medium">
           Total Tasks: 100.504.105.156.403
         </p>
-        <button className="flex items-center justify-center py-2 px-4 text-sm bg-bright-green text-white hover:bg-less-bright-green cursor-pointer rounded-md">
+        <Link to="/team/1/tasks" className="flex items-center justify-center py-2 px-4 text-sm bg-bright-green text-white hover:bg-less-bright-green cursor-pointer rounded-md">
           View Detail
-        </button>
+        </Link>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { DatePicker, Progress, Timeline, Tooltip } from "antd";
+import { DatePicker, Modal, Progress, Timeline, Tooltip } from "antd";
 import { BiChevronsDown } from "react-icons/bi";
 import DndCalendar from "../components/DndCalendar/DndCalendar";
 import { TiArrowSortedDown } from "react-icons/ti";
@@ -12,19 +12,18 @@ import {
 import image from "../constant/image";
 import { useState } from "react";
 import events from "../constant/events";
-import MeetDetail from "../components/MeetDetail/MeetDetail";
-import { TbCalendarPlus } from "react-icons/tb";
 import { FaFilter } from "react-icons/fa";
 import { IoIosArrowDropleftCircle, IoIosArrowForward } from "react-icons/io";
 import dayjs from "dayjs";
-import CreateMeetModal from "../components/CreateMeetModal/CreateMeetModal";
-import { toast } from "react-toastify";
 import { KrdStateContext } from "../contexts/ContextProvider";
 import { MdOutlineAddTask } from "react-icons/md";
 import PaginateFooter from "../components/PaginateFooter/PaginateFooter";
 import CreateNormalTaskModal from "../components/CreateNormalTaskModal/CreateNormalTaskModal";
 import NormalTaskItem from "../components/NormalTaskItem/NormalTaskItem";
 import EditNormalTaskModal from "../components/EditNormalTaskModal/EditNormalTaskModal";
+import { TbCalendarPlus } from "react-icons/tb";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const RightSideTaskItem = ({ task }) => {
   return (
@@ -61,103 +60,130 @@ const RightSideMeetItem = ({ meet }) => {
   );
 };
 
-const TimelineLabel = ({ content }) => {
+const TimelineLabel = ({ startTime }) => {
   return (
-    <p className="font-bold uppercase text-45-gray text-base mr-2">{content}</p>
+    <p className="pl-4 font-bold uppercase text-45-gray text-base">
+      {startTime}
+      {startTime > 12 ? "PM" : "AM"}
+    </p>
   );
 };
 
-const TimelineChildren = ({ meet, toggleMeetDetailModal }) => {
-  // const navigate = useNavigate();
+const TimelineChildren = ({ event, setMeetDetailOpen, setSelectedMeet }) => {
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalText, setModalText] = useState("Are you sure you want to delete");
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const handleOk = () => {
+    setModalText("The modal will be closed after two seconds");
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+      toast("Delete Successfully!");
+    }, 1000);
+  };
+
+  const handleCancel = () => {
+    console.log("Clicked cancel button");
+    setOpen(false);
+  };
+
   return (
-    <div
-      className="flex flex-col cursor-pointer"
-      onClick={() => toggleMeetDetailModal()}
-    >
-      <div className="w-full h-[1px] mb-2 bg-45-gray"></div>
-      <div className="rounded-xl bg-white flex-col flex border border-solid border-black py-2 px-4">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center">
-            <p className="text-xl font-semibold hover:text-bright-green">
-              {meet.title}
-            </p>
+    <>
+      <div
+        className="flex flex-col"
+        onClick={() => {
+          setSelectedMeet(event);
+          setMeetDetailOpen(true);
+        }}
+      >
+        <div className="w-full h-[1px] mb-2 bg-45-gray"></div>
+        <div className="rounded-xl bg-white flex-col flex border border-solid border-black py-2 px-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center">
+              <p className="text-xl font-semibold pr-4 mr-3 border-r border-[#f5f6fb] cursor-pointer hover:text-bright-green">
+                {event.title}
+              </p>
+              {Object.keys(event.team).length !== 0 && (
+                <p className="text-base font-medium">
+                  Team&nbsp;-&nbsp;{" "}
+                  <Link
+                    to="/team/1/your-stats"
+                    className="text-bsae font-semibold hover:text-bright-green cursor-pointer"
+                  >
+                    {event.team.name}
+                  </Link>
+                </p>
+              )}
+              {Object.keys(event.workspace).length !== 0 && (
+                <p className="text-base font-medium">
+                  Workspace&nbsp;-&nbsp;{" "}
+                  <Link
+                    to="/calendar/1"
+                    className="text-bsae font-semibold hover:text-bright-green cursor-pointer"
+                  >
+                    {event.workspace.name}
+                  </Link>
+                </p>
+              )}
+            </div>
+            {/* <BsThreeDots className="text-2xl" /> */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                showModal();
+              }}
+              className="cursor-pointer bg-red-type text-white py-1 px-3 rounded-lg"
+            >
+              Delete
+            </button>
           </div>
-          {/* <BsThreeDots className="text-2xl" /> */}
-          <button className="cursor-pointer bg-red-type text-white py-1 px-3 rounded-lg">
-            Delete
-          </button>
-        </div>
-        <div className="flex items-center gap-4">
-          <img
-            src={image.poum}
-            alt="creator-avatar"
-            className="w-8 h-8 rounded-full"
-          />
-          <p className="text-45-gray text-sm font-bold uppercase">
-            {dayjs(meet.start).format("YYYY-MM-DD HH:mm")}&nbsp;-&nbsp;
-            {dayjs(meet.end).format("YYYY-MM-DD HH:mm")}
-          </p>
-          <div className="flex items-center gap-2">
-            <Tooltip title={"Priority"} placement="top">
-              <span className="uppercase text-sm py-1 px-4 border border-solid border-red-type text-red-type rounded-full">
-                {meet.priority}
-              </span>
+          <div className="flex items-center gap-4">
+            <Tooltip placement="top" title="Creator Avatar">
+              <img
+                src={image.poum}
+                alt="creator-avatar"
+                className="w-8 h-8 rounded-full"
+              />
             </Tooltip>
-            <Tooltip title={"Status"} placement="top">
-              <span className="uppercase text-sm py-1 px-4 border border-solid border-bright-green text-bright-green rounded-full">
-                {meet.status}
-              </span>
-            </Tooltip>
+            <p className="text-45-gray text-sm font-bold uppercase">
+              {dayjs(event.start).format("YYYY-MM-DD HH:mm")}&nbsp;-&nbsp;
+              {dayjs(event.end).format("YYYY-MM-DD HH:mm")}
+            </p>
+            <div className="flex items-center gap-2">
+              <Tooltip title={"Priority"} placement="top">
+                <span className="uppercase text-sm py-1 px-4 border border-solid border-red-type text-red-type rounded-full">
+                  {event.priority}
+                </span>
+              </Tooltip>
+              <Tooltip title={"Status"} placement="top">
+                <span className="uppercase text-sm py-1 px-4 border border-solid border-bright-green text-bright-green rounded-full">
+                  {event.status}
+                </span>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <Modal
+        title="Delete Meet"
+        centered
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <p>{modalText}</p>
+      </Modal>
+    </>
   );
 };
-
-const range = (start, end) => {
-  const result = [];
-  for (let i = start; i < end; i++) {
-    result.push(i);
-  }
-  return result;
-};
-
-// eslint-disable-next-line arrow-body-style
-const disabledDate = (current) => {
-  // Can not select days before today and today
-  return current && current < dayjs().endOf("day");
-};
-
-const disabledRangeTime = (_, type) => {
-  if (type === "start") {
-    return {
-      disabledHours: () => range(0, 60).splice(4, 20),
-      disabledMinutes: () => range(30, 60),
-      disabledSeconds: () => [55, 56],
-    };
-  }
-  return {
-    disabledHours: () => range(0, 60).splice(20, 4),
-    disabledMinutes: () => range(0, 31),
-    disabledSeconds: () => [55, 56],
-  };
-};
-
-const priorityItems = [
-  {
-    label: "Low",
-    value: "Low",
-  },
-  {
-    label: "Medium",
-    value: "Medium",
-  },
-  {
-    label: "High",
-    value: "High",
-  },
-];
 
 const CalendarDetail = () => {
   const { tasks } = KrdStateContext();
@@ -166,34 +192,14 @@ const CalendarDetail = () => {
   const [myTasks, setMyTasks] = useState(tasks);
   const [calendarViewState, setCalendarViewState] = useState(false);
   const [taskViewState, setTaskViewState] = useState("list");
-  // Create meet form
-  const [meetInfo, setMeetInfo] = useState({
-    title: "",
-    type: "Event",
-    priority: "Low",
-    start: "",
-    end: "",
-    links: "",
-    // attachments: [],
-  });
+
+  const [createMeetOpen, setCreateMeetOpen] = useState(false);
+  const [meetDetailOpen, setMeetDetailOpen] = useState(false);
+  const [createTaskOpen, setCreateTaskOpen] = useState(false);
 
   const [taskName, setTaskName] = useState("");
   const [priorityValue, setPriorityValue] = useState("");
   const [statusValue, setStatusValue] = useState("");
-
-  const [datePickerValue, setDatePickerValue] = useState([
-    dayjs("00:00:00", "HH:mm:ss"),
-    dayjs("11:59:59", "HH:mm:ss"),
-  ]);
-
-  const handleCreateMeet = () => {
-    toggleCreateMeetModal();
-  };
-
-  const toggleMeetDetailModal = () => {
-    const modalElement = document.querySelector(".meet-detail-modal");
-    modalElement.classList.toggle("modal-hidden");
-  };
 
   const toggleCreateMeetModal = () => {
     const modalElement = document.querySelector(".create-meet-modal");
@@ -342,10 +348,11 @@ const CalendarDetail = () => {
                 </div>
               </div>
               <DndCalendar
+                type="task"
                 myEvents={myTasks}
-                setMyEvents={setMyTasks}
-                handleCreateMeet={handleCreateMeet}
-                toggleMeetDetailModal={toggleMeetDetailModal}
+                setMyTasks={setMyTasks}
+                createTaskOpen={createTaskOpen}
+                setCreateTaskOpen={setCreateTaskOpen}
               />
               <div className="py-2"></div>
             </>
@@ -401,10 +408,13 @@ const CalendarDetail = () => {
                 </div>
               </div>
               <DndCalendar
+                type="meet"
                 myEvents={myEvents}
                 setMyEvents={setMyEvents}
-                handleCreateMeet={handleCreateMeet}
-                toggleMeetDetailModal={toggleMeetDetailModal}
+                createMeetOpen={createMeetOpen}
+                setCreateMeetOpen={setCreateMeetOpen}
+                meetDetailOpen={meetDetailOpen}
+                setMeetDetailOpen={setMeetDetailOpen}
               />
               <div className="py-2"></div>
             </>
@@ -490,13 +500,16 @@ const CalendarDetail = () => {
               <div className="mt-6 flex justify-start">
                 <Timeline
                   mode={"left"}
-                  items={myEvents.splice(0, 3).map((e) => {
+                  items={myEvents.slice(0, 4).map((e) => {
                     return {
-                      label: <TimelineLabel content={"11am"} />,
+                      label: (
+                        <TimelineLabel startTime={dayjs(e.start).hour()} />
+                      ),
                       children: (
                         <TimelineChildren
-                          meet={e}
-                          toggleMeetDetailModal={toggleMeetDetailModal}
+                          event={e}
+                          // setMeetDetailOpen={setMeetDetailOpen2}
+                          // setSelectedMeet={setSelectedMeet}
                         />
                       ),
                     };
@@ -520,13 +533,16 @@ const CalendarDetail = () => {
               <div className="mt-6 flex justify-start">
                 <Timeline
                   mode={"left"}
-                  items={myEvents.splice(4, 7).map((e) => {
+                  items={myEvents.slice(4, 8).map((e) => {
                     return {
-                      label: <TimelineLabel content={"11am"} />,
+                      label: (
+                        <TimelineLabel startTime={dayjs(e.start).hour()} />
+                      ),
                       children: (
                         <TimelineChildren
-                          meet={e}
-                          toggleMeetDetailModal={toggleMeetDetailModal}
+                          event={e}
+                          // setMeetDetailOpen={setMeetDetailOpen2}
+                          // setSelectedMeet={setSelectedMeet}
                         />
                       ),
                     };
@@ -572,9 +588,12 @@ const CalendarDetail = () => {
                 <TiArrowSortedDown className="text-xl" />
               </div>
               <div className="w-full pl-4 flex flex-col mt-2 gap-2 mb-3">
-                {tasks.filter((t) => t.priority === "high").splice(0, 2).map((t, index) => (
-                  <RightSideTaskItem task={t} key={index} />
-                ))}
+                {tasks
+                  .filter((t) => t.priority === "high")
+                  .splice(0, 2)
+                  .map((t, index) => (
+                    <RightSideTaskItem task={t} key={index} />
+                  ))}
               </div>
             </div>
             <div className="flex flex-col items-start">
@@ -583,9 +602,12 @@ const CalendarDetail = () => {
                 <TiArrowSortedDown className="text-xl" />
               </div>
               <div className="w-full pl-4 flex flex-col mt-2 gap-2 mb-3">
-                {tasks.filter((t) => t.priority === "medium").splice(0, 2).map((t, index) => (
-                  <RightSideTaskItem task={t} key={index} />
-                ))}
+                {tasks
+                  .filter((t) => t.priority === "medium")
+                  .splice(0, 2)
+                  .map((t, index) => (
+                    <RightSideTaskItem task={t} key={index} />
+                  ))}
               </div>
             </div>
             <div className="flex flex-col items-start">
@@ -594,9 +616,12 @@ const CalendarDetail = () => {
                 <TiArrowSortedDown className="text-xl" />
               </div>
               <div className="w-full pl-4 flex flex-col mt-2 gap-2 mb-3">
-                {tasks.filter((t) => t.priority === "low").splice(0, 2).map((t, index) => (
-                  <RightSideTaskItem task={t} key={index} />
-                ))}
+                {tasks
+                  .filter((t) => t.priority === "low")
+                  .splice(0, 2)
+                  .map((t, index) => (
+                    <RightSideTaskItem task={t} key={index} />
+                  ))}
               </div>
             </div>
           </div>
@@ -608,7 +633,7 @@ const CalendarDetail = () => {
             <span className="font-semibold">Upcoming Meets</span>
           </div>
           <div className="flex flex-col">
-            {myEvents.splice(0, 3).map((e, index) => (
+            {myEvents.slice(0, 3).map((e, index) => (
               <RightSideMeetItem meet={e} key={index} />
             ))}
           </div>
@@ -640,24 +665,6 @@ const CalendarDetail = () => {
         setPriorityValue={setPriorityValue}
         statusValue={statusValue}
         setStatusValue={setStatusValue}
-      />
-
-      {/* Meet's modal */}
-      <MeetDetail toggleMeetDetailModal={toggleMeetDetailModal} />
-
-      {/* Create Meet's modal */}
-      <CreateMeetModal
-        meetInfo={meetInfo}
-        setMeetInfo={setMeetInfo}
-        toggleCreateMeetModal={toggleCreateMeetModal}
-        priorityItems={priorityItems}
-        disabledDate={disabledDate}
-        disabledRangeTime={disabledRangeTime}
-        setDatePickerValue={setDatePickerValue}
-        datePickerValue={datePickerValue}
-        dayjs={dayjs}
-        toast={toast}
-        handleCreateMeet={handleCreateMeet}
       />
     </>
   );

@@ -20,6 +20,7 @@ import UserProfileLayout from "./components/Layout/UserProfileLayout";
 import CalendarList from "./views/CalendarList";
 import CalendarDetailLayout from "./components/Layout/CalendarDetailLayout"
 import CalendarDetail from "./views/CalendarDetail";
+import NotFound from "./views/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -65,7 +66,7 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: 'calendar/:calendarId',
+    path: 'workspace/:workspaceId',
     element: <CalendarDetailLayout />,
     children: [
       {
@@ -85,7 +86,7 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: "calendar",
+    path: "workspace",
     element: <TeamListLayout />,
     children: [
       {
@@ -121,6 +122,16 @@ const router = createBrowserRouter([
         element: <Signup />,
       }
     ]
+  },
+  {
+    path: "*",
+    element: <TeamListLayout />,
+    children: [
+      {
+        path: "*",
+        element: <NotFound />,
+      }
+    ],
   }
 ]);
 

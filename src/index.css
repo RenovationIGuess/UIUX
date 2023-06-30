@@ -16,6 +16,7 @@
   --patch-font-color: #8592a3;
   --default-green-color: #22C55E;
   --search-input-icon-color: #b2bdce;
+  --minor-font-color-new: rgba(0, 0, 0, 0.45);
 }
 
 * {
@@ -123,4 +124,17 @@
 
 .black-border:hover {
   border-bottom: 3px solid rgba(0, 0, 0, 0.85);
+}
+
+.disable-margin {
+  margin: 0 !important;
+}
+
+.ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.zero-height > * {
+  display: none;
 }

@@ -52,7 +52,10 @@ const NormalTaskItem = ({ task, toggleEditNormalTaskModal }) => {
               <span>Edit</span>
             </button>
             <button
-              onClick={() => showModal()}
+              onClick={(e) => {
+                e.stopPropagation();
+                showModal();
+              }}
               className="flex items-center justify-center py-2 px-4 rounded-md bg-red-type text-white"
             >
               <span>Delete</span>
@@ -102,9 +105,7 @@ const NormalTaskItem = ({ task, toggleEditNormalTaskModal }) => {
         </div>
         <div className="flex items-center mt-4 justify-between w-full">
           <div className="flex items-center gap-4 whitespace-nowrap">
-            <p className="text-base font-medium">
-              Progress
-            </p>
+            <p className="text-base font-medium">Progress</p>
             <Progress style={{ width: 150 }} percent={task.completion} />
           </div>
         </div>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   AiFillCalendar,
   AiOutlineArrowRight,
@@ -11,9 +12,35 @@ import { BiTask } from "react-icons/bi";
 import { GrNotes } from "react-icons/gr";
 import { useState } from "react";
 import dummyData from "../constant/dummyData";
+import { toast } from "react-toastify";
+import { Modal } from "antd";
 
 const CalendarList = () => {
-  const [Workspaces, setWorkspaces] = useState(dummyData.dummyWorkspacesData);
+  const [workspaces, setWorkspaces] = useState(dummyData.dummyWorkspacesData);
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalText, setModalText] = useState("Are you sure you want to delete");
+  const [selectedIndex, setSelectedIndex] = useState(null);
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const handleOk = () => {
+    setModalText("The modal will be closed after two seconds");
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+      toast("Delete Successfully!");
+      setWorkspaces((prev) => prev.filter((p, i) => i !== selectedIndex));
+    }, 1000);
+  };
+
+  const handleCancel = () => {
+    console.log("Clicked cancel button");
+    setOpen(false);
+  };
 
   return (
     <>
@@ -41,7 +68,7 @@ const CalendarList = () => {
                 </div>
               </div>
               <div className="flex flex-col">
-                {Workspaces.map((w, index) => (
+                {workspaces.map((w, index) => (
                   <>
                     <div key={index} className="joined-team-item">
                       <div className="flex items-center justify-between">
@@ -50,12 +77,19 @@ const CalendarList = () => {
                         </div>
                         <div className="flex items-center gap-3">
                           <Link
-                            to="/calendar/1"
+                            to="/workspace/1"
                             className="flex items-center justify-center py-1 px-3 rounded-md bg-bright-green text-white hover:bg-less-bright-green"
                           >
                             <span>View Details</span>
                           </Link>
-                          <button className="flex items-center justify-center py-1 px-3 rounded-md bg-red-type text-white">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedIndex(index);
+                              showModal();
+                            }}
+                            className="flex items-center justify-center py-1 px-3 rounded-md bg-red-type text-white"
+                          >
                             <span>Delete</span>
                           </button>
                         </div>
@@ -140,6 +174,17 @@ const CalendarList = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        title="Delete Task"
+        centered
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <p>{modalText}</p>
+      </Modal>
     </>
   );
 };

@@ -10,7 +10,7 @@ import {
   IoIosArrowForward,
   IoIosArrowUp,
 } from "react-icons/io";
-import { DatePicker, Progress, Timeline, Tooltip } from "antd";
+import { DatePicker, Modal, Progress, Timeline, Tooltip } from "antd";
 import { FaFilter } from "react-icons/fa";
 import {
   AiFillCheckCircle,
@@ -68,55 +68,6 @@ const move = (source, destination, droppableSource, droppableDestination) => {
   return result;
 };
 
-// function getMyTasks(task) {
-//   return task.creator.id === user.id ||
-//          task.assignee.id === user.id ||
-// }
-
-const range = (start, end) => {
-  const result = [];
-  for (let i = start; i < end; i++) {
-    result.push(i);
-  }
-  return result;
-};
-
-// eslint-disable-next-line arrow-body-style
-const disabledDate = (current) => {
-  // Can not select days before today and today
-  return current && current < dayjs().endOf("day");
-};
-
-const disabledRangeTime = (_, type) => {
-  if (type === "start") {
-    return {
-      disabledHours: () => range(0, 60).splice(4, 20),
-      disabledMinutes: () => range(30, 60),
-      disabledSeconds: () => [55, 56],
-    };
-  }
-  return {
-    disabledHours: () => range(0, 60).splice(20, 4),
-    disabledMinutes: () => range(0, 31),
-    disabledSeconds: () => [55, 56],
-  };
-};
-
-const priorityItems = [
-  {
-    label: "Low",
-    value: "Low",
-  },
-  {
-    label: "Medium",
-    value: "Medium",
-  },
-  {
-    label: "High",
-    value: "High",
-  },
-];
-
 const navigate = [
   {
     title: "projects",
@@ -135,95 +86,113 @@ const TimelineLabel = ({ content }) => {
   );
 };
 
-const TimelineChildren = ({
-  name,
-  status,
-  priority,
-  time,
-  toggleMeetDetailModal,
-}) => {
+const TimelineChildren = ({ name, status, priority, time }) => {
   // const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalText, setModalText] = useState("Are you sure you want to delete");
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const handleOk = () => {
+    setModalText("The modal will be closed after two seconds");
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+      toast("Delete Successfully!");
+    }, 1000);
+  };
+
+  const handleCancel = () => {
+    console.log("Clicked cancel button");
+    setOpen(false);
+  };
 
   return (
-    <div className="flex flex-col">
-      <div className="w-full h-[1px] mb-2 bg-45-gray"></div>
-      <div className="rounded-xl bg-white flex-col flex border border-solid border-black py-2 px-4">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center">
-            <p className="text-xl font-semibold pr-4 mr-3 border-r border-[#f5f6fb]">
-              {name}
-            </p>
-            <p className="text-base font-medium">
-              Team&nbsp;-&nbsp;{" "}
-              <Link
-                to="/team/1/your-stats"
-                className="text-bsae font-semibold hover:text-bright-green cursor-pointer"
-              >
-                Astral Express~
-              </Link>
-            </p>
+    <>
+      <div className="flex flex-col">
+        <div className="w-full h-[1px] mb-2 bg-45-gray"></div>
+        <div className="rounded-xl bg-white flex-col flex border border-solid border-black py-2 px-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center">
+              <p className="text-xl font-semibold pr-4 mr-3 border-r border-[#f5f6fb]">
+                {name}
+              </p>
+              <p className="text-base font-medium">
+                Team&nbsp;-&nbsp;{" "}
+                <Link
+                  to="/team/1/your-stats"
+                  className="text-bsae font-semibold hover:text-bright-green cursor-pointer"
+                >
+                  Astral Express~
+                </Link>
+              </p>
+            </div>
+            {/* <BsThreeDots className="text-2xl" /> */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                showModal();
+              }}
+              className="cursor-pointer bg-red-type text-white py-1 px-3 rounded-lg"
+            >
+              Delete
+            </button>
           </div>
-          {/* <BsThreeDots className="text-2xl" /> */}
-          <button className="cursor-pointer bg-red-type text-white py-1 px-3 rounded-lg">
-            Delete
-          </button>
-        </div>
-        <div className="flex items-center gap-4">
-          <img
-            src={image.poum}
-            alt="creator-avatar"
-            className="w-8 h-8 rounded-full"
-          />
-          <p className="text-45-gray text-sm font-bold uppercase">{time}</p>
-          <div className="flex items-center gap-2">
-            <Tooltip title={"Priority"} placement="top">
-              <span className="uppercase text-sm py-1 px-4 border border-solid border-red-type text-red-type rounded-full">
-                {priority}
-              </span>
-            </Tooltip>
-            <Tooltip title={"Status"} placement="top">
-              <span className="uppercase text-sm py-1 px-4 border border-solid border-bright-green text-bright-green rounded-full">
-                {status}
-              </span>
-            </Tooltip>
+          <div className="flex items-center gap-4">
+            <img
+              src={image.poum}
+              alt="creator-avatar"
+              className="w-8 h-8 rounded-full"
+            />
+            <p className="text-45-gray text-sm font-bold uppercase">{time}</p>
+            <div className="flex items-center gap-2">
+              <Tooltip title={"Priority"} placement="top">
+                <span className="uppercase text-sm py-1 px-4 border border-solid border-red-type text-red-type rounded-full">
+                  {priority}
+                </span>
+              </Tooltip>
+              <Tooltip title={"Status"} placement="top">
+                <span className="uppercase text-sm py-1 px-4 border border-solid border-bright-green text-bright-green rounded-full">
+                  {status}
+                </span>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <Modal
+        title="Delete Task"
+        centered
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <p>{modalText}</p>
+      </Modal>
+    </>
   );
 };
 
 const TeamYourStats = () => {
   const { tasks, projects, users } = KrdStateContext();
 
+  const [createMeetOpen, setCreateMeetOpen] = useState(false);
+  const [createMeetOpen2, setCreateMeetOpen2] = useState(false);
+  const [meetDetailOpen, setMeetDetailOpen] = useState(false);
+  const [meetDetailOpen2, setMeetDetailOpen2] = useState(false);
+  const [selectedMeet, setSelectedMeet] = useState({});
+  const [createTaskOpen, setCreateTaskOpen] = useState(false);
+  const [createTaskOpen2, setCreateTaskOpen2] = useState(false);
+
   const [myEvents, setMyEvents] = useState(events);
   const [myProjects, setMyProjects] = useState(projects);
   const [myTasks, setMyTasks] = useState(tasks);
-
-  const [projectName, setProjectName] = useState("");
-  const [taskName, setTaskName] = useState("");
-  const [priorityValue, setPriorityValue] = useState("");
-  const [statusValue, setStatusValue] = useState("");
-  const [deadlineValue, setDeadlineValue] = useState([]);
-  const [taskDescription, setTaskDescription] = useState("");
-  const [assigneeValue, setAssigneeValue] = useState([]);
-  const [reviewerValue, setReviewerValue] = useState([]);
-  const [supporterValue, setSupporterValue] = useState([]);
-
-  // Create meet form
-  const [meetInfo, setMeetInfo] = useState({
-    title: "",
-    type: "Event",
-    priority: "Low",
-    start: "",
-    end: "",
-    links: "",
-    // attachments: [],
-  });
-  const [datePickerValue, setDatePickerValue] = useState([
-    dayjs("00:00:00", "HH:mm:ss"),
-    dayjs("11:59:59", "HH:mm:ss"),
-  ]);
 
   // const [myTasks, setMyTasks] = useState(tasks);
   const [taskState, setTaskState] = useState([
@@ -239,11 +208,6 @@ const TeamYourStats = () => {
   const [taskDetailViewState, setTaskDetailViewState] = useState(false);
   // false - calendar | true - list
   const [calendarViewState, setCalendarViewState] = useState(false);
-
-  const toggleCreateTaskModal = () => {
-    const modalElement = document.querySelector(".create-task-modal");
-    modalElement.classList.toggle("modal-hidden");
-  };
 
   const onDragEnd = useCallback((result) => {
     const { source, destination } = result;
@@ -284,34 +248,9 @@ const TeamYourStats = () => {
 
   const [trashState, setTrashState] = useState(image.trashkun);
 
-  const toggleMeetDetailModal = () => {
-    const modalElement = document.querySelector(".meet-detail-modal");
-    modalElement.classList.toggle("modal-hidden");
-  };
-
-  const toggleCreateMeetModal = () => {
-    const modalElement = document.querySelector(".create-meet-modal");
-    modalElement.classList.toggle("modal-hidden");
-  };
-
   const toggleCreateProjectModal = () => {
     const modalElement = document.querySelector(".create-project-modal");
     modalElement.classList.toggle("modal-hidden");
-  };
-
-  const handleCreateMeet = () => {
-    toggleCreateMeetModal();
-
-    // setMyEvents((prev) => [
-    //   ...prev,
-    //   {
-    //     title: meetInfo.title,
-    //     start: new Date(datePickerValue[0]),
-    //     end: new Date(datePickerValue[1]),
-    //     priority: "High",
-    //     status: "Done",
-    //   },
-    // ]);
   };
 
   return (
@@ -365,7 +304,10 @@ const TeamYourStats = () => {
                   <p className="uppercase font-semibold text-base mr-4">
                     Projects
                   </p>
-                  <Tooltip placement="top" title="Project that you have meets | tasks today">
+                  <Tooltip
+                    placement="top"
+                    title="Project that you have meets | tasks today"
+                  >
                     <span
                       onClick={() => setViewState(!viewState)}
                       className={`krd-button${
@@ -413,7 +355,7 @@ const TeamYourStats = () => {
               </div>
 
               <div className="flex flex-col">
-                {projects.map((project, index) => (
+                {myProjects.map((project, index) => (
                   <div key={index} className="joined-team-item">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-6">
@@ -742,7 +684,7 @@ const TeamYourStats = () => {
                     <div className="flex items-center">
                       <Tooltip placement="top" title="Add a Task">
                         <div
-                          onClick={() => toggleCreateTaskModal()}
+                          onClick={() => setCreateTaskOpen2(true)}
                           className="p-1 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green"
                         >
                           <MdOutlineAddTask className="text-2xl text-white" />
@@ -770,7 +712,7 @@ const TeamYourStats = () => {
                           <p className="text-xl">4 Tasks</p>
                         </div>
                       </div>
-                      {tasks.map((task, index) => (
+                      {myTasks.map((task, index) => (
                         <TaskItem task={task} key={index} />
                       ))}
                     </>
@@ -814,7 +756,7 @@ const TeamYourStats = () => {
                     <div className="flex items-center gap-3">
                       <Tooltip placement="top" title="Hold a meet">
                         <div
-                          onClick={() => toggleCreateMeetModal()}
+                          onClick={() => setCreateTaskOpen(true)}
                           className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
                         >
                           <TbCalendarPlus className="text-2xl text-white" />
@@ -835,10 +777,11 @@ const TeamYourStats = () => {
                     </div>
                   </div>
                   <DndCalendar
+                    type="task"
                     myEvents={myTasks}
-                    setMyEvents={setMyTasks}
-                    handleCreateMeet={handleCreateMeet}
-                    toggleMeetDetailModal={toggleMeetDetailModal}
+                    setMyTasks={setMyTasks}
+                    createTaskOpen={createTaskOpen}
+                    setCreateTaskOpen={setCreateTaskOpen}
                   />
                   <div className="py-2"></div>
                 </>
@@ -879,7 +822,7 @@ const TeamYourStats = () => {
                     <div className="flex items-center gap-3">
                       <Tooltip placement="top" title="Hold a meet">
                         <div
-                          onClick={() => toggleCreateMeetModal()}
+                          onClick={() => setCreateMeetOpen(true)}
                           className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
                         >
                           <TbCalendarPlus className="text-2xl text-white" />
@@ -900,10 +843,13 @@ const TeamYourStats = () => {
                     </div>
                   </div>
                   <DndCalendar
+                    type="meet"
                     myEvents={myEvents}
                     setMyEvents={setMyEvents}
-                    handleCreateMeet={handleCreateMeet}
-                    toggleMeetDetailModal={toggleMeetDetailModal}
+                    createMeetOpen={createMeetOpen}
+                    setCreateMeetOpen={setCreateMeetOpen}
+                    meetDetailOpen={meetDetailOpen}
+                    setMeetDetailOpen={setMeetDetailOpen}
                   />
                   <div className="py-2"></div>
                 </>
@@ -957,7 +903,7 @@ const TeamYourStats = () => {
                     <div className="flex items-center gap-3">
                       <Tooltip placement="top" title="Hold a meet">
                         <div
-                          onClick={() => toggleCreateMeetModal()}
+                          onClick={() => setCreateMeetOpen2(true)}
                           className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
                         >
                           <TbCalendarPlus className="text-2xl text-white" />
@@ -995,56 +941,20 @@ const TeamYourStats = () => {
                   <div className="mt-6 flex justify-start">
                     <Timeline
                       mode={"left"}
-                      items={[
-                        {
-                          label: <TimelineLabel content={"11am"} />,
+                      items={myEvents.slice(0, 4).map((e) => {
+                        return {
+                          label: (
+                            <TimelineLabel startTime={dayjs(e.start).hour()} />
+                          ),
                           children: (
                             <TimelineChildren
-                              name={"Wake up"}
-                              time={"11AM - 11:30AM"}
-                              status={"done"}
-                              priority={"high"}
-                              toggleMeetDetailModal={toggleMeetDetailModal}
+                              event={e}
+                              setMeetDetailOpen={setMeetDetailOpen2}
+                              setSelectedMeet={setSelectedMeet}
                             />
                           ),
-                        },
-                        {
-                          label: <TimelineLabel content={"11am"} />,
-                          children: (
-                            <TimelineChildren
-                              name={"Wake up"}
-                              time={"11AM - 11:30AM"}
-                              status={"done"}
-                              priority={"high"}
-                              toggleMeetDetailModal={toggleMeetDetailModal}
-                            />
-                          ),
-                        },
-                        {
-                          label: <TimelineLabel content={"11am"} />,
-                          children: (
-                            <TimelineChildren
-                              name={"Wake up"}
-                              time={"11AM - 11:30AM"}
-                              status={"done"}
-                              priority={"high"}
-                              toggleMeetDetailModal={toggleMeetDetailModal}
-                            />
-                          ),
-                        },
-                        {
-                          label: <TimelineLabel content={"11am"} />,
-                          children: (
-                            <TimelineChildren
-                              name={"Wake up"}
-                              time={"11AM - 11:30AM"}
-                              status={"done"}
-                              priority={"high"}
-                              toggleMeetDetailModal={toggleMeetDetailModal}
-                            />
-                          ),
-                        },
-                      ]}
+                        };
+                      })}
                     />
                   </div>
                   <div className="flex items-center pt-6 border-t border-[#f5f6fb]">
@@ -1064,56 +974,20 @@ const TeamYourStats = () => {
                   <div className="mt-6 flex justify-start">
                     <Timeline
                       mode={"left"}
-                      items={[
-                        {
-                          label: <TimelineLabel content={"11am"} />,
+                      items={myEvents.slice(4, 8).map((e) => {
+                        return {
+                          label: (
+                            <TimelineLabel startTime={dayjs(e.start).hour()} />
+                          ),
                           children: (
                             <TimelineChildren
-                              name={"Wake up"}
-                              time={"11AM - 11:30AM"}
-                              status={"done"}
-                              priority={"high"}
-                              toggleMeetDetailModal={toggleMeetDetailModal}
+                              event={e}
+                              setMeetDetailOpen={setMeetDetailOpen2}
+                              setSelectedMeet={setSelectedMeet}
                             />
                           ),
-                        },
-                        {
-                          label: <TimelineLabel content={"11am"} />,
-                          children: (
-                            <TimelineChildren
-                              name={"Wake up"}
-                              time={"11AM - 11:30AM"}
-                              status={"done"}
-                              priority={"high"}
-                              toggleMeetDetailModal={toggleMeetDetailModal}
-                            />
-                          ),
-                        },
-                        {
-                          label: <TimelineLabel content={"11am"} />,
-                          children: (
-                            <TimelineChildren
-                              name={"Wake up"}
-                              time={"11AM - 11:30AM"}
-                              status={"done"}
-                              priority={"high"}
-                              toggleMeetDetailModal={toggleMeetDetailModal}
-                            />
-                          ),
-                        },
-                        {
-                          label: <TimelineLabel content={"11am"} />,
-                          children: (
-                            <TimelineChildren
-                              name={"Wake up"}
-                              time={"11AM - 11:30AM"}
-                              status={"done"}
-                              priority={"high"}
-                              toggleMeetDetailModal={toggleMeetDetailModal}
-                            />
-                          ),
-                        },
-                      ]}
+                        };
+                      })}
                     />
                   </div>
                 </>
@@ -1184,52 +1058,24 @@ const TeamYourStats = () => {
         </div>
       </div>
 
-      {/* Task's modal */}
-      <CreateTaskModal
-        toggleCreateTaskModal={toggleCreateTaskModal}
-        projects={projects}
-        projectName={projectName}
-        setProjectName={setProjectName}
-        taskName={taskName}
-        setTaskName={setTaskName}
-        priorityValue={priorityValue}
-        setPriorityValue={setPriorityValue}
-        statusValue={statusValue}
-        setStatusValue={setStatusValue}
-        members={users}
-        deadlineValue={deadlineValue}
-        setDeadlineValue={setDeadlineValue}
-        taskDescription={taskDescription}
-        setTaskDescription={setTaskDescription}
-        assigneeValue={assigneeValue}
-        setAssigneeValue={setAssigneeValue}
-        reviewerValue={reviewerValue}
-        setReviewerValue={setReviewerValue}
-        supporterValue={supporterValue}
-        setSupporterValue={setSupporterValue}
-      />
-
-      {/* Meet's modal */}
-      <MeetDetail toggleMeetDetailModal={toggleMeetDetailModal} />
-
-      {/* Create Meet's modal */}
-      <CreateMeetModal
-        meetInfo={meetInfo}
-        setMeetInfo={setMeetInfo}
-        toggleCreateMeetModal={toggleCreateMeetModal}
-        // onChange={onChange}
-        // onSearch={onSearch}
-        priorityItems={priorityItems}
-        disabledDate={disabledDate}
-        disabledRangeTime={disabledRangeTime}
-        setDatePickerValue={setDatePickerValue}
-        datePickerValue={datePickerValue}
-        dayjs={dayjs}
-        toast={toast}
-        handleCreateMeet={handleCreateMeet}
-      />
-
-      {/* Add a project modal */}
+      {createTaskOpen2 && (
+        <CreateTaskModal
+          setMyTasks={setMyTasks}
+          setCreateTaskOpen={setCreateTaskOpen2}
+        />
+      )}
+      {createMeetOpen2 && (
+        <CreateMeetModal
+          setMyEvents={setMyEvents}
+          setCreateMeetOpen={setCreateMeetOpen2}
+        />
+      )}
+      {meetDetailOpen2 && (
+        <MeetDetail
+          event={selectedMeet}
+          setMeetDetailOpen={setMeetDetailOpen2}
+        />
+      )}
       <CreateProjectModal toggleCreateProjectModal={toggleCreateProjectModal} />
     </>
   );

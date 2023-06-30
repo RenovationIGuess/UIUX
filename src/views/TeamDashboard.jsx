@@ -42,108 +42,7 @@ const TeamDetail = () => {
     <>
       <div className="flex-1 flex flex-col">
         <TaskStatistic />
-        {/* <div className="w-full flex flex-col bg-white p-4 rounded-xl mt-4 transition">
-          {!timeViewState ? (
-            <>
-              <div className="flex items-center justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
-                <p className="uppercase font-semibold text-base">Meetings</p>
-                <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
-              </div>
-              <Calendar
-                value={value}
-                onSelect={onSelect}
-                onPanelChange={onPanelChange}
-                cellRender={cellRender}
-              />
-            </>
-          ) : (
-            <>
-              <div className="flex items-center justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
-                <div className="flex items-center gap-3">
-                  <IoIosArrowDropleftCircle
-                    onClick={() => setTimeViewState((prev) => !prev)}
-                    className="text-2xl text-bright-green"
-                  />
-                  <p className="font-semibold text-base">
-                    {selectedValue?.format("YYYY-MM-DD")}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
-                    <FaFilter className="text-base text-white" />
-                  </div>
-                  <div className="flex">
-                    <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
-                      <AiOutlineSearch className="text-base text-white" />
-                    </div>
-                    <input
-                      className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
-                      placeholder="Enter team's name / id..."
-                    />
-                  </div>
-                  <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
-                </div>
-              </div>
-              <div className="mt-4 flex justify-start">
-                <Timeline
-                  mode={"left"}
-                  items={[
-                    {
-                      label: <TimelineLabel content={"11am"} />,
-                      children: (
-                        <TimelineChildren
-                          name={"Wake up"}
-                          time={"11AM - 11:30AM"}
-                          status={"done"}
-                          priority={"high"}
-                          handleTaskModal={handleTaskModal}
-                        />
-                      ),
-                    },
-                    {
-                      label: <TimelineLabel content={"11am"} />,
-                      children: (
-                        <TimelineChildren
-                          name={"Wake up"}
-                          time={"11AM - 11:30AM"}
-                          status={"done"}
-                          priority={"high"}
-                          handleTaskModal={handleTaskModal}
-                        />
-                      ),
-                    },
-                    {
-                      label: <TimelineLabel content={"11am"} />,
-                      children: (
-                        <TimelineChildren
-                          name={"Wake up"}
-                          time={"11AM - 11:30AM"}
-                          status={"done"}
-                          priority={"high"}
-                          handleTaskModal={handleTaskModal}
-                        />
-                      ),
-                    },
-                    {
-                      label: <TimelineLabel content={"11am"} />,
-                      children: (
-                        <TimelineChildren
-                          name={"Wake up"}
-                          time={"11AM - 11:30AM"}
-                          status={"done"}
-                          priority={"high"}
-                          handleTaskModal={handleTaskModal}
-                        />
-                      ),
-                    },
-                  ]}
-                />
-              </div>
-            </>
-          )}
-        </div> */}
         <div className="w-full flex flex-col bg-white p-4 rounded-xl mt-4 transition">
-          <DndCalendar />
         </div>
       </div>
       <div className="w-[336px] ml-6 shrink-0">
@@ -201,9 +100,6 @@ const TeamDetail = () => {
           </div>
         </div>
       </div>
-
-      {/* Meet's modal */}
-      <MeetDetail toggleMeetDetailModal={toggleMeetDetailModal} />
     </>
   );
 };

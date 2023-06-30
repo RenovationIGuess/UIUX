@@ -84,7 +84,7 @@ const CreatedTeam = () => {
                           </div>
                         </div>
                         <button className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
-                          <Link to={`/team/${t.id}/dashboard`}>View Details</Link>
+                          <Link to={`/team/${t.id}/your-stats`}>View Details</Link>
                         </button>
                       </div>
                       <div className="w-full flex items-center mt-3 whitespace-nowrap">
@@ -171,7 +171,7 @@ const CreatedTeam = () => {
               </div>
               <div className="w-full flex flex-col">
                 <Link
-                  to="/team/1/dashboard"
+                  to="/team/1/your-stats"
                   className="flex items-center justify-between px-3 py-1 rounded-md hover:bg-bright-green hover:text-white"
                 >
                   <div className="flex items-center">

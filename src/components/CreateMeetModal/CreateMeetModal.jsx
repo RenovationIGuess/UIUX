@@ -7,11 +7,43 @@ import {
   AiOutlineLink,
   AiOutlineTeam,
 } from "react-icons/ai";
-import image from "../../constant/image";
 import { BsFillHouseAddFill, BsTextParagraph } from "react-icons/bs";
 import { useMemo, useState } from "react";
+import { KrdStateContext } from "../../contexts/ContextProvider";
+import dayjs from "dayjs";
+import { toast } from "react-toastify";
+import image from "../../constant/image";
 
 const { RangePicker } = DatePicker;
+
+// const range = (start, end) => {
+//   const result = [];
+//   for (let i = start; i < end; i++) {
+//     result.push(i);
+//   }
+//   return result;
+// };
+
+// eslint-disable-next-line arrow-body-style
+// const disabledDate = (current) => {
+//   // Can not select days before today and today
+//   return current && current < dayjs().endOf("day");
+// };
+
+// const disabledRangeTime = (_, type) => {
+//   if (type === "start") {
+//     return {
+//       disabledHours: () => range(0, 60).splice(4, 20),
+//       disabledMinutes: () => range(30, 60),
+//       disabledSeconds: () => [55, 56],
+//     };
+//   }
+//   return {
+//     disabledHours: () => range(0, 60).splice(20, 4),
+//     disabledMinutes: () => range(0, 31),
+//     disabledSeconds: () => [55, 56],
+//   };
+// };
 
 const colorArray = [
   "#000000",
@@ -46,21 +78,48 @@ const colorArray = [
   "#EB2F964D",
 ];
 
+const priorityItems = [
+  {
+    label: "Low",
+    value: "Low",
+  },
+  {
+    label: "Medium",
+    value: "Medium",
+  },
+  {
+    label: "High",
+    value: "High",
+  },
+];
+
 const CreateMeetModal = ({
-  meetInfo,
-  setMeetInfo,
-  toggleCreateMeetModal,
-  onChange,
-  onSearch,
-  priorityItems,
-  disabledDate,
-  disabledRangeTime,
-  setDatePickerValue,
-  datePickerValue,
-  dayjs,
-  toast,
-  handleCreateMeet,
+  start,
+  end,
+  setMyEvents,
+  setCreateMeetOpen,
+  // setCreateMeetOpen2,
 }) => {
+  const { users } = KrdStateContext();
+
+  const [meetInfo, setMeetInfo] = useState({
+    title: "",
+    type: "Event",
+    priority: "Low",
+    members: [],
+    start: "",
+    end: "",
+    links: "",
+    // attachments: [],
+  });
+
+  const [datePickerValue, setDatePickerValue] = useState([
+    dayjs(start),
+    dayjs(end),
+  ]);
+
+  const [selectedMembers, setSelectedMembers] = useState([]);
+
   // const { token } = theme.useToken();
   const [dateColor, setDateColor] = useState("#1677ff00");
   const [meetColor, setMeetColor] = useState("#1677ff00");
@@ -75,13 +134,56 @@ const CreateMeetModal = ({
     [meetColor]
   );
 
+  const handleCreateMeet = () => {
+    // toggleCreateMeetModal();
+    toast("Created Successful!");
+
+    setMyEvents((prev) => [
+      ...prev,
+      {
+        ...meetInfo,
+        start: datePickerValue[0].toDate(),
+        end: datePickerValue[1].toDate(),
+        creator: {
+          name: "Mr.Poum",
+          image: image.poum,
+        },
+        members: selectedMembers.length
+          ? selectedMembers.map((m) => {
+              const index = users.findIndex((u) => u.name === m);
+              return {
+                name: users[index].name,
+                image: users[index].image,
+              };
+            })
+          : [],
+      },
+    ]);
+
+    setCreateMeetOpen(false);
+    // setCreateMeetOpen2(false);
+  };
+
+  // const toggleCreateMeetModal = () => {
+  //   const modalElement = document.querySelector(".create-meet-modal");
+  //   modalElement.classList.toggle("modal-hidden");
+  // };
+
+  const onPriorityChange = (value) => {
+    setMeetInfo({ ...meetInfo, priority: value });
+  };
+
   return (
-    <div className="create-meet-modal modal-background modal-hidden">
+    <div className="create-meet-modal modal-background">
       <div className="modal-container">
         <div className="modal-header">
           <p className="text-base font-semibold">Create Meeting</p>
           <AiOutlineClose
-            onClick={() => toggleCreateMeetModal()}
+            onClick={() => {
+              // toggleCreateMeetModal()
+              setCreateMeetOpen(false);
+              // setCreateMeetOpen2(false);
+            }}
             className="text-2xl hover:text-bright-green cursor-pointer"
           />
         </div>
@@ -99,10 +201,6 @@ const CreateMeetModal = ({
             />
           </div>
           <div className="flex flex-col mb-4">
-            {/* <span className="py-2 px-4 bg-bright-green rounded-md mr-2 text-white font-medium">
-              Event
-            </span>
-            <span className="py-2 px-4 font-medium text-45-gray">Discord</span> */}
             <div className="flex items-center">
               <p className="text-base font-medium mr-4">Date border color</p>
               <ColorPicker
@@ -155,8 +253,7 @@ const CreateMeetModal = ({
                 showSearch
                 placeholder="Select priority"
                 optionFilterProp="children"
-                onChange={onChange}
-                onSearch={onSearch}
+                onChange={onPriorityChange}
                 filterOption={(input, option) =>
                   (option?.label ?? "")
                     .toLowerCase()
@@ -174,8 +271,6 @@ const CreateMeetModal = ({
                 showSearch
                 placeholder="Select duration"
                 optionFilterProp="children"
-                onChange={onChange}
-                onSearch={onSearch}
                 filterOption={(input, option) =>
                   (option?.label ?? "")
                     .toLowerCase()
@@ -205,16 +300,13 @@ const CreateMeetModal = ({
           <div className="flex items-center gap-4 mb-3">
             <AiFillClockCircle className="text-45-gray text-2xl" />
             <div className="flex flex-col">
-              <p className="text-85-gray font-medium">Pick date & time</p>
+              <p className="text-85-gray font-medium mb-2">Pick Date & Time</p>
               <RangePicker
-                disabledDate={disabledDate}
-                disabledTime={disabledRangeTime}
+                // disabledDate={disabledDate}
+                // disabledTime={disabledRangeTime}
                 showTime={{
                   hideDisabledOptions: true,
-                  defaultValue: [
-                    dayjs("00:00:00", "HH:mm:ss"),
-                    dayjs("11:59:59", "HH:mm:ss"),
-                  ],
+                  defaultValue: [start, end],
                 }}
                 onChange={(e) => {
                   setDatePickerValue(e);
@@ -228,47 +320,56 @@ const CreateMeetModal = ({
             Find a timezone
           </p>
           <div className="w-full h-[1px] bg-light-gray mb-4"></div>
-          <div className="flex flex-col mb-8">
+          <div className="flex flex-col mb-6">
             <div className="flex items-center gap-3 mb-3">
               <AiOutlineTeam className="text-2xl" />
               <Select
-                // className="py-2 pl-4 pr-3"
+                mode="multiple"
                 style={{ width: "100%" }}
                 placeholder="Enter member's name"
                 allowClear
-                // value={teamUserName}
-                // onChange={(e) => setTeamUserName(e.target.value)}
+                options={users.map((u) => {
+                  return {
+                    value: u.name,
+                    label: u.name,
+                  };
+                })}
+                value={selectedMembers}
+                onChange={setSelectedMembers}
               />
             </div>
             <div className="pl-9 grid grid-cols-2 gap-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <img
-                    className="w-9 h-9 rounded-full"
-                    src={image.poum}
-                    alt="user-ava"
-                  />
-                  <div className="flex flex-col gap-1">
-                    <p className="text-base font-medium">Mr.Poum</p>
-                    <p className="text-xs text-dark-gray">Project Manager</p>
-                  </div>
-                </div>
-                <AiOutlineClose className="text-xl" />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <img
-                    className="w-9 h-9 rounded-full"
-                    src={image.poum}
-                    alt="user-ava"
-                  />
-                  <div className="flex flex-col gap-1">
-                    <p className="text-base font-medium">Mr.Poum</p>
-                    <p className="text-xs text-dark-gray">Project Manager</p>
-                  </div>
-                </div>
-                <AiOutlineClose className="text-xl" />
-              </div>
+              {selectedMembers.length !== 0 &&
+                selectedMembers.map((m, i) => {
+                  const index = users.findIndex((u) => u.name === m);
+                  return (
+                    <div key={i} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <img
+                          className="w-9 h-9 rounded-full"
+                          src={users[index].image}
+                          alt="user-ava"
+                        />
+                        <div className="flex flex-col gap-1">
+                          <p className="text-base font-medium">
+                            {users[index].name}
+                          </p>
+                          <p className="text-xs text-dark-gray">
+                            Project Manager
+                          </p>
+                        </div>
+                      </div>
+                      <AiOutlineClose
+                        onClick={() =>
+                          setSelectedMembers(
+                            selectedMembers.filter((mem) => mem !== m)
+                          )
+                        }
+                        className="text-xl cursor-pointer"
+                      />
+                    </div>
+                  );
+                })}
             </div>
           </div>
           <div className="flex items-center gap-4 mb-4">
@@ -289,14 +390,17 @@ const CreateMeetModal = ({
         <div className="modal-footer">
           <div className="flex gap-3 items-center">
             <button
-              onClick={() => toggleCreateMeetModal()}
+              onClick={() => {
+                // toggleCreateMeetModal()
+                setCreateMeetOpen(false);
+                // setCreateMeetOpen2(false);
+              }}
               className="bg-[#9C9C9C] text-white text-sm py-2 px-4 rounded-md"
             >
               Cancel
             </button>
             <button
               onClick={() => {
-                toast("Created Successful!");
                 handleCreateMeet();
               }}
               className="bg-bright-green text-white text-sm py-2 px-4 rounded-md"
