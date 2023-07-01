@@ -14,9 +14,16 @@
   @apply text-lg text-black font-bold;
 }
 
-.noti-container {
+.noti-container--left {
   position: absolute;
   right: calc(100% - 24px);
+  top: calc(100% + 20px);
+  z-index: 999;
+}
+
+.noti-container--right {
+  position: absolute;
+  left: calc(100% - 24px);
   top: calc(100% + 20px);
   z-index: 999;
 }

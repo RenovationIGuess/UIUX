@@ -7,15 +7,17 @@ import BackgroundSection from "../BackgroundSection/BackgroundSection";
 import image from "../../constant/image";
 import { BiCommentDetail, BiLogOutCircle } from "react-icons/bi";
 import { FiMinimize } from "react-icons/fi";
-import { TiArrowSortedDown } from "react-icons/ti";
-import { Popconfirm } from "antd";
+import { TiArrowSortedDown, TiThSmall } from "react-icons/ti";
+import { Badge, Popconfirm, Tooltip } from "antd";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SearchBar from "../SearchBar/SearchBar";
+import { AiFillBell, AiOutlineCalendar, AiOutlineClear, AiOutlineClose, AiOutlineComment, AiOutlineSetting, AiOutlineTeam } from "react-icons/ai";
 
-const TeamLayout = () => {
+const CalendarDetailLayout = () => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+  const [notiOpen, setNotiOpen] = useState(false);
 
   const handleMinimized = () => {
     const topbarElement = document.querySelector(".topbar");
@@ -91,6 +93,106 @@ const TeamLayout = () => {
                           <span className="user-basic-nickname">
                             Astral Express
                           </span>
+                          <div className="flex items-center ml-2">
+                            <Badge count={5} style={{ top: 4, right: 4 }}>
+                              <AiFillBell
+                                className="relative text-4xl text-white cursor-pointer hover:text-bright-green"
+                                onClick={() => setNotiOpen(!notiOpen)}
+                              />
+                              {notiOpen && (
+                                <>
+                                  <div className="w-[516px] bg-white hy-shadow p-4 rounded-xl noti-container--right">
+                                    <div className="pb-4 mb-4 flex items-center justify-between bottom-border text-85-gray">
+                                      <p className="font-semibold">
+                                        Notification
+                                      </p>
+                                      <div className="flex items-center gap-4">
+                                        <AiOutlineClear className="icon-style" />
+                                        <AiOutlineSetting className="icon-style" />
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center justify-between px-6 bottom-border mb-4 pb-4">
+                                      <Tooltip
+                                        placement="top"
+                                        title="Comments | Reply Noti"
+                                      >
+                                        <AiOutlineComment className="big-icon-style" />
+                                      </Tooltip>
+                                      <Tooltip
+                                        placement="top"
+                                        title="Team's Noti"
+                                      >
+                                        <AiOutlineTeam className="big-icon-style" />
+                                      </Tooltip>
+                                      <Tooltip
+                                        placement="top"
+                                        title="Calendar's Noti"
+                                      >
+                                        <AiOutlineCalendar className="big-icon-style" />
+                                      </Tooltip>
+                                      <Tooltip placement="top" title="All Noti">
+                                        <TiThSmall className="big-icon-style" />
+                                      </Tooltip>
+                                    </div>
+                                    <div className="flex flex-col">
+                                      {/* hover:bg-bright-green hover:text-white text-85-gray */}
+                                      <div className="flex items-center mb-4">
+                                        <AiOutlineTeam className="big-icon-style mr-4" />
+                                        <p className="leading-normal mr-3">
+                                          Mr.Poum has invited you to join
+                                          project ITSS :D?
+                                        </p>
+                                        <div className="flex items-center gap-2">
+                                          <button className="accept-btn">
+                                            Accept
+                                          </button>
+                                          <button className="decline-btn">
+                                            Decline
+                                          </button>
+                                          <AiOutlineClose className="icon-style" />
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center mb-4">
+                                        <div className="flex items-center">
+                                          <AiOutlineTeam className="big-icon-style mr-4" />
+                                          <p className="leading-normal mr-3">
+                                            Mr.Poum has invited you to join
+                                            Astral Express~
+                                          </p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <button className="accept-btn">
+                                            Accept
+                                          </button>
+                                          <button className="decline-btn">
+                                            Decline
+                                          </button>
+                                          <AiOutlineClose className="icon-style" />
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center">
+                                          <AiOutlineCalendar className="big-icon-style mr-4" />
+                                          <p className="leading-normal">
+                                            The train started
+                                          </p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <AiOutlineClose className="icon-style" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                    {/* Footer */}
+                                    <div className="pt-4 flex items-center">
+                                      <p className="font-bold cursor-pointer text-bright-green">
+                                        View more...
+                                      </p>
+                                    </div>
+                                  </div>
+                                </>
+                              )}
+                            </Badge>
+                          </div>
                         </div>
                         {/* User sign, tags,... */}
                         <div className="account-center-basic-row2">
@@ -176,4 +278,4 @@ const TeamLayout = () => {
   );
 };
 
-export default TeamLayout;
+export default CalendarDetailLayout;

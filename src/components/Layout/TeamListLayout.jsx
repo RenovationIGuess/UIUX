@@ -3,7 +3,7 @@ import DefaultNavbar from "../Navbar/DefaultNavbar";
 import Sidebar from "../Sidebar/Sidebar";
 import { ToastContainer } from "react-toastify";
 
-const TeamLayout = () => {
+const TeamListLayout = () => {
   const handleToggleSidebar = (type) => {
     const sidebar = document.querySelector(".sidebar-container");
     const openSidebarIcon = document.querySelector(".open-sidebar-icon");
@@ -43,4 +43,4 @@ const TeamLayout = () => {
   );
 };
 
-export default TeamLayout;
+export default TeamListLayout;

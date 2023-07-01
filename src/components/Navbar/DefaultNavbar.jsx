@@ -47,7 +47,7 @@ const DefaultNavbar = ({ handleToggleSidebar }) => {
             />
             {notiOpen && (
               <>
-                <div className="w-[516px] bg-white hy-shadow p-4 rounded-xl noti-container ">
+                <div className="w-[516px] bg-white hy-shadow p-4 rounded-xl noti-container--left">
                   <div className="pb-4 mb-4 flex items-center justify-between bottom-border text-85-gray">
                     <p className="font-semibold">Notification</p>
                     <div className="flex items-center gap-4">

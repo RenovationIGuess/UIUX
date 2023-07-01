@@ -10,7 +10,7 @@ import { TiArrowSortedDown } from "react-icons/ti";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const TeamLayout = () => {
+const UserProfileLayout = () => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
@@ -185,4 +185,4 @@ const TeamLayout = () => {
   );
 };
 
-export default TeamLayout;
+export default UserProfileLayout;

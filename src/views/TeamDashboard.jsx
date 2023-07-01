@@ -4,45 +4,141 @@ import { Link } from "react-router-dom";
 import "./styles/TeamDetail.scss";
 import { HiUserGroup } from "react-icons/hi";
 import image from "../constant/image";
-import { BiChevronsDown } from "react-icons/bi";
-import { Input, Tooltip } from "antd";
-import { Badge, Calendar } from "antd";
-import { Timeline } from "antd";
-import { IoIosArrowDropleftCircle } from "react-icons/io";
-import { FaFilter } from "react-icons/fa";
 import {
-  AiOutlineClose,
-  AiOutlineSearch,
-  AiFillClockCircle,
-  AiOutlineTeam,
-  AiOutlineLink,
-  AiFillEdit,
-} from "react-icons/ai";
-import {
-  BsFillHouseAddFill,
-  BsTextParagraph,
-  BsThreeDots,
-} from "react-icons/bs";
-import { useState } from "react";
-import dayjs from "dayjs";
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar, Line } from "react-chartjs-2";
+import faker from "faker";
 import TaskStatistic from "../components/TaskStatistic/TaskStatistic";
-import DndCalendar from "../components/DndCalendar/DndCalendar";
-import MeetDetail from "../components/MeetDetail/MeetDetail";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement
+);
+
+const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top",
+      labels: {
+        // This more specific font property overrides the global property
+        font: {
+          size: 14,
+        },
+      },
+    },
+    title: {
+      display: true,
+      text: "Team's Members Status",
+      font: {
+        size: "16px",
+      },
+    },
+  },
+};
+
+const meetOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top",
+      labels: {
+        // This more specific font property overrides the global property
+        font: {
+          size: 14,
+        },
+      },
+    },
+    title: {
+      display: true,
+      text: "Meetings Statistic",
+      font: {
+        size: "16px",
+      }
+    },
+  },
+};
+
+const labels = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+];
+
+const data = {
+  labels,
+  datasets: [
+    {
+      label: "Joined",
+      data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+      borderColor: "#22C55E",
+      backgroundColor: "#22C55E",
+    },
+    {
+      label: "Leaved",
+      data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+      borderColor: "#D91212",
+      backgroundColor: "#D91212",
+    },
+  ],
+};
+
+const meetData = {
+  labels,
+  datasets: [
+    {
+      label: "Created",
+      data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+      borderColor: "#3F82EC",
+      backgroundColor: "#3F82EC",
+    },
+    {
+      label: "Done",
+      data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+      borderColor: "#22C55E",
+      backgroundColor: "#22C55E",
+    },
+    {
+      label: "Canceled",
+      data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+      borderColor: "#D91212",
+      backgroundColor: "#D91212",
+    },
+  ],
+};
 
 const TeamDetail = () => {
-  // true - a certain date | false - the calendar
-  const [timeViewState, setTimeViewState] = useState(false);
-
-  const toggleMeetDetailModal = () => {
-    const modalElement = document.querySelector(".meet-detail-modal");
-    modalElement.classList.toggle("modal-hidden");
-  };
-
   return (
     <>
       <div className="flex-1 flex flex-col">
-        <TaskStatistic />
-        <div className="w-full flex flex-col bg-white p-4 rounded-xl mt-4 transition">
+        <TaskStatistic type="task" />
+        <TaskStatistic type="project" />
+        <div className="w-full flex flex-col bg-white p-4 mb-4 rounded-xl transition">
+          <Line options={options} data={data} />
+        </div>
+        <div className="w-full flex flex-col bg-white p-4 rounded-xl transition">
+          <Bar options={meetOptions} data={meetData} />
         </div>
       </div>
       <div className="w-[336px] ml-6 shrink-0">
@@ -63,7 +159,7 @@ const TeamDetail = () => {
                 Member
               </p>
               <Link
-                to="/teams"
+                to="/team/1/members"
                 className="text-base text-bright-green font-medium"
               >
                 View more
