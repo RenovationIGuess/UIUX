@@ -64,44 +64,50 @@ const Login = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <Form.Item
-            name="email"
-            className="disable-margin"
-            rules={[
-              {
-                required: true,
-                message: "Please input your username!",
-              },
-            ]}
-          >
-            <Input
-              className="py-2 pl-4"
-              // status="error"
-              placeholder="Enter your email address"
-              allowClear
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </Form.Item>
+          <div className="flex flex-col gap-2">
+            <span>Email</span>
+            <Form.Item
+              name="email"
+              className="disable-margin"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your username!",
+                },
+              ]}
+            >
+              <Input
+                className="py-2 pl-4"
+                // status="error"
+                placeholder="Enter your email address"
+                allowClear
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Item>
+          </div>
 
-          <Form.Item
-            name="password"
-            className="disable-margin"
-            rules={[
-              {
-                required: true,
-                message: "Please input your password!",
-              },
-            ]}
-          >
-            <Input.Password
-              className="py-2 pl-4"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              allowClear
-            />
-          </Form.Item>
+          <div className="flex flex-col gap-2">
+            <span>Password</span>
+            <Form.Item
+              name="password"
+              className="disable-margin"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your password!",
+                },
+              ]}
+            >
+              <Input.Password
+                className="py-2 pl-4"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                allowClear
+              />
+            </Form.Item>
+          </div>
 
           <Button
             htmlType="submit"

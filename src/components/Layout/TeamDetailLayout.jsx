@@ -1,7 +1,7 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import DefaultNavbar from "../Navbar/DefaultNavbar";
 import Sidebar from "../Sidebar/Sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BackgroundSection from "../BackgroundSection/BackgroundSection";
 import image from "../../constant/image";
 import { BiCommentDetail, BiLogOutCircle } from "react-icons/bi";
@@ -10,12 +10,37 @@ import { TiArrowSortedDown, TiThSmall } from "react-icons/ti";
 import { Badge, Popconfirm, Tooltip } from "antd";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AiFillBell, AiOutlineCalendar, AiOutlineClear, AiOutlineClose, AiOutlineComment, AiOutlineSetting, AiOutlineTeam } from "react-icons/ai";
+import {
+  AiFillBell,
+  AiOutlineCalendar,
+  AiOutlineClear,
+  AiOutlineClose,
+  AiOutlineComment,
+  AiOutlineSetting,
+  AiOutlineTeam,
+} from "react-icons/ai";
 
 const TeamDetailLayout = () => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [notiOpen, setNotiOpen] = useState(false);
+  const [current, setCurrent] = useState("");
+
+  const location = useLocation();
+  useEffect(() => {
+    // console.log(location.pathname)
+    if (location.pathname.includes("your-stats")) {
+      setCurrent("your-stats");
+    } else if (location.pathname.includes("tasks")) {
+      setCurrent("tasks");
+    } else if (location.pathname.includes("members")) {
+      setCurrent("members");
+    } else if (location.pathname.includes("projects")) {
+      setCurrent("projects");
+    } else if (location.pathname.includes("meetings")) {
+      setCurrent("meetings");
+    } else setCurrent("dashboard");
+  }, [location]);
 
   const handleMinimized = () => {
     const topbarElement = document.querySelector(".topbar");
@@ -202,7 +227,11 @@ const TeamDetailLayout = () => {
                         <div className="account-center-basic-item">
                           <Link
                             to="/team/1/dashboard"
-                            className="uppercase font-bold hover:text-bright-green"
+                            className={`uppercase font-bold hover:text-bright-green${
+                              current === "dashboard"
+                                ? " text-bright-green"
+                                : ""
+                            }`}
                           >
                             Dashboard
                           </Link>
@@ -210,7 +239,9 @@ const TeamDetailLayout = () => {
                         <div className="account-center-basic-item">
                           <Link
                             to="/team/1/meetings"
-                            className="uppercase font-bold hover:text-bright-green"
+                            className={`uppercase font-bold hover:text-bright-green${
+                              current === "meetings" ? " text-bright-green" : ""
+                            }`}
                           >
                             Meetings
                           </Link>
@@ -218,7 +249,9 @@ const TeamDetailLayout = () => {
                         <div className="account-center-basic-item">
                           <Link
                             to="/team/1/projects"
-                            className="uppercase font-bold hover:text-bright-green"
+                            className={`uppercase font-bold hover:text-bright-green${
+                              current === "projects" ? " text-bright-green" : ""
+                            }`}
                           >
                             Projects
                           </Link>
@@ -226,7 +259,9 @@ const TeamDetailLayout = () => {
                         <div className="account-center-basic-item">
                           <Link
                             to="/team/1/members"
-                            className="uppercase font-bold hover:text-bright-green"
+                            className={`uppercase font-bold hover:text-bright-green${
+                              current === "members" ? " text-bright-green" : ""
+                            }`}
                           >
                             Members
                           </Link>
@@ -234,7 +269,9 @@ const TeamDetailLayout = () => {
                         <div className="account-center-basic-item">
                           <Link
                             to="/team/1/tasks"
-                            className="uppercase font-bold hover:text-bright-green"
+                            className={`uppercase font-bold hover:text-bright-green${
+                              current === "tasks" ? " text-bright-green" : ""
+                            }`}
                           >
                             Tasks
                           </Link>
@@ -242,7 +279,11 @@ const TeamDetailLayout = () => {
                         <div className="account-center-basic-item">
                           <Link
                             to="/team/1/your-stats"
-                            className="uppercase font-bold hover:text-bright-green"
+                            className={`uppercase font-bold hover:text-bright-green${
+                              current === "your-stats"
+                                ? " text-bright-green"
+                                : ""
+                            }`}
                           >
                             Your stats
                           </Link>
