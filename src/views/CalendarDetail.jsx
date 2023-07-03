@@ -24,6 +24,7 @@ import EditNormalTaskModal from "../components/EditNormalTaskModal/EditNormalTas
 import { TbCalendarPlus } from "react-icons/tb";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const RightSideTaskItem = ({ task }) => {
   return (
@@ -188,6 +189,9 @@ const TimelineChildren = ({ event, setMeetDetailOpen, setSelectedMeet }) => {
 const CalendarDetail = () => {
   const { tasks } = KrdStateContext();
 
+  const [isTaskOpen, setIsTaskOpen] = useState(true);
+  const [isMeetOpen, setIsMeetOpen] = useState(true);
+
   const [myEvents, setMyEvents] = useState(events);
   const [myTasks, setMyTasks] = useState(tasks);
   const [calendarViewState, setCalendarViewState] = useState(false);
@@ -218,7 +222,11 @@ const CalendarDetail = () => {
 
   return (
     <>
-      <div className="flex-1 flex flex-col">
+      <motion.div
+        initial={false}
+        animate={isTaskOpen ? "taskOpen" : "taskClosed"}
+        className="flex-1 flex flex-col"
+      >
         <div className="w-full flex flex-col mb-4 bg-white py-2 px-4 rounded-xl">
           <div className="flex items-center justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
             <div className="flex items-center">
@@ -240,123 +248,128 @@ const CalendarDetail = () => {
                 View Calendar
               </span>
             </div>
-            <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
+            <BiChevronsDown
+              onClick={() => setIsTaskOpen(!isTaskOpen)}
+              className="text-2xl hover:cursor-pointer hover:text-bright-green"
+            />
           </div>
-          {taskViewState === "list" ? (
-            <>
-              {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <p className="font-medium">From</p>
-                  <DatePicker
-                    cellRender={(current) => {
-                      const style = {};
-                      if (current.date() === 1) {
-                        style.border = "1px solid #1677ff";
-                        style.borderRadius = "50%";
-                      }
-                      return (
-                        <div className="ant-picker-cell-inner" style={style}>
-                          {current.date()}
-                        </div>
-                      );
-                    }}
-                    defaultValue={dayjs()}
-                  />
-                  <p className="font-medium">To</p>
-                  <DatePicker
-                    cellRender={(current) => {
-                      const style = {};
-                      if (current.date() === 1) {
-                        style.border = "1px solid #1677ff";
-                        style.borderRadius = "50%";
-                      }
-                      return (
-                        <div className="ant-picker-cell-inner" style={style}>
-                          {current.date()}
-                        </div>
-                      );
-                    }}
-                    defaultValue={dayjs()}
-                  />
-                </div>
-                <div className="flex items-center">
-                  <Tooltip placement="top" title="Add a Task">
-                    <div
-                      onClick={() => toggleCreateNormalTaskModal()}
-                      className="p-1 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green"
-                    >
-                      <MdOutlineAddTask className="text-2xl text-white" />
-                    </div>
-                  </Tooltip>
-                  <div className="p-2 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green">
-                    <FaFilter className="text-base text-white" />
-                  </div>
-                  <div className="flex mr-3">
-                    <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
-                      <AiOutlineSearch className="text-base text-white" />
-                    </div>
-                    <input
-                      className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
-                      placeholder="Enter task's name / id..."
+          <motion.div className={`${!isTaskOpen && "zero-height"}`}>
+            {taskViewState === "list" ? (
+              <>
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <p className="font-medium">From</p>
+                    <DatePicker
+                      cellRender={(current) => {
+                        const style = {};
+                        if (current.date() === 1) {
+                          style.border = "1px solid #1677ff";
+                          style.borderRadius = "50%";
+                        }
+                        return (
+                          <div className="ant-picker-cell-inner" style={style}>
+                            {current.date()}
+                          </div>
+                        );
+                      }}
+                      defaultValue={dayjs()}
+                    />
+                    <p className="font-medium">To</p>
+                    <DatePicker
+                      cellRender={(current) => {
+                        const style = {};
+                        if (current.date() === 1) {
+                          style.border = "1px solid #1677ff";
+                          style.borderRadius = "50%";
+                        }
+                        return (
+                          <div className="ant-picker-cell-inner" style={style}>
+                            {current.date()}
+                          </div>
+                        );
+                      }}
+                      defaultValue={dayjs()}
                     />
                   </div>
+                  <div className="flex items-center">
+                    <Tooltip placement="top" title="Add a Task">
+                      <div
+                        onClick={() => toggleCreateNormalTaskModal()}
+                        className="p-1 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green"
+                      >
+                        <MdOutlineAddTask className="text-2xl text-white" />
+                      </div>
+                    </Tooltip>
+                    <div className="p-2 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green">
+                      <FaFilter className="text-base text-white" />
+                    </div>
+                    <div className="flex mr-3">
+                      <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
+                        <AiOutlineSearch className="text-base text-white" />
+                      </div>
+                      <input
+                        className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
+                        placeholder="Enter task's name / id..."
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center pt-4 mb-4 border-t border-[#f5f6fb]">
-                <h1 className="text-2xl font-bold mr-6">2023-6-29</h1>
-                <div className="flex items-center">
-                  <p className="text-xl">4 Tasks</p>
+                <div className="flex items-center pt-4 mb-4 border-t border-[#f5f6fb]">
+                  <h1 className="text-2xl font-bold mr-6">2023-6-29</h1>
+                  <div className="flex items-center">
+                    <p className="text-xl">4 Tasks</p>
+                  </div>
                 </div>
-              </div>
-              {tasks.map((task, index) => (
-                <NormalTaskItem
-                  task={task}
-                  key={index}
-                  toggleEditNormalTaskModal={toggleEditNormalTaskModal}
+                {tasks.slice(0, 5).map((task, index) => (
+                  <NormalTaskItem
+                    task={task}
+                    key={index}
+                    toggleEditNormalTaskModal={toggleEditNormalTaskModal}
+                  />
+                ))}
+
+                <PaginateFooter />
+              </>
+            ) : (
+              <>
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center"></div>
+                  <div className="flex items-center gap-3">
+                    <Tooltip placement="top" title="Add a Task">
+                      <div
+                        onClick={() => toggleCreateNormalTaskModal()}
+                        className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
+                      >
+                        <MdOutlineAddTask className="text-2xl text-white" />
+                      </div>
+                    </Tooltip>
+                    <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
+                      <FaFilter className="text-base text-white" />
+                    </div>
+                    <div className="flex">
+                      <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
+                        <AiOutlineSearch className="text-base text-white" />
+                      </div>
+                      <input
+                        className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
+                        placeholder="Enter team's name / id..."
+                      />
+                    </div>
+                  </div>
+                </div>
+                <DndCalendar
+                  type="task"
+                  myEvents={myTasks}
+                  setMyTasks={setMyTasks}
+                  createTaskOpen={createTaskOpen}
+                  setCreateTaskOpen={setCreateTaskOpen}
                 />
-              ))}
-
-              <PaginateFooter />
-            </>
-          ) : (
-            <>
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center"></div>
-                <div className="flex items-center gap-3">
-                  <Tooltip placement="top" title="Add a Task">
-                    <div
-                      onClick={() => toggleCreateNormalTaskModal()}
-                      className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
-                    >
-                      <MdOutlineAddTask className="text-2xl text-white" />
-                    </div>
-                  </Tooltip>
-                  <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
-                    <FaFilter className="text-base text-white" />
-                  </div>
-                  <div className="flex">
-                    <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
-                      <AiOutlineSearch className="text-base text-white" />
-                    </div>
-                    <input
-                      className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
-                      placeholder="Enter team's name / id..."
-                    />
-                  </div>
-                </div>
-              </div>
-              <DndCalendar
-                type="task"
-                myEvents={myTasks}
-                setMyTasks={setMyTasks}
-                createTaskOpen={createTaskOpen}
-                setCreateTaskOpen={setCreateTaskOpen}
-              />
-              <div className="py-2"></div>
-            </>
-          )}
+                <div className="py-2"></div>
+              </>
+            )}
+          </motion.div>
         </div>
 
         <div className="w-full flex flex-col bg-white py-2 px-4 rounded-xl">
@@ -378,181 +391,183 @@ const CalendarDetail = () => {
                 List View
               </span>
             </div>
-            <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
+            <BiChevronsDown onClick={() => setIsMeetOpen(!isMeetOpen)} className="text-2xl hover:cursor-pointer hover:text-bright-green" />
           </div>
-          {!calendarViewState ? (
-            <>
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center gap-4"></div>
-                <div className="flex items-center gap-3">
-                  <Tooltip placement="top" title="Hold a meet">
-                    <div
-                      onClick={() => toggleCreateMeetModal()}
-                      className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
-                    >
-                      <TbCalendarPlus className="text-2xl text-white" />
+          <div className={`${!isMeetOpen && "zero-height"}`}>
+            {!calendarViewState ? (
+              <>
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center gap-4"></div>
+                  <div className="flex items-center gap-3">
+                    <Tooltip placement="top" title="Hold a meet">
+                      <div
+                        onClick={() => toggleCreateMeetModal()}
+                        className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
+                      >
+                        <TbCalendarPlus className="text-2xl text-white" />
+                      </div>
+                    </Tooltip>
+                    <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
+                      <FaFilter className="text-base text-white" />
                     </div>
-                  </Tooltip>
-                  <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
-                    <FaFilter className="text-base text-white" />
+                    <div className="flex">
+                      <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
+                        <AiOutlineSearch className="text-base text-white" />
+                      </div>
+                      <input
+                        className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
+                        placeholder="Enter team's name / id..."
+                      />
+                    </div>
                   </div>
-                  <div className="flex">
-                    <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
-                      <AiOutlineSearch className="text-base text-white" />
-                    </div>
-                    <input
-                      className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
-                      placeholder="Enter team's name / id..."
+                </div>
+                <DndCalendar
+                  type="meet"
+                  myEvents={myEvents}
+                  setMyEvents={setMyEvents}
+                  createMeetOpen={createMeetOpen}
+                  setCreateMeetOpen={setCreateMeetOpen}
+                  meetDetailOpen={meetDetailOpen}
+                  setMeetDetailOpen={setMeetDetailOpen}
+                />
+                <div className="py-2"></div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center justify-between pb-4 border-b border-solid border-[#f5f6fb] mb-4">
+                  <div className="flex items-center gap-3">
+                    <IoIosArrowDropleftCircle
+                      onClick={() => setCalendarViewState(!calendarViewState)}
+                      className="text-3xl text-bright-green"
+                    />
+                    <p className="font-medium">From</p>
+                    <DatePicker
+                      cellRender={(current) => {
+                        const style = {};
+                        if (current.date() === 1) {
+                          style.border = "1px solid #1677ff";
+                          style.borderRadius = "50%";
+                        }
+                        return (
+                          <div className="ant-picker-cell-inner" style={style}>
+                            {current.date()}
+                          </div>
+                        );
+                      }}
+                      defaultValue={dayjs()}
+                    />
+                    <p className="font-medium">To</p>
+                    <DatePicker
+                      cellRender={(current) => {
+                        const style = {};
+                        if (current.date() === 1) {
+                          style.border = "1px solid #1677ff";
+                          style.borderRadius = "50%";
+                        }
+                        return (
+                          <div className="ant-picker-cell-inner" style={style}>
+                            {current.date()}
+                          </div>
+                        );
+                      }}
+                      defaultValue={dayjs()}
                     />
                   </div>
-                </div>
-              </div>
-              <DndCalendar
-                type="meet"
-                myEvents={myEvents}
-                setMyEvents={setMyEvents}
-                createMeetOpen={createMeetOpen}
-                setCreateMeetOpen={setCreateMeetOpen}
-                meetDetailOpen={meetDetailOpen}
-                setMeetDetailOpen={setMeetDetailOpen}
-              />
-              <div className="py-2"></div>
-            </>
-          ) : (
-            <>
-              <div className="flex items-center justify-between pb-4 border-b border-solid border-[#f5f6fb] mb-4">
-                <div className="flex items-center gap-3">
-                  <IoIosArrowDropleftCircle
-                    onClick={() => setCalendarViewState(!calendarViewState)}
-                    className="text-3xl text-bright-green"
-                  />
-                  <p className="font-medium">From</p>
-                  <DatePicker
-                    cellRender={(current) => {
-                      const style = {};
-                      if (current.date() === 1) {
-                        style.border = "1px solid #1677ff";
-                        style.borderRadius = "50%";
-                      }
-                      return (
-                        <div className="ant-picker-cell-inner" style={style}>
-                          {current.date()}
-                        </div>
-                      );
-                    }}
-                    defaultValue={dayjs()}
-                  />
-                  <p className="font-medium">To</p>
-                  <DatePicker
-                    cellRender={(current) => {
-                      const style = {};
-                      if (current.date() === 1) {
-                        style.border = "1px solid #1677ff";
-                        style.borderRadius = "50%";
-                      }
-                      return (
-                        <div className="ant-picker-cell-inner" style={style}>
-                          {current.date()}
-                        </div>
-                      );
-                    }}
-                    defaultValue={dayjs()}
-                  />
-                </div>
-                <div className="flex items-center gap-3">
-                  <Tooltip placement="top" title="Hold a meet">
-                    <div
-                      onClick={() => toggleCreateMeetModal()}
-                      className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
-                    >
-                      <TbCalendarPlus className="text-2xl text-white" />
+                  <div className="flex items-center gap-3">
+                    <Tooltip placement="top" title="Hold a meet">
+                      <div
+                        onClick={() => toggleCreateMeetModal()}
+                        className="p-1 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green"
+                      >
+                        <TbCalendarPlus className="text-2xl text-white" />
+                      </div>
+                    </Tooltip>
+                    <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
+                      <FaFilter className="text-base text-white" />
                     </div>
-                  </Tooltip>
-                  <div className="p-2 bg-bright-green rounded-full cursor-pointer hover:bg-less-bright-green">
-                    <FaFilter className="text-base text-white" />
-                  </div>
-                  <div className="flex">
-                    <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
-                      <AiOutlineSearch className="text-base text-white" />
+                    <div className="flex">
+                      <div className="flex items-center justify-center pl-4 pr-3 py-2 rounded-bl-full rounded-tl-full bg-bright-green">
+                        <AiOutlineSearch className="text-base text-white" />
+                      </div>
+                      <input
+                        className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
+                        placeholder="Enter team's name / id..."
+                      />
                     </div>
-                    <input
-                      className="rounded-tr-full rounded-br-full border-t border-b border-r border-solid border-bright-green text-sm h-[32px] w-[200px] focus:outline-none px-3"
-                      placeholder="Enter team's name / id..."
-                    />
+                    <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
                   </div>
-                  <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
                 </div>
-              </div>
-              <div className="flex items-center">
-                <h1 className="text-2xl font-bold mr-6">2023-6-29</h1>
                 <div className="flex items-center">
-                  <p className="pr-4 mr-3 text-xl border-r border-[#f5f6fb]">
-                    4 Meets
-                  </p>
-                  <div className="flex items-center gap-4">
-                    <AiFillCheckCircle className="text-3xl text-bright-green" />
-                    <p className="text-lg">4 Meets End</p>
-                    <IoIosArrowForward className="text-2xl" />
-                    <p className="text-lg">0 To go ~</p>
+                  <h1 className="text-2xl font-bold mr-6">2023-6-29</h1>
+                  <div className="flex items-center">
+                    <p className="pr-4 mr-3 text-xl border-r border-[#f5f6fb]">
+                      4 Meets
+                    </p>
+                    <div className="flex items-center gap-4">
+                      <AiFillCheckCircle className="text-3xl text-bright-green" />
+                      <p className="text-lg">4 Meets End</p>
+                      <IoIosArrowForward className="text-2xl" />
+                      <p className="text-lg">0 To go ~</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="mt-6 flex justify-start">
-                <Timeline
-                  mode={"left"}
-                  items={myEvents.slice(0, 4).map((e) => {
-                    return {
-                      label: (
-                        <TimelineLabel startTime={dayjs(e.start).hour()} />
-                      ),
-                      children: (
-                        <TimelineChildren
-                          event={e}
-                          // setMeetDetailOpen={setMeetDetailOpen2}
-                          // setSelectedMeet={setSelectedMeet}
-                        />
-                      ),
-                    };
-                  })}
-                />
-              </div>
-              <div className="flex items-center pt-6 border-t border-[#f5f6fb]">
-                <h1 className="text-2xl font-bold mr-6">2023-6-30</h1>
-                <div className="flex items-center">
-                  <p className="pr-4 mr-3 text-xl border-r border-[#f5f6fb]">
-                    4 Meets
-                  </p>
-                  <div className="flex items-center gap-4">
-                    <AiFillCheckCircle className="text-3xl text-bright-green" />
-                    <p className="text-lg">4 Meets End</p>
-                    <IoIosArrowForward className="text-2xl" />
-                    <p className="text-lg">0 To go ~</p>
+                <div className="mt-6 flex justify-start">
+                  <Timeline
+                    mode={"left"}
+                    items={myEvents.slice(0, 4).map((e) => {
+                      return {
+                        label: (
+                          <TimelineLabel startTime={dayjs(e.start).hour()} />
+                        ),
+                        children: (
+                          <TimelineChildren
+                            event={e}
+                            // setMeetDetailOpen={setMeetDetailOpen2}
+                            // setSelectedMeet={setSelectedMeet}
+                          />
+                        ),
+                      };
+                    })}
+                  />
+                </div>
+                <div className="flex items-center pt-6 border-t border-[#f5f6fb]">
+                  <h1 className="text-2xl font-bold mr-6">2023-6-30</h1>
+                  <div className="flex items-center">
+                    <p className="pr-4 mr-3 text-xl border-r border-[#f5f6fb]">
+                      4 Meets
+                    </p>
+                    <div className="flex items-center gap-4">
+                      <AiFillCheckCircle className="text-3xl text-bright-green" />
+                      <p className="text-lg">4 Meets End</p>
+                      <IoIosArrowForward className="text-2xl" />
+                      <p className="text-lg">0 To go ~</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="mt-6 flex justify-start">
-                <Timeline
-                  mode={"left"}
-                  items={myEvents.slice(4, 8).map((e) => {
-                    return {
-                      label: (
-                        <TimelineLabel startTime={dayjs(e.start).hour()} />
-                      ),
-                      children: (
-                        <TimelineChildren
-                          event={e}
-                          // setMeetDetailOpen={setMeetDetailOpen2}
-                          // setSelectedMeet={setSelectedMeet}
-                        />
-                      ),
-                    };
-                  })}
-                />
-              </div>
-            </>
-          )}
+                <div className="mt-6 flex justify-start">
+                  <Timeline
+                    mode={"left"}
+                    items={myEvents.slice(4, 8).map((e) => {
+                      return {
+                        label: (
+                          <TimelineLabel startTime={dayjs(e.start).hour()} />
+                        ),
+                        children: (
+                          <TimelineChildren
+                            event={e}
+                            // setMeetDetailOpen={setMeetDetailOpen2}
+                            // setSelectedMeet={setSelectedMeet}
+                          />
+                        ),
+                      };
+                    })}
+                  />
+                </div>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="w-[336px] ml-6 shrink-0">
         <div className="w-full bg-white rounded-xl flex flex-col px-4 pb-4 mb-4">

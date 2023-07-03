@@ -1,106 +1,15 @@
-import { Space, Table, Tag } from "antd";
+import { Modal, Select, Table, Tooltip } from "antd";
 import { HiUserGroup } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import image from "../constant/image";
 import { BiChevronsDown } from "react-icons/bi";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FaFilter } from "react-icons/fa";
-import {
-  AiOutlineSearch,
-  AiOutlineUserAdd,
-} from "react-icons/ai";
-
-const columns = [
-  {
-    title: "ID",
-    dataIndex: "id",
-    key: "id",
-    render: (text) => <p>{text}</p>,
-  },
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    render: (text) => <a>{text}</a>,
-    filters: [
-      {
-        text: "Joe",
-        value: "Joe",
-      },
-      {
-        text: "Jim",
-        value: "Jim",
-      },
-      {
-        text: "Submenu",
-        value: "Submenu",
-        children: [
-          {
-            text: "Green",
-            value: "Green",
-          },
-          {
-            text: "Black",
-            value: "Black",
-          },
-        ],
-      },
-    ],
-    // specify the condition of filtering result
-    // here is that finding the name started with `value`
-    onFilter: (value, record) => record.name.indexOf(value) === 0,
-    sorter: (a, b) => a.name.length - b.name.length,
-    sortDirections: ["descend"],
-  },
-  {
-    title: "Role",
-    dataIndex: "role",
-    key: "role",
-    render: (text) => <p>{text}</p>,
-  },
-  {
-    title: "Tags",
-    key: "tags",
-    dataIndex: "tags",
-    render: (_, { tags }) => (
-      <>
-        {tags.map((tag) => {
-          let color = tag.length > 5 ? "geekblue" : "green";
-          if (tag === "loser") {
-            color = "volcano";
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </>
-    ),
-  },
-  {
-    title: "Assigned Tasks",
-    dataIndex: "assigned_tasks",
-    key: "assigned_tasks",
-    render: (text) => <p>{text}</p>,
-  },
-  {
-    title: "Completed Tasks",
-    dataIndex: "completed_tasks",
-    key: "completed_tasks",
-    render: (text) => <p>{text}</p>,
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: () => (
-      <Space size="middle">
-        <a>Edit</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
+import { AiFillEye, AiOutlineSearch, AiOutlineUserAdd } from "react-icons/ai";
+import { MdAddTask, MdPersonRemove } from "react-icons/md";
+import { TbCalendarPlus } from "react-icons/tb";
+import dayjs from "dayjs";
+import { toast } from "react-toastify";
 
 const data = [
   {
@@ -109,7 +18,7 @@ const data = [
     name: "John Brown",
     role: "Team Leader",
     completed_tasks: "120.543",
-    assigned_tasks: "154.534.534",
+    assigned_tasks: "154.530.534",
     tags: ["nice", "developer"],
   },
   {
@@ -118,7 +27,7 @@ const data = [
     name: "Jim Green",
     role: "Team Leader",
     completed_tasks: "120.543",
-    assigned_tasks: "154.534.534",
+    assigned_tasks: "15.534.534",
     tags: ["loser"],
   },
   {
@@ -127,8 +36,29 @@ const data = [
     name: "Joe Black",
     role: "Team Leader",
     completed_tasks: "120.543",
-    assigned_tasks: "154.534.534",
+    assigned_tasks: "124.534.534",
     tags: ["cool", "teacher"],
+  },
+];
+
+const requestData = [
+  {
+    key: "1",
+    id: "1",
+    name: "John Brown",
+    requested_date: dayjs().format("YYYY-MM-DD HH:mm"),
+  },
+  {
+    key: "2",
+    id: "2",
+    name: "Jim Green",
+    requested_date: dayjs().format("YYYY-MM-DD HH:mm"),
+  },
+  {
+    key: "3",
+    id: "3",
+    name: "Joe Black",
+    requested_date: dayjs().format("YYYY-MM-DD HH:mm"),
   },
 ];
 
@@ -136,6 +66,145 @@ const TeamMembers = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   // false - joined | true - requesting
   const [viewState, setViewState] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+
+  const columns = useMemo(
+    () => [
+      {
+        title: "ID",
+        dataIndex: "id",
+        key: "id",
+        render: (text) => <p>{text}</p>,
+      },
+      {
+        title: "Name",
+        dataIndex: "name",
+        key: "name",
+        render: (text) => (
+          <div className="flex items-center">
+            <img
+              className="w-7 h-7 rounded-full mr-2"
+              src={image.himeko}
+              alt="mem-ava"
+            />
+            <span>{text}</span>
+          </div>
+        ),
+        sorter: (a, b) => a.name.length - b.name.length,
+      },
+      {
+        title: "Role",
+        dataIndex: "role",
+        key: "role",
+        render: (text) => (
+          <Select
+            defaultValue={text}
+            style={{ width: 148 }}
+            options={[
+              { value: "Team Lead", label: "Team Lead" },
+              { value: "Dev", label: "Dev" },
+              { value: "HR", label: "HR" },
+              { value: "DevOp", label: "DevOp" },
+            ]}
+          />
+        ),
+      },
+      {
+        title: "Assigned Tasks",
+        dataIndex: "assigned_tasks",
+        key: "assigned_tasks",
+        render: (text) => <p>{text}</p>,
+        sorter: (a, b) => a.assigned_tasks - b.assigned_tasks,
+      },
+      {
+        title: "Completed Tasks",
+        dataIndex: "completed_tasks",
+        key: "completed_tasks",
+        render: (text) => <p>{text}</p>,
+        sorter: (a, b) => a.completed_tasks - b.completed_tasks,
+      },
+      {
+        title: "Action",
+        key: "action",
+        render: () => (
+          <div className="grid grid-cols-4 gap-2">
+            <Tooltip placement="top" title="Assign Task">
+              <MdAddTask className="icon-style" />
+            </Tooltip>
+            <Tooltip placement="top" title="Make a meet">
+              <TbCalendarPlus className="icon-style" />
+            </Tooltip>
+            <Tooltip placement="top" title="View Detail">
+              <AiFillEye className="icon-style" />
+            </Tooltip>
+            <Tooltip placement="top" title="Remove from team">
+              <MdPersonRemove
+                onClick={() => {
+                  setOpen(true);
+                  setTitle("Are you sure you want to remove this person?");
+                }}
+                className="icon-style"
+              />
+            </Tooltip>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
+
+  const requestColumns = useMemo(
+    () => [
+      {
+        title: "ID",
+        dataIndex: "id",
+        key: "id",
+        render: (text) => <p>{text}</p>,
+      },
+      {
+        title: "Name",
+        dataIndex: "name",
+        key: "name",
+        render: (text) => (
+          <div className="flex items-center">
+            <img
+              className="w-7 h-7 rounded-full mr-2"
+              src={image.himeko}
+              alt="mem-ava"
+            />
+            <span>{text}</span>
+          </div>
+        ),
+        sorter: (a, b) => a.name.length - b.name.length,
+      },
+      {
+        title: "Requested Date",
+        dataIndex: "requested_date",
+        key: "requested_date",
+        render: (text) => <p>{text}</p>,
+      },
+      {
+        title: "Action",
+        key: "action",
+        render: () => (
+          <div className="flex items-center gap-4">
+            <span className="cursor-pointer text-bright-green">Approve</span>
+            <span
+              className="cursor-pointer text-red-type"
+              onClick={() => {
+                setOpen(true);
+                setTitle("Are you sure you want to decline this request?");
+              }}
+            >
+              Decline
+            </span>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
 
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
@@ -225,11 +294,19 @@ const TeamMembers = () => {
               <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
             </div>
           </div>
-          <Table
-            rowSelection={rowSelection}
-            columns={columns}
-            dataSource={data}
-          />
+          {!viewState ? (
+            <Table
+              rowSelection={rowSelection}
+              columns={columns}
+              dataSource={data}
+            />
+          ) : (
+            <Table
+              rowSelection={rowSelection}
+              columns={requestColumns}
+              dataSource={requestData}
+            />
+          )}
         </div>
       </div>
 
@@ -288,6 +365,21 @@ const TeamMembers = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        title="Confirm Modal"
+        open={open}
+        centered
+        onOk={() => {
+          setOpen(false);
+          toast("Remove Success!");
+        }}
+        onCancel={() => {
+          setOpen(false);
+        }}
+      >
+        <p>{title}</p>
+      </Modal>
     </>
   );
 };

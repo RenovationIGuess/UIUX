@@ -18,6 +18,10 @@ import {
 import { Bar, Line } from "react-chartjs-2";
 import faker from "faker";
 import TaskStatistic from "../components/TaskStatistic/TaskStatistic";
+import { BiChevronsDown } from "react-icons/bi";
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
+import { useState } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -43,7 +47,7 @@ const options = {
       },
     },
     title: {
-      display: true,
+      display: false,
       text: "Team's Members Status",
       font: {
         size: "16px",
@@ -65,11 +69,11 @@ const meetOptions = {
       },
     },
     title: {
-      display: true,
+      display: false,
       text: "Meetings Statistic",
       font: {
         size: "16px",
-      }
+      },
     },
   },
 };
@@ -129,15 +133,102 @@ const meetData = {
 };
 
 const TeamDetail = () => {
+  // const [state, setState] = useState({
+  //   tasks: true,
+  //   projects: true,
+  //   members: true,
+  //   meetings: true,
+  // });
+
   return (
     <>
       <div className="flex-1 flex flex-col">
         <TaskStatistic type="task" />
         <TaskStatistic type="project" />
         <div className="w-full flex flex-col bg-white p-4 mb-4 rounded-xl transition">
+          <div className="flex items-center justify-between pb-4 border-b border-solid border-[#f5f6fb] mb-4">
+            <p className="uppercase font-semibold text-base">members</p>
+            <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
+          </div>
+          <div className="flex items-center justify-end">
+            <div className="flex items-center gap-4 mb-4">
+              <p className="font-medium">From</p>
+              <DatePicker
+                cellRender={(current) => {
+                  const style = {};
+                  if (current.date() === 1) {
+                    style.border = "1px solid #1677ff";
+                    style.borderRadius = "50%";
+                  }
+                  return (
+                    <div className="ant-picker-cell-inner" style={style}>
+                      {current.date()}
+                    </div>
+                  );
+                }}
+                defaultValue={dayjs()}
+              />
+              <p className="font-medium">To</p>
+              <DatePicker
+                cellRender={(current) => {
+                  const style = {};
+                  if (current.date() === 1) {
+                    style.border = "1px solid #1677ff";
+                    style.borderRadius = "50%";
+                  }
+                  return (
+                    <div className="ant-picker-cell-inner" style={style}>
+                      {current.date()}
+                    </div>
+                  );
+                }}
+                defaultValue={dayjs()}
+              />
+            </div>
+          </div>
           <Line options={options} data={data} />
         </div>
         <div className="w-full flex flex-col bg-white p-4 rounded-xl transition">
+          <div className="flex items-center justify-between pb-4 border-b border-solid border-[#f5f6fb] mb-4">
+            <p className="uppercase font-semibold text-base">meetings</p>
+            <BiChevronsDown className="text-2xl hover:cursor-pointer hover:text-bright-green" />
+          </div>
+          <div className="flex items-center justify-end">
+            <div className="flex items-center gap-4 mb-4">
+              <p className="font-medium">From</p>
+              <DatePicker
+                cellRender={(current) => {
+                  const style = {};
+                  if (current.date() === 1) {
+                    style.border = "1px solid #1677ff";
+                    style.borderRadius = "50%";
+                  }
+                  return (
+                    <div className="ant-picker-cell-inner" style={style}>
+                      {current.date()}
+                    </div>
+                  );
+                }}
+                defaultValue={dayjs()}
+              />
+              <p className="font-medium">To</p>
+              <DatePicker
+                cellRender={(current) => {
+                  const style = {};
+                  if (current.date() === 1) {
+                    style.border = "1px solid #1677ff";
+                    style.borderRadius = "50%";
+                  }
+                  return (
+                    <div className="ant-picker-cell-inner" style={style}>
+                      {current.date()}
+                    </div>
+                  );
+                }}
+                defaultValue={dayjs()}
+              />
+            </div>
+          </div>
           <Bar options={meetOptions} data={meetData} />
         </div>
       </div>

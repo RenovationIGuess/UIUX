@@ -2,7 +2,7 @@ import image from "../constant/image";
 import "./styles/JoinedTeam.scss";
 import { FaFilter, FaRegDotCircle } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "antd";
 import "./styles/JoinedTeam.scss";
 import {
@@ -16,13 +16,16 @@ import {
 } from "react-icons/ai";
 import { useState } from "react";
 import dummyData from "../constant/dummyData";
+import { toast } from "react-toastify";
 
 const CreatedTeam = () => {
+  const navigate = useNavigate();
+
   // Use for join team input modal
   const [teamName, setTeamName] = useState("");
   const [teamUserName, setTeamUserName] = useState("");
   const [createdTeam, setCreatedTeam] = useState(dummyData.dummyTeamsData);
-  const [searchTeamValue, setSearchTeamValue] = useState('');
+  const [searchTeamValue, setSearchTeamValue] = useState("");
 
   const handleCreateTeamModal = () => {
     const modalElement = document.querySelector(".modal-background");
@@ -69,7 +72,10 @@ const CreatedTeam = () => {
                     <div className="joined-team-item" key={index}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-6">
-                          <Link to="/team/1/your-stats" className="text-2xl hover:text-bright-green font-medium">
+                          <Link
+                            to="/team/1/your-stats"
+                            className="text-2xl hover:text-bright-green font-medium"
+                          >
                             {t.name}
                           </Link>
                           <div className="flex items-center gap-4">
@@ -83,9 +89,11 @@ const CreatedTeam = () => {
                             </p>
                           </div>
                         </div>
-                        <button className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
-                          <Link to={`/team/${t.id}/your-stats`}>View Details</Link>
-                        </button>
+                        <Link to={`/team/${t.id}/your-stats`} className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
+                          <span>
+                            View Details
+                          </span>
+                        </Link>
                       </div>
                       <div className="w-full flex items-center mt-3 whitespace-nowrap">
                         <div className="flex relative">
@@ -97,15 +105,24 @@ const CreatedTeam = () => {
                                   src={m.image}
                                   data-index={m.id}
                                   className="w-8 h-8 rounded-full"
-                                  style={{ transform: `translateX(${mIndex*(-50)}%)` }}
+                                  style={{
+                                    transform: `translateX(${mIndex * -50}%)`,
+                                  }}
                                 />
-                              )
+                              );
                             }
                           })}
                         </div>
                         <p
                           className="text-bsae font-medium"
-                          style={{ marginLeft: t.members.length >= 3 ? "-12px" : t.members.length === 1 ? "1rem" : "0px" }}
+                          style={{
+                            marginLeft:
+                              t.members.length >= 3
+                                ? "-12px"
+                                : t.members.length === 1
+                                ? "1rem"
+                                : "0px",
+                          }}
                         >
                           {t.members.length} members
                         </p>
@@ -197,7 +214,9 @@ const CreatedTeam = () => {
             </div>
             <div className="w-full bg-white rounded-xl flex flex-col px-4 pb-4 mt-4">
               <div className="py-4 border-b border-solid border-[#f5f6fb] mb-3">
-                <span className="font-semibold">Teams that you have events today</span>
+                <span className="font-semibold">
+                  Teams that you have events today
+                </span>
               </div>
               <div className="w-full flex flex-col items-center justify-center">
                 <img className="w-[200px]" src={image.nothing} alt="nothing" />
@@ -273,8 +292,15 @@ const CreatedTeam = () => {
               <button className="bg-[#9C9C9C] text-white text-sm py-2 px-4 rounded-md">
                 Cancel
               </button>
-              <button className="bg-bright-green text-white text-sm py-2 px-4 rounded-md">
-                Join
+              <button
+                onClick={() => {
+                  handleCreateTeamModal();
+                  toast("Create successful!");
+                  navigate("/team/1/your-stats");
+                }}
+                className="bg-bright-green text-white text-sm py-2 px-4 rounded-md"
+              >
+                Create
               </button>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import DefaultNavbar from "../Navbar/DefaultNavbar";
 import Sidebar from "../Sidebar/Sidebar";
 import { useState } from "react";
@@ -7,8 +7,9 @@ import image from "../../constant/image";
 import { BiCommentDetail } from "react-icons/bi";
 import { FiMinimize } from "react-icons/fi";
 import { TiArrowSortedDown } from "react-icons/ti";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import SearchBar from "../SearchBar/SearchBar";
 
 const UserProfileLayout = () => {
   const [isMinimized, setIsMinimized] = useState(false);
@@ -79,9 +80,7 @@ const UserProfileLayout = () => {
                       <div className="account-center-basic-rows account-center-basic-rows--top">
                         {/* User name and level? */}
                         <div className="account-center-basic-row1">
-                          <span className="user-basic-nickname">
-                            Desperate
-                          </span>
+                          <span className="user-basic-nickname">Desperate</span>
                         </div>
                         {/* User sign, tags,... */}
                         <div className="account-center-basic-row2">
@@ -93,36 +92,7 @@ const UserProfileLayout = () => {
                       </div>
                       <div className="account-center-basic-rows account-center-basic-rows--bottom">
                         <div className="account-center-basic-item">
-                          <Link
-                            to="/team/1/dashboard"
-                            className="uppercase font-bold hover:text-bright-green"
-                          >
-                            Dashboard
-                          </Link>
-                        </div>
-                        <div className="account-center-basic-item">
-                          <Link
-                            to="/team/1/meetings"
-                            className="uppercase font-bold hover:text-bright-green"
-                          >
-                            Meetings
-                          </Link>
-                        </div>
-                        <div className="account-center-basic-item">
-                          <Link
-                            to="/team/1/projects"
-                            className="uppercase font-bold hover:text-bright-green"
-                          >
-                            Projects
-                          </Link>
-                        </div>
-                        <div className="account-center-basic-item">
-                          <Link
-                            to="/team/1/tasks"
-                            className="uppercase font-bold hover:text-bright-green"
-                          >
-                            Tasks
-                          </Link>
+                          <SearchBar styles={{ width: 480 }} />
                         </div>
                       </div>
                     </div>
@@ -139,21 +109,25 @@ const UserProfileLayout = () => {
                             <FiMinimize className="icon-select__arrow" />
                           </span>
                         </div>
-                        <div className="account-center-select-btn" onClick={() => setIsOptionsOpen(!isOptionsOpen)}>
+                        <div
+                          className="account-center-select-btn"
+                          onClick={() => setIsOptionsOpen(!isOptionsOpen)}
+                        >
                           <span className="flex items-center justify-center">
                             Options
                             {/* Icon goes here */}
                             <TiArrowSortedDown className="icon-select__arrow" />
                           </span>
                         </div>
-                        {isOptionsOpen && <div className="float-dialog">
-                          <ul className="flex flex-col">
-                            
+                        {isOptionsOpen && (
+                          <div className="float-dialog">
+                            <ul className="flex flex-col">
                               <li className="py-1 px-3 flex items-center text-85-gray rounded-md hover:bg-bright-green hover:text-white cursor-pointer">
                                 <p className="text-sm">Customize</p>
                               </li>
-                          </ul>
-                        </div>}
+                            </ul>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -169,7 +143,7 @@ const UserProfileLayout = () => {
         </section>
       </div>
 
-      <ToastContainer 
+      <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}

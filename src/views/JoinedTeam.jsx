@@ -84,11 +84,11 @@ const JoinedTeam = () => {
                             </p>
                           </div>
                         </div>
-                        <button className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
-                          <Link to={`/team/${t.id}/your-stats`}>
+                        <Link to={`/team/${t.id}/your-stats`} className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
+                          <span>
                             View Details
-                          </Link>
-                        </button>
+                          </span>
+                        </Link>
                       </div>
                       <div className="w-full flex items-center mt-3 whitespace-nowrap">
                         <div className="flex relative">

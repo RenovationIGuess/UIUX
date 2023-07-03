@@ -1,9 +1,11 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import image from "../../constant/image";
 import { FiChevronsRight } from "react-icons/fi";
 import {
+  AiFillBackward,
   AiFillBell,
+  AiFillForward,
   AiFillSetting,
   AiOutlineCalendar,
   AiOutlineClear,
@@ -17,19 +19,80 @@ import {
 import { Badge, Tooltip } from "antd";
 import { TiThSmall } from "react-icons/ti";
 import { IoIosArrowForward } from "react-icons/io";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const DefaultNavbar = ({ handleToggleSidebar }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [currentUrl, setCurrentUrl] = useState([]);
   const [notiOpen, setNotiOpen] = useState(false);
   const [userModalOpen, setUserModalOpen] = useState(false);
 
+  useEffect(() => {
+    setCurrentUrl(location.pathname.slice(1).split("/"));
+  }, [location]);
+
   return (
     <nav className="shrink-0 w-full flex items-center justify-between h-[56px] py-2 px-10 bg-white border-b border-solid border-[#f5f6fb]">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <FiChevronsRight
           onClick={() => handleToggleSidebar("open")}
           className="open-sidebar-icon text-2xl hidden"
         />
-        <p className="text-base font-medium">Teams / Joined Teams</p>
+        <Tooltip placement="bottom" title="To previous page">
+          <button
+            className={`pr-3 pl-2 py-1 flex items-center gap-1 justify-center 
+          bg-bright-green hover:bg-less-bright-green 
+          cursor-pointer text-white rounded-md ${
+            location.key === "default" && "pointer-events-none opacity-80"
+          }`}
+            onClick={() => navigate(-1)}
+          >
+            <AiFillBackward className="text-2xl" />
+          </button>
+        </Tooltip>
+
+        <p className="text-base font-medium">
+          {currentUrl.map((u, i) => {
+            if (i !== currentUrl.length - 1) {
+              return (
+                <span key={i}>
+                  <Link
+                    className="hover:text-bright-green"
+                    to={`/${currentUrl.slice(0, i + 1).join("/")}`}
+                  >
+                    {u.charAt(0).toUpperCase() + u.slice(1)}
+                  </Link>
+                  &nbsp;/&nbsp;
+                </span>
+              );
+            } else {
+              return (
+                <span key={i} className="text-base font-medium">
+                  <Link
+                    className="hover:text-bright-green"
+                    to={`/${currentUrl.join("/")}`}
+                  >
+                    {u.charAt(0).toUpperCase() + u.slice(1)}
+                  </Link>
+                </span>
+              );
+            }
+          })}
+        </p>
+        <Tooltip placement="bottom" title="To next page">
+          <button
+            className={`pl-3 pr-2 py-1 flex items-center gap-1 justify-center 
+          bg-bright-green hover:bg-less-bright-green 
+          cursor-pointer text-white rounded-md ${
+            location.key === "default" && "pointer-events-none opacity-80"
+          }`}
+            onClick={() => navigate(+1)}
+          >
+            <AiFillForward className="text-2xl" />
+          </button>
+        </Tooltip>
       </div>
 
       <div className="flex items-center">

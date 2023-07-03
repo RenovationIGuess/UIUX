@@ -15,25 +15,81 @@ import styles from "./rendering.module.scss";
 import CustomHeader from "./CustomHeader";
 import "./DndCalendar.scss";
 import CreateMeetModal from "../CreateMeetModal/CreateMeetModal";
-import { Tooltip } from "antd";
+import { Modal, Popover, Progress, Tooltip } from "antd";
 import MeetDetail from "../MeetDetail/MeetDetail";
 import { useNavigate } from "react-router-dom";
 import CreateTaskModal from "../CreateTaskModal/CreateTaskModal";
+import { AiFillCloseCircle, AiFillEdit } from "react-icons/ai";
+import { toast } from "react-toastify";
 
 const localizer = dayjsLocalizer(dayjs);
 dayjs.extend(toObject);
 
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
-const EventHoverPopup = ({ event }) => {
+const EventHoverPopup = ({ event, open, setOpen }) => {
   return (
     <>
-      <div></div>
+      <div className="flex flex-col">
+        <div className="flex items-center gap-8 mb-3">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center pr-3 border-[#f5f6fb] border-r">
+              <p className="font-medium text-base">
+                {event.name || event.title}
+              </p>
+            </div>
+            <span
+              className={`px-3 py-1 text-xs font-semibold uppercase rounded-full border${
+                event.priority === "high"
+                  ? " border-red-type text-red-type"
+                  : event.priority === "medium"
+                  ? " border-yellow-type text-yellow-type"
+                  : " border-bright-green text-bright-green"
+              }`}
+            >
+              {event.priority}
+            </span>
+            <span
+              className={`px-3 py-1 text-xs font-semibold uppercase rounded-full border${
+                event.status === "done"
+                  ? " border-bright-green text-bright-green"
+                  : event.status === "to do"
+                  ? " border-45-gray text-45-gray"
+                  : " border-yellow-type text-yellow-type"
+              }`}
+            >
+              {event.status}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <AiFillEdit className="icon-style" />
+            <AiFillCloseCircle
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen(!open);
+              }}
+              className="text-2xl cursor-pointer text-red-type"
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <img
+              className="w-8 h-8 rounded-full mr-2"
+              src={event.creator.image}
+            />
+            <p className="text-sm">{event.creator.name} is the Creator</p>
+          </div>
+          <Progress type="circle" percent={event.completion} size={45} />
+        </div>
+      </div>
     </>
   );
 };
 
 function Event({ event }) {
+  const [open, setOpen] = useState(false);
+
   const { startTime, endTime } = useMemo(() => {
     return {
       startTime: dayjs(event.start).format("HH:mm"),
@@ -42,14 +98,45 @@ function Event({ event }) {
   }, []);
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center">
-        <span className="time-wrapper">
-          {startTime}&nbsp;-&nbsp;{endTime}
-        </span>
-        <span className="event-title">{event.title || event.name}</span>
-      </div>
-    </div>
+    <>
+      <Popover
+        content={
+          <EventHoverPopup event={event} setOpen={setOpen} open={open} />
+        }
+        title="Event Detail"
+        placement="top"
+      >
+        <div
+          className={`flex items-center justify-between ${
+            dayjs().isAfter(dayjs(event.end)) && "opacity-50"
+          }`}
+        >
+          <div className="flex items-center">
+            <span className="time-wrapper">
+              {startTime}&nbsp;-&nbsp;{endTime}
+            </span>
+            <span className="event-title">{event.title || event.name}</span>
+          </div>
+        </div>
+      </Popover>
+
+      <Modal
+        title="Confirm Modal"
+        centered
+        open={open}
+        onOk={(e) => {
+          e.stopPropagation();
+          setOpen(!open);
+          toast("Delete Successful!");
+        }}
+        onCancel={(e) => {
+          e.stopPropagation();
+          setOpen(!open);
+        }}
+      >
+        <p>Are you sure you want to delete</p>
+      </Modal>
+    </>
   );
 }
 Event.propTypes = {
@@ -234,7 +321,7 @@ export default function DndCalendar({
       setSelectedEvent(event);
       setMeetDetailOpen(true);
     } else {
-      navigate('/team/1/tasks/1');
+      navigate("/team/1/tasks/1");
     }
   }, []);
 

@@ -309,15 +309,43 @@ const UserProfile = () => {
               className="text-2xl hover:cursor-pointer hover:text-bright-green"
             />
           </div>
-          <motion.div
-            variants={{
-              taskOpen: { height: "auto" },
-              taskClosed: { height: 0 },
-            }}
-            className={`${!isTaskOpen && "zero-height"}`}
-          >
+          <motion.div className={`${!isTaskOpen && "zero-height"}`}>
             {taskViewState === "statistic" ? (
               <>
+                <div className="flex items-center gap-4 mb-4">
+                  <p className="font-medium">From</p>
+                  <DatePicker
+                    cellRender={(current) => {
+                      const style = {};
+                      if (current.date() === 1) {
+                        style.border = "1px solid #1677ff";
+                        style.borderRadius = "50%";
+                      }
+                      return (
+                        <div className="ant-picker-cell-inner" style={style}>
+                          {current.date()}
+                        </div>
+                      );
+                    }}
+                    defaultValue={dayjs()}
+                  />
+                  <p className="font-medium">To</p>
+                  <DatePicker
+                    cellRender={(current) => {
+                      const style = {};
+                      if (current.date() === 1) {
+                        style.border = "1px solid #1677ff";
+                        style.borderRadius = "50%";
+                      }
+                      return (
+                        <div className="ant-picker-cell-inner" style={style}>
+                          {current.date()}
+                        </div>
+                      );
+                    }}
+                    defaultValue={dayjs()}
+                  />
+                </div>
                 <div className="flex items-center gap-4">
                   <div className="flex-1 flex items-center justify-between p-2 rounded-md shadow-lg border-b-2 border-solid border-bright-green">
                     <div className="flex flex-col">
@@ -468,7 +496,7 @@ const UserProfile = () => {
                         <p className="text-xl">4 Tasks</p>
                       </div>
                     </div>
-                    {myTasks.map((task, index) => (
+                    {myTasks.slice(0, 5).map((task, index) => (
                       <TaskItem task={task} key={index} />
                     ))}
                   </>
@@ -573,13 +601,7 @@ const UserProfile = () => {
               className="text-2xl hover:cursor-pointer hover:text-bright-green"
             />
           </div>
-          <motion.div
-            variants={{
-              taskOpen: { height: "auto" },
-              taskClosed: { height: 0 },
-            }}
-            className={`${!isMeetingOpen && "zero-height"}`}
-          >
+          <motion.div className={`${!isMeetingOpen && "zero-height"}`}>
             {!calendarViewState ? (
               <>
                 <div className="flex justify-between items-center mb-4">

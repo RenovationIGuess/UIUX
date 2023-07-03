@@ -6,18 +6,21 @@ import {
 } from "react-icons/ai";
 import { FaFilter } from "react-icons/fa";
 import image from "../constant/image";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PaginateFooter from "../components/PaginateFooter/PaginateFooter";
 import { BiTask } from "react-icons/bi";
 import { GrNotes } from "react-icons/gr";
 import { useState } from "react";
 import dummyData from "../constant/dummyData";
 import { toast } from "react-toastify";
-import { Modal } from "antd";
+import { Input, Modal } from "antd";
 
 const CalendarList = () => {
+  const navigate = useNavigate();
+
   const [workspaces, setWorkspaces] = useState(dummyData.dummyWorkspacesData);
   const [open, setOpen] = useState(false);
+  const [createWorkspaceOpen, setCreateWorkspaceOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState("Are you sure you want to delete");
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -38,8 +41,18 @@ const CalendarList = () => {
   };
 
   const handleCancel = () => {
-    console.log("Clicked cancel button");
+    // console.log("Clicked cancel button");
     setOpen(false);
+  };
+
+  const handleOkCreate = () => {
+    toast("Create Successfully!");
+    navigate("/workspace/1");
+    setCreateWorkspaceOpen(false);
+  };
+
+  const handleCancelCreate = () => {
+    setCreateWorkspaceOpen(false);
   };
 
   return (
@@ -118,7 +131,7 @@ const CalendarList = () => {
 
           <div className="w-[336px] ml-6 shrink-0">
             <button
-              // onClick={() => handleJoindedTeamModal()}
+              onClick={() => setCreateWorkspaceOpen(!createWorkspaceOpen)}
               className="w-full py-2 flex items-center justify-center rounded-full bg-bright-green text-white hover:bg-less-bright-green"
             >
               <div className="flex items-center">
@@ -184,6 +197,16 @@ const CalendarList = () => {
         onCancel={handleCancel}
       >
         <p>{modalText}</p>
+      </Modal>
+
+      <Modal
+        title="Create a Workspace"
+        centered
+        open={createWorkspaceOpen}
+        onOk={handleOkCreate}
+        onCancel={handleCancelCreate}
+      >
+        <Input className="my-3" placeholder="Enter workspace name" />
       </Modal>
     </>
   );
