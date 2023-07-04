@@ -10,7 +10,16 @@ import image from "../constant/image";
 import { FaComment, FaEdit, FaTrash } from "react-icons/fa";
 import { BiChevronsDown } from "react-icons/bi";
 import { BsThreeDots, BsThreeDotsVertical } from "react-icons/bs";
-import { Button, DatePicker, Modal, Progress, Select, Tooltip } from "antd";
+import {
+  Button,
+  DatePicker,
+  Image,
+  Modal,
+  Progress,
+  Select,
+  Tooltip,
+  Upload,
+} from "antd";
 import { useState } from "react";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { Input } from "antd";
@@ -21,6 +30,15 @@ import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
+
+const imageArr = [
+  image.test1,
+  image.test2,
+  image.test3,
+  image.test4,
+  image.test5,
+  image.test6,
+];
 
 const TeamTaskDetail = () => {
   // const [cmtState, setCmtState] = useState("Newest");
@@ -55,7 +73,10 @@ const TeamTaskDetail = () => {
 
   return (
     <>
-      <motion.div className="w-full flex flex-col bg-white py-2 px-4 rounded-xl">
+      <motion.div
+        className="w-full flex flex-col bg-white py-2 px-4 rounded-xl"
+        style={{ maxWidth: "calc(100vw - 654px)" }}
+      >
         <div className="flex items-center justify-between pt-2 pb-4 border-b border-solid border-[#f5f6fb] mb-4">
           <p className="uppercase font-semibold text-base">
             Task&apos;s Detail
@@ -75,7 +96,10 @@ const TeamTaskDetail = () => {
                     <FaEdit className="text-lg mr-3" />
                     <p className="text-sm">Edit Task</p>
                   </div>
-                  <div onClick={() => setModalOpen(true)} className="flex items-center px-3 py-1 rounded-md hover:bg-bright-green hover:text-white text-85-gray cursor-pointer">
+                  <div
+                    onClick={() => setModalOpen(true)}
+                    className="flex items-center px-3 py-1 rounded-md hover:bg-bright-green hover:text-white text-85-gray cursor-pointer"
+                  >
                     <FaTrash className="text-lg mr-3" />
                     <p className="text-sm">Remove Task</p>
                   </div>
@@ -87,7 +111,7 @@ const TeamTaskDetail = () => {
           </div>
         </div>
 
-        <div className="flex flex-col px-4">
+        <div className="flex flex-col overflow-hidden px-4">
           <div className="flex items-center gap-6 mb-4">
             <Tooltip placement="top" title="Creator: Mr.Poum">
               <img src={image.poum} className="w-12 h-12 rounded-full" />
@@ -100,11 +124,21 @@ const TeamTaskDetail = () => {
             Add Figma to show demo of the app
           </p>
           <div className="flex items-center mb-4 gap-6">
-            <AiFillFileZip className="text-2xl text-45-gray hover:text-bright-green cursor-pointer" />
-            <AiOutlineLink className="text-2xl text-45-gray hover:text-bright-green cursor-pointer" />
-            <AiFillFileImage className="text-2xl text-45-gray hover:text-bright-green cursor-pointer" />
+            <Tooltip placement="top" title="Upload Files">
+              <Upload action="" name="file">
+                <AiFillFileZip className="text-2xl text-45-gray hover:text-bright-green cursor-pointer" />
+              </Upload>
+            </Tooltip>
+            <Tooltip placement="top" title="Embed Links">
+              <AiOutlineLink className="text-2xl text-45-gray hover:text-bright-green cursor-pointer" />
+            </Tooltip>
+            <Tooltip placement="top" title="Upload Images">
+              <Upload action="" name="file">
+                <AiFillFileImage className="text-2xl text-45-gray hover:text-bright-green cursor-pointer" />
+              </Upload>
+            </Tooltip>
           </div>
-          <p className="text-base font-normal break-words whitespace-pre-wrap">
+          <p className="text-base font-normal break-words whitespace-pre-wrap mb-6">
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry. Lorem Ipsum has been the industry&apos;s standard dummy
             text ever since the 1500s, when an unknown printer took a galley of
@@ -115,7 +149,19 @@ const TeamTaskDetail = () => {
             passages, and more recently with desktop publishing software like
             Aldus PageMaker including versions of Lorem Ipsum.
           </p>
-          <div className="flex flex-col mb-4"></div>
+          <div className="flex items-center gap-4 overflow-x-scroll mb-4">
+            {imageArr.map((image, index) => {
+              console.log(image);
+              return (
+                <Image
+                  className="rounded-md flex-shrink-0 min-w-[248px]"
+                  key={index}
+                  width={248}
+                  src={image}
+                />
+              );
+            })}
+          </div>
           <div className="flex flex-col">
             <div className="flex items-center justify-between pb-4 mb-3 border-b border-solid border-[#f5f6fb]">
               <p className="font-bold">Comments</p>
@@ -508,7 +554,11 @@ const TeamTaskDetail = () => {
                   <p className="text-sm font-medium mb-2">Assignee</p>
                   <Select className="mb-2" />
                   <div className="flex items-center">
-                    <img src={image.poum} alt="ava" className="w-8 h-8 rounded-full mr-4" />
+                    <img
+                      src={image.poum}
+                      alt="ava"
+                      className="w-8 h-8 rounded-full mr-4"
+                    />
                     <p className="text-sm">Mr.Poum</p>
                   </div>
                 </div>
@@ -516,7 +566,11 @@ const TeamTaskDetail = () => {
                   <p className="text-sm font-medium mb-2">Reviewer</p>
                   <Select className="mb-2" />
                   <div className="flex items-center">
-                    <img src={image.poum} alt="ava" className="w-8 h-8 rounded-full mr-4" />
+                    <img
+                      src={image.poum}
+                      alt="ava"
+                      className="w-8 h-8 rounded-full mr-4"
+                    />
                     <p className="text-sm">Mr.Poum</p>
                   </div>
                 </div>
@@ -524,7 +578,11 @@ const TeamTaskDetail = () => {
                   <p className="text-sm font-medium mb-2">Supporter</p>
                   <Select className="mb-2" />
                   <div className="flex items-center">
-                    <img src={image.poum} alt="ava" className="w-8 h-8 rounded-full mr-4" />
+                    <img
+                      src={image.poum}
+                      alt="ava"
+                      className="w-8 h-8 rounded-full mr-4"
+                    />
                     <p className="text-sm">Mr.Poum</p>
                   </div>
                 </div>

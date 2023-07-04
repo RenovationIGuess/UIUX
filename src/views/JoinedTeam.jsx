@@ -1,4 +1,4 @@
-import { Input } from "antd";
+import { Input, Tooltip } from "antd";
 import image from "../constant/image";
 import "./styles/JoinedTeam.scss";
 import {
@@ -8,8 +8,9 @@ import {
   AiFillCloseCircle,
   AiOutlineClose,
   AiOutlineLink,
+  AiFillPushpin,
 } from "react-icons/ai";
-import { FaFilter, FaRegDotCircle } from "react-icons/fa";
+import { FaFilter, FaRegDotCircle, FaThLarge } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -20,7 +21,8 @@ const JoinedTeam = () => {
   // Use for join team input modal
   const [joinedTeam, setJoinedTeam] = useState(dummyData.dummyTeamsData);
   const [teamInfo, setTeamInfo] = useState("");
-  const [searchTeamValue, setSearchTeamValue] = useState('');
+  const [searchTeamValue, setSearchTeamValue] = useState("");
+  const [pinnedOn, setPinnedOn] = useState(false);
 
   const handleJoindedTeamModal = () => {
     const modalElement = document.querySelector(".modal-background");
@@ -36,7 +38,25 @@ const JoinedTeam = () => {
               <h1 className="text-3xl font-bold">Joined Teams</h1>
             </div>
             <div className="flex-1 w-full rounded-xl bg-white px-4">
-              <div className="flex items-center justify-end py-4 border-b border-solid border-[#f5f6fb] mb-4">
+              <div className="flex items-center justify-between py-4 border-b border-solid border-[#f5f6fb] mb-4">
+                <div className="flex items-center gap-4">
+                  <Tooltip placement="bottom" title="Show Pinned">
+                    <AiFillPushpin
+                      onClick={() => setPinnedOn(!pinnedOn)}
+                      className={`icon-style ${
+                        pinnedOn && "text-bright-green"
+                      }`}
+                    />
+                  </Tooltip>
+                  <Tooltip placement="bottom" title="Show All">
+                    <FaThLarge
+                      onClick={() => setPinnedOn(!pinnedOn)}
+                      className={`icon-style ${
+                        !pinnedOn && "text-bright-green"
+                      }`}
+                    />
+                  </Tooltip>
+                </div>
                 <div className="flex items-center">
                   <div className="p-2 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green">
                     <FaFilter className="text-base text-white" />
@@ -62,36 +82,42 @@ const JoinedTeam = () => {
                 </div>
               </div>
               <div className="flex flex-col">
-                {joinedTeam.map((t, index) => (
+                {(pinnedOn
+                  ? joinedTeam.filter((t) => t.pinned)
+                  : joinedTeam
+                ).map((t, index) => (
                   <>
                     <div className="joined-team-item" key={index}>
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-4">
                           <Link
                             to="/team/1/your-stats"
                             className="text-2xl hover:text-bright-green font-medium"
                           >
                             {t.name}
                           </Link>
-                          <div className="flex items-center gap-4">
-                            <img
-                              className="w-9 h-9 rounded-full"
-                              src={t.creator.image}
-                              alt="kururin"
+                          <Tooltip
+                            placement="top"
+                            title={t.pinned ? "Unpinned" : "Mark as Pinned"}
+                          >
+                            <AiFillPushpin
+                              className={`text-3xl cursor-pointer ${
+                                t.pinned
+                                  ? "text-red-type"
+                                  : "hover:text-bright-green"
+                              }`}
                             />
-                            <p className="text-base font-medium">
-                              {t.creator.name} is the Owner
-                            </p>
-                          </div>
+                          </Tooltip>
                         </div>
-                        <Link to={`/team/${t.id}/your-stats`} className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
-                          <span>
-                            View Details
-                          </span>
+                        <Link
+                          to={`/team/${t.id}/your-stats`}
+                          className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green"
+                        >
+                          <span>View Details</span>
                         </Link>
                       </div>
                       <div className="w-full flex items-center mt-3 whitespace-nowrap">
-                        <div className="flex relative">
+                        <div className="flex items-center relative">
                           {t.members.map((m, mIndex) => {
                             if (mIndex <= 2) {
                               return (
@@ -109,7 +135,7 @@ const JoinedTeam = () => {
                           })}
                         </div>
                         <p
-                          className="text-bsae font-medium"
+                          className="text-bsae font-medium pr-4 border-r border-[#f5f6fb] mr-4"
                           style={{
                             marginLeft:
                               t.members.length >= 3
@@ -121,6 +147,16 @@ const JoinedTeam = () => {
                         >
                           {t.members.length} members
                         </p>
+                        <div className="flex items-center gap-4">
+                          <img
+                            className="w-9 h-9 rounded-full"
+                            src={t.creator.image}
+                            alt="kururin"
+                          />
+                          <p className="text-base font-medium">
+                            {t.creator.name} is the Owner
+                          </p>
+                        </div>
                       </div>
                       <div className="flex items-center mt-4 justify-between w-full">
                         <div className="flex items-center gap-4">
@@ -207,7 +243,9 @@ const JoinedTeam = () => {
             </div>
             <div className="w-full bg-white rounded-xl flex flex-col px-4 pb-4 mt-4">
               <div className="py-4 border-b border-solid border-[#f5f6fb] mb-3">
-                <span className="font-semibold">Teams that you have events today</span>
+                <span className="font-semibold">
+                  Teams that you have events today
+                </span>
               </div>
               <div className="w-full flex flex-col items-center justify-center">
                 <img className="w-[200px]" src={image.nothing} alt="nothing" />

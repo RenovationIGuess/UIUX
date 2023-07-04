@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import {
   AiFillCalendar,
+  AiFillPushpin,
   AiOutlineArrowRight,
   AiOutlineSearch,
 } from "react-icons/ai";
-import { FaFilter } from "react-icons/fa";
+import { FaFilter, FaThLarge } from "react-icons/fa";
 import image from "../constant/image";
 import { Link, useNavigate } from "react-router-dom";
 import PaginateFooter from "../components/PaginateFooter/PaginateFooter";
@@ -13,7 +14,7 @@ import { GrNotes } from "react-icons/gr";
 import { useState } from "react";
 import dummyData from "../constant/dummyData";
 import { toast } from "react-toastify";
-import { Input, Modal } from "antd";
+import { Input, Modal, Tooltip } from "antd";
 
 const CalendarList = () => {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const CalendarList = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState("Are you sure you want to delete");
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [pinnedOn, setPinnedOn] = useState(false);
 
   const showModal = () => {
     setOpen(true);
@@ -64,7 +66,25 @@ const CalendarList = () => {
               <h1 className="text-3xl font-bold">Your Workspaces</h1>
             </div>
             <div className="flex-1 w-full rounded-xl bg-white px-4">
-              <div className="flex items-center justify-end py-4 border-b border-solid border-[#f5f6fb] mb-4">
+              <div className="flex items-center justify-between py-4 border-b border-solid border-[#f5f6fb] mb-4">
+                <div className="flex items-center gap-4">
+                  <Tooltip placement="bottom" title="Show Pinned">
+                    <AiFillPushpin
+                      onClick={() => setPinnedOn(!pinnedOn)}
+                      className={`icon-style ${
+                        pinnedOn && "text-bright-green"
+                      }`}
+                    />
+                  </Tooltip>
+                  <Tooltip placement="bottom" title="Show All">
+                    <FaThLarge
+                      onClick={() => setPinnedOn(!pinnedOn)}
+                      className={`icon-style ${
+                        !pinnedOn && "text-bright-green"
+                      }`}
+                    />
+                  </Tooltip>
+                </div>
                 <div className="flex items-center">
                   <div className="p-2 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green">
                     <FaFilter className="text-base text-white" />
@@ -81,12 +101,18 @@ const CalendarList = () => {
                 </div>
               </div>
               <div className="flex flex-col">
-                {workspaces.map((w, index) => (
+                {(!pinnedOn
+                  ? workspaces
+                  : workspaces.filter((w) => w.pinned)
+                ).map((w, index) => (
                   <>
                     <div key={index} className="joined-team-item">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-4">
                           <h1 className="text-2xl font-medium">{w.name}</h1>
+                          <Tooltip placement="top" title={w.pinned ? 'Unpinned' : 'Mark as Pinned'}>
+                            <AiFillPushpin className={`text-2xl cursor-pointer ${w.pinned ? 'text-red-type' : 'hover:text-bright-green'}`} />
+                          </Tooltip>
                         </div>
                         <div className="flex items-center gap-3">
                           <Link

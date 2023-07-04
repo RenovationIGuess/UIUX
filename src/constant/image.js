@@ -21,6 +21,13 @@ import bgex3 from "../assets/bgex3.jpg";
 import bgex1 from "../assets/bgexample1.jpg";
 import notfound from "../assets/404.png";
 
+import test1 from "../assets/test1.png";
+import test2 from "../assets/test2.png";
+import test3 from "../assets/test3.png";
+import test4 from "../assets/test4.png";
+import test5 from "../assets/test5.png";
+import test6 from "../assets/test6.png";
+
 export default {
   kuru,
   poum,
@@ -40,4 +47,10 @@ export default {
   bgex3,
   bgex1,
   notfound,
+  test1,
+  test2,
+  test3,
+  test4,
+  test5,
+  test6,
 };

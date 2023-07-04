@@ -1,9 +1,9 @@
 import image from "../constant/image";
 import "./styles/JoinedTeam.scss";
-import { FaFilter, FaRegDotCircle } from "react-icons/fa";
+import { FaFilter, FaRegDotCircle, FaThLarge } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
-import { Input } from "antd";
+import { Input, Tooltip } from "antd";
 import "./styles/JoinedTeam.scss";
 import {
   AiOutlineArrowRight,
@@ -13,6 +13,7 @@ import {
   AiOutlineClose,
   AiOutlineLink,
   AiOutlineTeam,
+  AiFillPushpin,
 } from "react-icons/ai";
 import { useState } from "react";
 import dummyData from "../constant/dummyData";
@@ -26,6 +27,7 @@ const CreatedTeam = () => {
   const [teamUserName, setTeamUserName] = useState("");
   const [createdTeam, setCreatedTeam] = useState(dummyData.dummyTeamsData);
   const [searchTeamValue, setSearchTeamValue] = useState("");
+  const [pinnedOn, setPinnedOn] = useState(false);
 
   const handleCreateTeamModal = () => {
     const modalElement = document.querySelector(".modal-background");
@@ -41,7 +43,25 @@ const CreatedTeam = () => {
               <h1 className="text-3xl font-bold">Created Teams</h1>
             </div>
             <div className="flex-1 w-full rounded-xl bg-white px-4">
-              <div className="flex items-center justify-end py-4 border-b border-solid border-[#f5f6fb] mb-4">
+              <div className="flex items-center justify-between py-4 border-b border-solid border-[#f5f6fb] mb-4">
+                <div className="flex items-center gap-4">
+                  <Tooltip placement="bottom" title="Show Pinned">
+                    <AiFillPushpin
+                      onClick={() => setPinnedOn(!pinnedOn)}
+                      className={`icon-style ${
+                        pinnedOn && "text-bright-green"
+                      }`}
+                    />
+                  </Tooltip>
+                  <Tooltip placement="bottom" title="Show All">
+                    <FaThLarge
+                      onClick={() => setPinnedOn(!pinnedOn)}
+                      className={`icon-style ${
+                        !pinnedOn && "text-bright-green"
+                      }`}
+                    />
+                  </Tooltip>
+                </div>
                 <div className="flex items-center">
                   <div className="p-2 bg-bright-green rounded-full mr-3 cursor-pointer hover:bg-less-bright-green">
                     <FaFilter className="text-base text-white" />
@@ -67,32 +87,38 @@ const CreatedTeam = () => {
                 </div>
               </div>
               <div className="flex flex-col">
-                {createdTeam.map((t, index) => (
+                {(pinnedOn
+                  ? createdTeam.filter((t) => t.pinned)
+                  : createdTeam
+                ).map((t, index) => (
                   <>
                     <div className="joined-team-item" key={index}>
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-4">
                           <Link
                             to="/team/1/your-stats"
                             className="text-2xl hover:text-bright-green font-medium"
                           >
                             {t.name}
                           </Link>
-                          <div className="flex items-center gap-4">
-                            <img
-                              className="w-9 h-9 rounded-full"
-                              src={t.creator.image}
-                              alt="kururin"
+                          <Tooltip
+                            placement="top"
+                            title={t.pinned ? "Unpinned" : "Mark as Pinned"}
+                          >
+                            <AiFillPushpin
+                              className={`text-3xl cursor-pointer ${
+                                t.pinned
+                                  ? "text-red-type"
+                                  : "hover:text-bright-green"
+                              }`}
                             />
-                            <p className="text-base font-medium">
-                              {t.creator.name} is the Owner
-                            </p>
-                          </div>
+                          </Tooltip>
                         </div>
-                        <Link to={`/team/${t.id}/your-stats`} className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green">
-                          <span>
-                            View Details
-                          </span>
+                        <Link
+                          to={`/team/${t.id}/your-stats`}
+                          className="flex items-center justify-center py-2 px-4 rounded-md bg-bright-green text-white hover:bg-less-bright-green"
+                        >
+                          <span>View Details</span>
                         </Link>
                       </div>
                       <div className="w-full flex items-center mt-3 whitespace-nowrap">
@@ -114,7 +140,7 @@ const CreatedTeam = () => {
                           })}
                         </div>
                         <p
-                          className="text-bsae font-medium"
+                          className="text-bsae font-medium pr-4 border-r border-[#f5f6fb] mr-4"
                           style={{
                             marginLeft:
                               t.members.length >= 3
@@ -126,6 +152,16 @@ const CreatedTeam = () => {
                         >
                           {t.members.length} members
                         </p>
+                        <div className="flex items-center gap-4">
+                          <img
+                            className="w-9 h-9 rounded-full"
+                            src={t.creator.image}
+                            alt="kururin"
+                          />
+                          <p className="text-base font-medium">
+                            {t.creator.name} is the Owner
+                          </p>
+                        </div>
                       </div>
                       <div className="flex items-center mt-4 justify-between w-full">
                         <div className="flex items-center gap-4">

@@ -12,6 +12,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
   AiFillBell,
+  AiFillPushpin,
   AiOutlineCalendar,
   AiOutlineClear,
   AiOutlineClose,
@@ -114,10 +115,18 @@ const TeamDetailLayout = () => {
                           <span className="user-basic-nickname">
                             Astral Express
                           </span>
-                          <div className="flex items-center ml-2">
-                            <Badge count={5} style={{ top: 4, right: 4 }}>
+                          <div className="flex items-center gap-4 ml-2">
+                            <Badge
+                              size={isMinimized ? "small" : "default"}
+                              count={5}
+                              style={{ top: 4, right: 4 }}
+                            >
                               <AiFillBell
-                                className="relative text-4xl text-white cursor-pointer hover:text-bright-green"
+                                className={`relative cursor-pointer hover:text-bright-green ${
+                                  isMinimized
+                                    ? "text-2xl text-85-gray"
+                                    : "text-4xl text-white"
+                                }`}
                                 onClick={() => setNotiOpen(!notiOpen)}
                               />
                               {notiOpen && (
@@ -213,6 +222,15 @@ const TeamDetailLayout = () => {
                                 </>
                               )}
                             </Badge>
+                            <Tooltip placement="top" title="Mark as Pinned">
+                              <AiFillPushpin
+                                className={`relative cursor-pointer hover:text-bright-green ${
+                                  isMinimized
+                                    ? "text-2xl text-85-gray"
+                                    : "text-4xl text-white"
+                                }`}
+                              />
+                            </Tooltip>
                           </div>
                         </div>
                         {/* User sign, tags,... */}

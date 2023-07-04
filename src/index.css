@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -14,7 +14,7 @@
   --primary-white-color: #fff;
   --search-input-line-color: #c1ccd9;
   --patch-font-color: #8592a3;
-  --default-green-color: #22C55E;
+  --default-green-color: #22c55e;
   --search-input-icon-color: #b2bdce;
   --minor-font-color-new: rgba(0, 0, 0, 0.45);
 }
@@ -131,8 +131,9 @@
 }
 
 .ant-btn-primary {
-  background-color: #1890ff;
-  border-color: #1890ff;
+  /* background-color: #1890ff;
+  border-color: #1890ff; */
+  @apply bg-bright-green border-bright-green hover:bg-less-bright-green hover:border-less-bright-green;
 }
 
 .zero-height > * {

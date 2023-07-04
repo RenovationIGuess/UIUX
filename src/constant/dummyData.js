@@ -519,30 +519,35 @@ const dummyTasksData = [
 const dummyWorkspacesData = [
   {
     name: 'School',
+    pinned: true,
     tasks: [dummyTasksData],
     meets: [events],
     notes: [],
   },
   {
     name: 'Intern',
+    pinned: false,
     tasks: [dummyTasksData],
     meets: [events],
     notes: [],
   },
   {
     name: 'Dating',
+    pinned: true,
     tasks: [dummyTasksData],
     meets: [events],
     notes: [],
   },
   {
     name: 'Astral Express~~',
+    pinned: true,
     tasks: [dummyTasksData],
     meets: [events],
     notes: [],
   },
   {
     name: ':D?',
+    pinned: false,
     tasks: [dummyTasksData],
     meets: [events],
     notes: [],
@@ -751,6 +756,7 @@ const dummyTeamsData = [
   {
     id: 1,
     name: "Astral Express~",
+    pinned: true,
     members: [
       {
         id: 1,
@@ -799,6 +805,7 @@ const dummyTeamsData = [
   {
     id: 2,
     name: "Genshit",
+    pinned: false,
     members: [
       {
         id: 1,
@@ -851,6 +858,7 @@ const dummyTeamsData = [
   {
     id: 3,
     name: "Liyue",
+    pinned: true,
     members: [
       {
         id: 1,
@@ -903,6 +911,7 @@ const dummyTeamsData = [
   {
     id: 4,
     name: "Xiaozhou Luofu",
+    pinned: true,
     members: [
       {
         id: 1,
@@ -955,6 +964,7 @@ const dummyTeamsData = [
   {
     id: 5,
     name: "Jarvio IV",
+    pinned: true,
     members: [
       {
         id: 1,

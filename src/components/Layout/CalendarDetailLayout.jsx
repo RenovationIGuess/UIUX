@@ -9,10 +9,20 @@ import { BiCommentDetail, BiLogOutCircle } from "react-icons/bi";
 import { FiMinimize } from "react-icons/fi";
 import { TiArrowSortedDown, TiThSmall } from "react-icons/ti";
 import { Badge, Popconfirm, Tooltip } from "antd";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import SearchBar from "../SearchBar/SearchBar";
-import { AiFillBell, AiOutlineCalendar, AiOutlineClear, AiOutlineClose, AiOutlineComment, AiOutlineSetting, AiOutlineTeam } from "react-icons/ai";
+import {
+  AiFillBell,
+  AiFillPushpin,
+  AiOutlineCalendar,
+  AiOutlineClear,
+  AiOutlineClose,
+  AiOutlineComment,
+  AiOutlineSetting,
+  AiOutlineTeam,
+} from "react-icons/ai";
+import { color } from "framer-motion";
 
 const CalendarDetailLayout = () => {
   const [isMinimized, setIsMinimized] = useState(false);
@@ -54,11 +64,9 @@ const CalendarDetailLayout = () => {
     }
   };
 
-  const confirmOutTeam = () => {
-  };
+  const confirmOutTeam = () => {};
 
-  const cancelOutTeam = () => {
-  };
+  const cancelOutTeam = () => {};
 
   return (
     <div className="relative flex h-screen w-screen overflow-hidden bg-background-gray">
@@ -93,12 +101,22 @@ const CalendarDetailLayout = () => {
                           <span className="user-basic-nickname">
                             Astral Express
                           </span>
-                          <div className="flex items-center ml-2">
-                            <Badge count={5} style={{ top: 4, right: 4 }}>
-                              <AiFillBell
-                                className="relative text-4xl text-white cursor-pointer hover:text-bright-green"
-                                onClick={() => setNotiOpen(!notiOpen)}
-                              />
+                          <div className="flex items-center gap-4 ml-2">
+                            <Badge
+                              size={isMinimized ? "small" : "default"}
+                              count={5}
+                              style={{ top: 4, right: 4 }}
+                            >
+                              <Tooltip placement="top" title="Notifications">
+                                <AiFillBell
+                                  className={`relative cursor-pointer hover:text-bright-green ${
+                                    isMinimized
+                                      ? "text-2xl text-85-gray"
+                                      : "text-4xl text-white"
+                                  }`}
+                                  onClick={() => setNotiOpen(!notiOpen)}
+                                />
+                              </Tooltip>
                               {notiOpen && (
                                 <>
                                   <div className="w-[516px] bg-white hy-shadow p-4 rounded-xl noti-container--right">
@@ -192,6 +210,15 @@ const CalendarDetailLayout = () => {
                                 </>
                               )}
                             </Badge>
+                            <Tooltip placement="top" title="Mark as Pinned">
+                              <AiFillPushpin
+                                className={`relative cursor-pointer hover:text-bright-green ${
+                                  isMinimized
+                                    ? "text-2xl text-85-gray"
+                                    : "text-4xl text-white"
+                                }`}
+                              />
+                            </Tooltip>
                           </div>
                         </div>
                         {/* User sign, tags,... */}
@@ -221,32 +248,36 @@ const CalendarDetailLayout = () => {
                             <FiMinimize className="icon-select__arrow" />
                           </span>
                         </div>
-                        <div className="account-center-select-btn" onClick={() => setIsOptionsOpen(!isOptionsOpen)}>
+                        <div
+                          className="account-center-select-btn"
+                          onClick={() => setIsOptionsOpen(!isOptionsOpen)}
+                        >
                           <span className="flex items-center justify-center">
                             Options
                             {/* Icon goes here */}
                             <TiArrowSortedDown className="icon-select__arrow" />
                           </span>
                         </div>
-                        {isOptionsOpen && <div className="float-dialog">
-                          <ul className="flex flex-col">
-                            <Popconfirm
-                              title="Out this team"
-                              description="Are you sure to out team?"
-                              onConfirm={confirmOutTeam}
-                              onCancel={cancelOutTeam}
-                              okText="Yes"
-                              cancelText="No"
-                              placement="bottom"
-                            >
-                              <li className="py-1 px-3 flex items-center text-85-gray rounded-md hover:bg-bright-green hover:text-white cursor-pointer">
-                                <BiLogOutCircle className="text-xl mr-1" />
-                                <p className="text-sm">Out Team</p>
-                              </li>
-                            </Popconfirm>
-                            
-                          </ul>
-                        </div>}
+                        {isOptionsOpen && (
+                          <div className="float-dialog">
+                            <ul className="flex flex-col">
+                              <Popconfirm
+                                title="Out this team"
+                                description="Are you sure to out team?"
+                                onConfirm={confirmOutTeam}
+                                onCancel={cancelOutTeam}
+                                okText="Yes"
+                                cancelText="No"
+                                placement="bottom"
+                              >
+                                <li className="py-1 px-3 flex items-center text-85-gray rounded-md hover:bg-bright-green hover:text-white cursor-pointer">
+                                  <BiLogOutCircle className="text-xl mr-1" />
+                                  <p className="text-sm">Out Team</p>
+                                </li>
+                              </Popconfirm>
+                            </ul>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -262,7 +293,7 @@ const CalendarDetailLayout = () => {
         </section>
       </div>
 
-      <ToastContainer 
+      <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
